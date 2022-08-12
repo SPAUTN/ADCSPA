@@ -45,8 +45,6 @@ void setup()
 void loop()
 {
   // se leen las entradas analogicas y se almacenan los valores en las variables
-  Vviento = analogRead(SVviento);
-  Dviento = analogRead(SDviento);
   Radiacion = analogRead(SRad);
   Temperatura = analogRead(STemperatura);
   Humedad = analogRead(SHumedad);
@@ -56,7 +54,7 @@ void loop()
   Celda3 = analogRead(Ccarga3);
   Celda4 = analogRead(Ccarga4);
 
-  float velocidadV = setVelocidadViento(Vviento);
+  float velocidadV = setVelocidadViento(analogRead(analogRead(SDviento)));
   String direccionV = setDireccionViento(Dviento);
   // TODO: Lectura del valor de Radiacion
 }
