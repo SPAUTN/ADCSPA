@@ -16,3 +16,5 @@ Código para realizar las lecturas analógicas de los sensores de todo el sistem
 * A8 – Celda de carga 3
 * A9 – Celda de carga 4
 * Pluviometro - cualquier entrada digital (cable Normalmente cerrado del reed swicth) (pin 50)
+
+A ver, modificate dale
