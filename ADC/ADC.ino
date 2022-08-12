@@ -45,18 +45,90 @@ void setup()
 void loop()
 {
   // se leen las entradas analogicas y se almacenan los valores en las variables
-  Radiacion = analogRead(SRad);
-  Temperatura = analogRead(STemperatura);
-  Humedad = analogRead(SHumedad);
-  HojaMojada = analogRead(SHMojada);
   Celda1 = analogRead(Ccarga1);
   Celda2 = analogRead(Ccarga2);
   Celda3 = analogRead(Ccarga3);
   Celda4 = analogRead(Ccarga4);
 
-  float velocidadV = setVelocidadViento(analogRead(analogRead(SDviento)));
-  String direccionV = setDireccionViento(Dviento);
-  // TODO: Lectura del valor de Radiacion
+  float velocidadV = setVelocidadViento(analogRead(SVviento));
+  String direccionV = setDireccionViento(analogRead(SDviento));
+  float Hum = setHumedad(analogRead(SHumedad));
+  float radiacion = setRadiacion(analogRead(SRad));
+  float temperatura = setTemperatura(analogRead(STemperatura)); 
+  String hojaMojada = setHoja(analogRead(SHMojada));
+  
+}
+
+/**
+ * Setea si la hoja del campo esta mojada o seca
+ */
+String setHoja(int Hoja)
+{
+  String resul = "";
+  switch(Hoja)
+             {
+              case(Hoja<7):
+              resul = "HOJA SECA";
+              break;
+              case(Hoja>11):
+              resul = "HOJA MOJADA";
+              break;
+             }
+             return resul;
+}
+
+/**
+ * Setea la temperatura ambiente entre -25°C y 50°C
+ */
+int setTemperatura(int T)
+{
+  float temp=0;
+  switch(T)
+          {
+          case (T<41):
+          temp=-25;
+          break;
+          case (T<41):
+          temp = (((T-41)*5*15)/696)-25;
+          break;
+          }
+          return temp;
+}
+
+/**
+ * Setea la radiación solar entre 0 y 1400 W/m2
+ */
+int setRadiacion(int R)
+{
+  float rad=0;
+  switch(R)
+          {
+           case (R<41):
+           rad=0;
+           break;
+           case (R>41):
+           rad = ((R-41)*5*280)/716;
+           break;
+          }
+          return rad;
+}
+
+/**
+ * Setea la humedad del ambiente entre 0% y 100%
+ */
+ int setHumedad(int H)
+{
+  float humedad=0;
+  switch (H)
+          {
+          case (H<102):
+          humedad=0;
+          break
+          case (H>102):
+          humedad = ((H-102)*5*20)/716
+          break;
+          }
+          return humedad;
 }
 
 /**
@@ -87,6 +159,7 @@ String setDireccionViento(int direccion) {
 /**
  * Convertimos a Km/h teniendo en cuenta que como maximo llegan 4V (818)(240km/h)
  */
-int setVelocidadViento(int lectura) {
+int setVelocidadViento(int lectura) 
+{
   return (lectura * 5 * 48) / 818;
 } 
