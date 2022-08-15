@@ -60,15 +60,15 @@ void loop() {
 /**
  * @brief Setea si la hoja del campo esta mojada o seca
  * 
- * @param Hoja 
+ * @param sensHoja 
  * @return String result indicando si la hoja está mojada o seca
  */
-String setHoja(int Hoja) {
+String setHoja(int sensHoja) {
   String resul = "";
-  if(Hoja < 7){
+  if(sensHoja < 7){
     resul = "HOJA SECA";
   }
-  if(Hoja > 11){
+  if(sensHoja > 11){
     resul = "HOJA MOJADA";
   }
   return resul;
@@ -80,13 +80,13 @@ String setHoja(int Hoja) {
  * @param sensorTemp valor leido del sensor
  * @return long int temp valor real de temperatura
  */
-long int setTemperatura(int sensTemp) {
+long int setTemperatura(int sensorTemp) {
   long int temp = 0;
-  if(sensTemp < 41){
+  if(sensorTemp < 41){
     temp = -25;
   }
-  if(sensTemp > 41){
-    temp = (((sensTemp - 41) * 5 * 15) / 696) - 25;
+  if(sensorTemp > 41){
+    temp = (((sensorTemp - 41) * 5 * 15) / 696) - 25;
   }
   return temp;
 }
@@ -114,13 +114,13 @@ unsigned long int setRadiacion(int sensorRad) {
  * @param sensorHum valor del sensor de humedad
  * @return uint humedad porcentaje de humedad
  */
-unsigned long int setHumedad(int sensHum) {
+unsigned long int setHumedad(int sensorHum) {
   unsigned long int humedad = 0;
-  if(sensHum<102){
+  if(sensorHum<102){
     humedad = 0;
   }
-  if(sensHum>102){
-    humedad = ((sensHum - 102) * 5 * 20) / 716;
+  if(sensorHum>102){
+    humedad = ((sensorHum - 102) * 5 * 20) / 716;
   }
   return humedad;
 }
@@ -164,10 +164,13 @@ long int setVelocidadViento(int sensorVel) {
 
 /**
  * @brief funcion ISR que aumenta el numero de pulsos al producirse
- * una interrupcion por flanco de subida en el pin 
+ * una interrupcion por flanco de subida en el pin.
+ * Además debe indicar cuando se ha producido el primer conteo para que
+ * se pueda calcular el tiempo de lluvia
  *
  */
 void cuentaPulsos () {
+  // TODO: agregar una activacion de un led para indicar que se ha producido una interrupcion e iniciar un contador de tiempo
   contadorPluv++;
 }
 
