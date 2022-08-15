@@ -65,14 +65,11 @@ void loop() {
  */
 String setHoja(int Hoja) {
   String resul = "";
-  switch (Hoja)
-  {
-  case (Hoja < 7):
+  if(Hoja < 7){
     resul = "HOJA SECA";
-    break;
-  case (Hoja > 11):
+  }
+  if(Hoja > 11){
     resul = "HOJA MOJADA";
-    break;
   }
   return resul;
 }
@@ -81,18 +78,15 @@ String setHoja(int Hoja) {
  * @brief Setea la temperatura ambiente entre -25°C y 50°C
  * 
  * @param sensorTemp valor leido del sensor
- * @return int temp valor real de temperatura
+ * @return long int temp valor real de temperatura
  */
-int setTemperatura(int sensorTemp) {
-  float temp = 0;
-  switch (sensorTemp)
-  {
-  case (sensorTemp < 41):
+long int setTemperatura(int sensTemp) {
+  long int temp = 0;
+  if(sensTemp < 41){
     temp = -25;
-    break;
-  case (sensorTemp < 41):
-    temp = (((T - 41) * 5 * 15) / 696) - 25;
-    break;
+  }
+  if(sensTemp > 41){
+    temp = (((sensTemp - 41) * 5 * 15) / 696) - 25;
   }
   return temp;
 }
@@ -101,18 +95,15 @@ int setTemperatura(int sensorTemp) {
  * @brief Setea la radiación solar entre 0 y 1400 W/m2
  * 
  * @param sensorRad valor leido del sensor de radiación solar
- * @return int rad valor de radiacion solar
+ * @return uint rad valor de radiacion solar
  */
-int setRadiacion(int sensorRad) {
-  float rad = 0;
-  switch (sensorRad)
-  {
-  case (sensorRad < 41):
+unsigned long int setRadiacion(int sensorRad) {
+  unsigned long int rad = 0;
+  if(sensorRad < 41){
     rad = 0;
-    break;
-  case (sensorRad > 41):
-    rad = ((sensorRad - 41) * 5 * 280) / 716;
-    break;
+  }
+  if(sensorRad > 41){
+     rad = ((sensorRad - 41) * 5 * 280) / 716;
   }
   return rad;
 }
@@ -121,18 +112,15 @@ int setRadiacion(int sensorRad) {
  * @brief Setea la humedad del ambiente entre 0% y 100%
  * 
  * @param sensorHum valor del sensor de humedad
- * @return int humedad porcentaje de humedad
+ * @return uint humedad porcentaje de humedad
  */
-int setHumedad(int sensorHum) {
-  float humedad = 0;
-  switch (sensorHum)
-  {
-  case (sensorHum < 102):
+unsigned long int setHumedad(int sensHum) {
+  unsigned long int humedad = 0;
+  if(sensHum<102){
     humedad = 0;
-    break;
-  case (sensorHum > 102) :
-    humedad = ((sensorHum - 102) * 5 * 20) / 716
-    break;
+  }
+  if(sensHum>102){
+    humedad = ((sensHum - 102) * 5 * 20) / 716;
   }
   return humedad;
 }
@@ -145,23 +133,20 @@ int setHumedad(int sensorHum) {
  */
 String setDireccionViento(int sensorDir) {
   String direccionV = "";
-  switch (sensorDir)
-  {
-  case (sensorDir > 39 && sensorDir < 103):
+  if(sensorDir>39 && sensorDir<103){
     direccionV = "NORTE";
-    break;
-  case (sensorDir > 715 && sensorDir < 779):
+  }
+  if(sensorDir>715 && sensorDir<779){
     direccionV = "NORTE";
-    break;
-  case (sensorDir > 306 && sensorDir < 431):
+  }
+  if(sensorDir>306 && sensorDir<431){
     direccionV = "SUR";
-    break;
-  case (sensorDir > 122 && sensorDir < 247):
+  }
+  if(sensorDir>122 && sensorDir<247){
     direccionV = "ESTE";
-    break;
-  case (sensorDir > 490 && sensorDir < 615):
+  }
+  if(sensorDir>490 && sensorDir<615){
     direccionV = "OESTE";
-    break;
   }
   return direccionV;
 }
@@ -171,9 +156,9 @@ String setDireccionViento(int sensorDir) {
  * como maximo llegan 4V (818)(240km/h)
  * 
  * @param sensorVel del sensor
- * @return int valor de velocidad del viento
+ * @return long int valor de velocidad del viento
  */
-int setVelocidadViento(int sensorVel) {
+long int setVelocidadViento(int sensorVel) {
   return (sensorVel * 5 * 48) / 818;
 }
 
