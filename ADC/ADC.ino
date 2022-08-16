@@ -14,12 +14,10 @@
 #define SLluvia 50 // TODO debe ser un pin de interrupción
 
 //------------ Variables para almacenar los datos -------------------------
-int Vviento = 0;
-int Dviento = 0;
-int Radiacion = 0;
-int Temperatura = 0;
-int HojaMojada = 0;
-int Humedad = 0;
+unsigned long int Vviento = 0;
+unsigned long int Radiacion = 0;
+long int Temperatura = 0;
+unsigned long int Humedad = 0;
 int contadorPluv = 0;
 int Celda1 = 0;
 int Celda2 = 0;
@@ -48,11 +46,11 @@ void loop() {
   Celda3 = analogRead(Ccarga3);
   Celda4 = analogRead(Ccarga4);
 
-  float velocidadV = setVelocidadViento(analogRead(SVviento));
+  Vviento = setVelocidadViento(analogRead(SVviento));
   String direccionV = setDireccionViento(analogRead(SDviento));
-  float Hum = setHumedad(analogRead(SHumedad));
-  float radiacion = setRadiacion(analogRead(SRad));
-  float temperatura = setTemperatura(analogRead(STemperatura));
+  Humedad = setHumedad(analogRead(SHumedad));
+  Radiacion = setRadiacion(analogRead(SRad));
+  Temperatura = setTemperatura(analogRead(STemperatura));
   String hojaMojada = setHoja(analogRead(SHMojada));
   int lluvia = setLluvia(digitalRead(SLluvia));
 }
@@ -97,8 +95,8 @@ long int setTemperatura(int sensorTemp) {
  * @param sensorRad valor leido del sensor de radiación solar
  * @return uint rad valor de radiacion solar
  */
-unsigned long int setRadiacion(int sensorRad) {
-  unsigned long int rad = 0;
+long int setRadiacion(long int sensorRad) {
+  long int rad = 0;
   if(sensorRad < 41){
     rad = 0;
   }
@@ -158,8 +156,10 @@ String setDireccionViento(int sensorDir) {
  * @param sensorVel del sensor
  * @return long int valor de velocidad del viento
  */
-long int setVelocidadViento(int sensorVel) {
-  return (sensorVel * 5 * 48) / 818;
+long int setVelocidadViento(long int sensorVel) {
+  long int vel=0;
+   vel=(sensorVel * 5 * 48) / 818;
+   return vel;
 }
 
 /**
