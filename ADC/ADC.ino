@@ -157,9 +157,9 @@ String setDireccionViento(int sensorDir) {
  * @return long int valor de velocidad del viento
  */
 long int setVelocidadViento(long int sensorVel) {
-  long int Vel=0;
-   Vel=(lectura * 5 * 48) / 818;
-   return Vel;
+  long int vel=0;
+   vel=(sensorVel * 5 * 48) / 818;
+   return vel;
 }
 
 /**
