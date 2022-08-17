@@ -16,3 +16,7 @@ Código para realizar las lecturas analógicas de los sensores de todo el sistem
 * A8 – Celda de carga 3
 * A9 – Celda de carga 4
 * Pluviometro - cualquier entrada digital (cable Normalmente cerrado del reed swicth) (pin 50)
+
+## Ramas
+* **Rama main**: donde se agregan todas las pruebas y códigos listos y/o hardcodeados.
+* **Rama production**: donde solo se encuentra el código listo para ser enviado al arduino.
