@@ -12,4 +12,4 @@ jobs:
           sketch-paths: |
             - ADC
           libraries: |
-            -name: HX711
+            - name: HX711
