@@ -3,6 +3,13 @@ on:
   - push
   - pull_request
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    env:
+      UNIVERSAL_LIBRARIES: |
+        - source-path: https://github.com/bogde/HX711.git
+        - name: HX711
   compile-sketches:
     runs-on: ubuntu-latest
     steps:
@@ -11,6 +18,4 @@ jobs:
         with:
           fqbn: arduino:megaavr:uno2018:mode=on
           sketch-paths: |
-            - ADC
-          libraries: |
-            - source: https://github.com/bogde/HX711.git
+            - ./ADC
