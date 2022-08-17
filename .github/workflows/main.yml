@@ -3,15 +3,12 @@ on:
   - push
   - pull_request
 jobs:
-  build:
+  compile-sketches:
     runs-on: ubuntu-latest
-    
     env:
       UNIVERSAL_LIBRARIES: |
         - source-path: https://github.com/bogde/HX711.git
         - name: HX711
-  compile-sketches:
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: arduino/compile-sketches@v1
