@@ -1,3 +1,4 @@
+name: Compila
 on:
   - push
   - pull_request
