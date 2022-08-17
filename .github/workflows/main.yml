@@ -5,14 +5,10 @@ on:
 jobs:
   compile-sketches:
     runs-on: ubuntu-latest
-    env:
-      UNIVERSAL_LIBRARIES: |
-        - source-path: https://github.com/bogde/HX711.git
-        - name: HX711
     steps:
       - uses: actions/checkout@v2
       - uses: arduino/compile-sketches@v1
         with:
           fqbn: arduino:avr:mega2560
           sketch-paths: |
-            - ./ADC
+            - ADC/ADC.ino
