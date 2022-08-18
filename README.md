@@ -20,3 +20,11 @@ Código para realizar las lecturas analógicas de los sensores de todo el sistem
 ## Ramas
 * **Rama main**: donde se agregan todas las pruebas y códigos listos y/o hardcodeados.
 * **Rama production**: donde solo se encuentra el código listo para ser enviado al arduino.
+
+> Cambio de nombre de rama main a master: 
+```
+git branch -m main master
+git fetch origin
+git branch -u origin/master master
+git remote set-head origin -a
+```
