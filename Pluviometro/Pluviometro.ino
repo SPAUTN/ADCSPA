@@ -2,7 +2,7 @@
 #include <TimeLib.h>
 
 #define PIN_PLUVIOMETRO 18     // pin digital que soporta interrupciones (validos: 2,3,18,19,20,21)
-#define TIME_THRESHOLD = 150
+#define TIME_THRESHOLD 150
 
 volatile long int contadorPluv = 0;
 int pulsosXhora = 0;
@@ -53,8 +53,7 @@ void loop() {
 }
 
 void cuentaPulsos(){
-  if (millis() - startTime > TIME_THRESHOLD)   //anti rebote.
-  {  
+  if (millis() - startTime > TIME_THRESHOLD) {  //anti rebote.  
     contadorPluv++;
     startTime = millis();
   }
