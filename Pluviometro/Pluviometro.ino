@@ -9,7 +9,9 @@ int pulsosXhora = 0;
 int pulsosXdia = 0;
 float precipDIA = 0;
 float precipHORA = 0;
-long startTime = 0;
+long startTime = 0;  //para anti rebote.
+long startTime2 = 0;    // para hacer una sola lectura de la lluvia.
+long startTime3 = 0;    // para hacer una sola lectura de la lluvia.
 
 void setup() {
   Serial.begin(9600);
@@ -24,31 +26,36 @@ void loop() {
   time_t t = now();//Declaramos la variable time_t 
 
   if (hour(t)==23 && minute(t)==59 && second(t)==59) {   // Para separar por dia.
-    precipDIA = 0.25*pulsosXdia;
-    Serial.print("Precipitaciones del dia: ");
-    Serial.print(day(t));
-    Serial.print(+ "/") ;
-    Serial.print(month(t));
-    Serial.print(+ "/") ;
-    Serial.println(year(t)); 
-    Serial.print(precipDIA);
-    Serial.println(" mm");
-    pulsosXdia = 0;   // reseteamos el acumulado del dia
+    if (millis() - startTime3 > 1000){
+        precipDIA = 0.25*pulsosXdia;
+        Serial.print("Precipitaciones del dia: ");
+        Serial.print(day(t));
+        Serial.print(+ "/") ;
+        Serial.print(month(t));
+        Serial.print(+ "/") ;
+        Serial.println(year(t)); 
+        Serial.print(precipDIA);
+        Serial.println(" mm");
+        startTime3 = millis();
+        pulsosXdia = 0;   // reseteamos el acumulado del dia
+    }
   }
 
    // CUIDADO POSIBLE PROBLEMA DE CONCURRENCIA (le quitamos un segundo a las horas)
    
   if ( minute(t)==59 && second(t)==58) {   // Para separar por hora.
-    pulsosXhora = contadorPluv;
-    pulsosXdia =  pulsosXdia + pulsosXhora;
-    precipHORA = 0.25 * pulsosXhora;
-    Serial.print("Precipitaciones durante las: ");
-    Serial.print(hour(t));  
-    Serial.println(+ "hs") ;
-    Serial.print(precipHORA);
-    Serial.println(" mm/h");
-
-    contadorPluv = 0;    //Reseteamos el contador de las interrupciones
+    if (millis() - startTime2 > 1000){
+        pulsosXhora = contadorPluv;
+        pulsosXdia =  pulsosXdia + pulsosXhora;
+        precipHORA = 0.25 * pulsosXhora;
+        Serial.print("Precipitaciones durante las: ");
+        Serial.print(hour(t));  
+        Serial.println(+ "hs") ;
+        Serial.print(precipHORA);
+        Serial.println(" mm/h");
+        startTime2 = millis();
+        contadorPluv = 0;    //Reseteamos el contador de las interrupciones
+    }
   }
 }
 
