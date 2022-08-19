@@ -60,8 +60,7 @@ void loop() {
 }
 
 void cuentaPulsos(){
-  if (millis() - startTime > TIME_THRESHOLD)   //anti rebote.
-  {  
+  if (millis() - startTime > TIME_THRESHOLD) {  //anti rebote.  
     contadorPluv++;
     startTime = millis();
   }
