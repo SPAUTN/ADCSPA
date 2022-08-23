@@ -1,3 +1,6 @@
+#include <Time.h>
+#include <TimeLib.h>
+
 //-------------- Definición de entradas analogicas -----------------------
 #define SVviento A0
 #define SDviento A1
@@ -11,18 +14,34 @@
 #define Ccarga4 A9
 
 //------------- Definición entradas digitales -----------------------------
-#define SLluvia 50 // TODO debe ser un pin de interrupción
+#define PIN_PLUVIOMETRO 18     // pin digital que soporta interrupciones (validos: 2,3,18,19,20,21)
+
+//------------ Constantes -------------------------
+#define TIME_THRESHOLD 150
 
 //------------ Variables para almacenar los datos -------------------------
 unsigned long int Vviento = 0;
+String direccionV = "";
 unsigned long int Radiacion = 0;
 long int Temperatura = 0;
 unsigned long int Humedad = 0;
-int contadorPluv = 0;
+String hojaMojada = "";
 int Celda1 = 0;
 int Celda2 = 0;
 int Celda3 = 0;
 int Celda4 = 0;
+//------------ Variables para controlar pluviometro ------------------------
+
+volatile long int contadorPluv = 0;
+int pulsosXhora = 0;
+int pulsosXdia = 0;
+float precipDIA = 0;
+float precipHORA = 0;
+long startTime = 0;  //para anti rebote.
+long startTime2 = 0;    // para hacer una sola lectura de la lluvia.
+long startTime3 = 0;    // para hacer una sola lectura de la lluvia.
+time_t t;
+//----------------------------------------------------------------------------
 
 void setup() {
   Serial.begin(9600);           // iniciar puerto serie
@@ -36,23 +55,70 @@ void setup() {
   pinMode(Ccarga2, INPUT);      // Entrada analógica
   pinMode(Ccarga3, INPUT);      // Entrada analógica
   pinMode(Ccarga4, INPUT);      // Entrada analógica
-  attachInterrupt(digitalPinToInterrupt(SLluvia), cuentaPulsos, RISING); // Interrupción por flanco de subida
+  attachInterrupt(digitalPinToInterrupt(PIN_PLUVIOMETRO), cuentaPulsos, RISING); // Interrupción por flanco de subida
 }
 
 void loop() {
-  // se leen las entradas analogicas y se almacenan los valores en las variables
-  Celda1 = analogRead(Ccarga1);
+  t = now();                                //Declaramos la variable time_t 
+  if ( minute(t)==59 && second(t)==58) {    // Tomamos los datos cada 1 hora.
+  
+  Celda1 = analogRead(Ccarga1);             // se leen las entradas analogicas Lisimeto 
   Celda2 = analogRead(Ccarga2);
   Celda3 = analogRead(Ccarga3);
   Celda4 = analogRead(Ccarga4);
 
-  Vviento = setVelocidadViento(analogRead(SVviento));
-  String direccionV = setDireccionViento(analogRead(SDviento));
+  Vviento = setVelocidadViento(analogRead(SVviento));       //se leen las entradas analogicas Estación meteorológica.
+  direccionV = setDireccionViento(analogRead(SDviento));
   Humedad = setHumedad(analogRead(SHumedad));
   Radiacion = setRadiacion(analogRead(SRad));
   Temperatura = setTemperatura(analogRead(STemperatura));
-  String hojaMojada = setHoja(analogRead(SHMojada));
-  int lluvia = setLluvia(digitalRead(SLluvia));
+  hojaMojada = setHoja(analogRead(SHMojada));
+  setLluvia();
+
+  mostrarDatos();     // imprime por puerto serie los valores de los sensores analogicos.
+   }
+
+    if (hour(t)==23 && minute(t)==59 && second(t)==59) {   // Para separar por dia.
+    if (millis() - startTime3 > 1000){                     // Lo coloque aca porque dentro del IF que separa por horas
+        precipDIA = 0.25*pulsosXdia;                       // nunca se ejecutaría
+        Serial.print("Precipitaciones del dia: ");
+        Serial.print(day(t));
+        Serial.print(+ "/") ;
+        Serial.print(month(t));
+        Serial.print(+ "/") ;
+        Serial.println(year(t)); 
+        Serial.print(precipDIA);
+        Serial.println(" mm");
+        startTime3 = millis();
+        pulsosXdia = 0;   // reseteamos el acumulado del dia
+    }
+  }
+}
+/**
+* @brief Función mostrar los datos leidos y calculados en el arduino.
+* Cada 1 segudo, por el momento, dado como valor fijo
+*/
+void mostrarDatos(){
+    Serial.print("Velocidad del viento: ");     //ok 
+    Serial.print(Vviento);
+    Serial.println("Km/h");
+    
+    Serial.print("Dirección del viento:");
+    Serial.println(direccionV);  //ok
+    
+    Serial.print("Humedad:");
+    Serial.print(Humedad);     //ok
+    Serial.println("%");
+
+    Serial.print("Radiación:");
+    Serial.print(Radiacion); //ok
+    Serial.println("W/m2");
+
+    Serial.print("Temperatura:");
+    Serial.print(Temperatura);  //ok
+    Serial.println("°C");
+    Serial.println(hojaMojada);   //ok
+  delay(1000);
 }
 
 /**
@@ -194,4 +260,24 @@ int pluviometro (int contador) {
  */
 void resetContadorPluv () {
   contadorPluv = 0;
+}
+
+void setLluvia(){
+
+   // CUIDADO POSIBLE PROBLEMA DE CONCURRENCIA (le quitamos un segundo a las horas)
+   
+  if ( minute(t)==59 && second(t)==58) {   // Para separar por hora.
+    if (millis() - startTime2 > 1000){
+        pulsosXhora = contadorPluv;
+        pulsosXdia =  pulsosXdia + pulsosXhora;
+        precipHORA = 0.25 * pulsosXhora;
+        Serial.print("Precipitaciones durante las: ");
+        Serial.print(hour(t));  
+        Serial.println(+ "hs") ;
+        Serial.print(precipHORA);
+        Serial.println(" mm/h");
+        startTime2 = millis();
+        contadorPluv = 0;    //Reseteamos el contador de las interrupciones
+    }
+  }
 }
