@@ -22,9 +22,9 @@
 //------------ Variables para almacenar los datos -------------------------
 unsigned long int Vviento = 0;
 String direccionV = "";
-unsigned long int SENSOR_RADIACION = 0;
+unsigned long int radiacion = 0;
 long int Temperatura = 0;
-unsigned long int SENSOR_HUMEDAD = 0;
+unsigned long int humedad = 0;
 String hojaMojada = "";
 int Celda1 = 0;
 int Celda2 = 0;
@@ -71,13 +71,16 @@ void loop() {
 
     Vviento = setVelocidadViento(analogRead(SENSOR_VEL_VIENTO));       //se leen las entradas analogicas Estación meteorológica.
     direccionV = setDireccionViento(analogRead(SENSOR_DIR_VIENTO));
-    SENSOR_HUMEDAD = setHumedad(analogRead(SENSOR_HUMEDAD));
-    SENSOR_RADIACION = setRadiacion(analogRead(SENSOR_RADIACION));
+    humedad = setHumedad(analogRead(SENSOR_HUMEDAD));
+    radiacion = setRadiacion(analogRead(radiacion));
     Temperatura = setTemperatura(analogRead(SENSOR_TEMPERATURA));
     hojaMojada = setHoja(analogRead(SENSOR_HOJA));
     setLluvia();
 
     mostrarDatos();     // imprime por puerto serie los valores de los sensores analogicos.
+
+    Serial.println("JSON GENERADO:");
+    Serial.println(setPayload());
   }
 }
 
@@ -94,11 +97,11 @@ void mostrarDatos(){
     Serial.println(direccionV);  //ok
     
     Serial.print("SENSOR_HUMEDAD:");
-    Serial.print(SENSOR_HUMEDAD);     //ok
+    Serial.print(humedad);     //ok
     Serial.println("%");
 
     Serial.print("Radiación:");
-    Serial.print(SENSOR_RADIACION); //ok
+    Serial.print(radiacion); //ok
     Serial.println("W/m2");
 
     Serial.print("Temperatura:");
@@ -146,7 +149,7 @@ long int setTemperatura(int sensorTemp) {
  * @brief Setea la radiación solar entre 0 y 1400 W/m2
  * 
  * @param sensorRad valor leido del sensor de radiación solar
- * @return uint rad valor de SENSOR_RADIACION solar
+ * @return uint rad valor de radiacion solar
  */
 long int setRadiacion(long int sensorRad) {
   long int rad = 0;
@@ -160,20 +163,20 @@ long int setRadiacion(long int sensorRad) {
 }
 
 /**
- * @brief Setea la SENSOR_HUMEDAD del ambiente entre 0% y 100%
+ * @brief Setea la humedad del ambiente entre 0% y 100%
  * 
  * @param sensorHum valor del sensor de SENSOR_HUMEDAD
- * @return uint SENSOR_HUMEDAD porcentaje de SENSOR_HUMEDAD
+ * @return uint humedad porcentaje de SENSOR_HUMEDAD
  */
 unsigned long int setHumedad(int sensorHum) {
-  unsigned long int SENSOR_HUMEDAD = 0;
+  unsigned long int humedad = 0;
   if(sensorHum<102){
-    SENSOR_HUMEDAD = 0;
+    humedad = 0;
   }
   if(sensorHum>102){
-    SENSOR_HUMEDAD = ((sensorHum - 102) * 5 * 20) / 716;
+    humedad = ((sensorHum - 102) * 5 * 20) / 716;
   }
-  return SENSOR_HUMEDAD;
+  return humedad;
 }
 
 /**
@@ -262,4 +265,30 @@ void setLluvia(){
         startTime2 = millis();
         contadorPluv = 0;    //Reseteamos el contador de las interrupciones
     }
+}
+/**
+ * @brief Funcion que crea un Payload con los datos de los sensores
+ *        en formato JSON.
+ * 
+ * @param contadorPluv
+ * @param Vviento
+ * @param direccionV
+ * @param humedad
+ * @param radiacion
+ * @param Temperatura
+ * @param hojaMojada
+ * @param t
+ * 
+ * @return float humedad relativa
+ */
+String setPayload() {
+  String jsonPayload = "{\"lluvia\":" + String(contadorPluv * 0.25);
+  jsonPayload += ",\"velocidadViento\":" + String(Vviento);
+  jsonPayload += ",\"direccionViento\":\"" + direccionV + "\"";
+  jsonPayload += ",\"humedadRelativa\":" + String(humedad);
+  jsonPayload += ",\"radiacionSolar\":" + String(radiacion);
+  jsonPayload += ",\"temperatura\":" + String(temperatura);
+  jsonPayload += ",\"hojaMojada\":" + String(hojaMojada);
+  jsonPayload += ",\"tiempo\":" + String(t);
+  return jsonPayload;
 }
