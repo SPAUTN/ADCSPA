@@ -62,7 +62,7 @@ void setup() {
 
 void loop() {
   t = now();                                  // Declaramos la variable time_t 
-  if ( second(t)==58) {      // Tomamos los datos cada 1 hora.
+  if (second(t)==58) {      // Tomamos los datos cada 1 hora.
     
     Celda1 = analogRead(CELDA_1);             // lectura de las entradas analogicas Lisimetro 
     Celda2 = analogRead(CELDA_2);
@@ -284,12 +284,13 @@ void setLluvia(){
  */
 String setPayload() {
   String jsonPayload = "{\"lluvia\":" + String(contadorPluv * 0.25);
-  jsonPayload += ",\"velocidadViento\":" + String(Vviento);
-  jsonPayload += ",\"direccionViento\":\"" + direccionV + "\"";
-  jsonPayload += ",\"humedadRelativa\":" + String(humedad);
-  jsonPayload += ",\"radiacionSolar\":" + String(radiacion);
-  jsonPayload += ",\"temperatura\":" + String(Temperatura);
-  jsonPayload += ",\"hojaMojada\":" + String(hojaMojada);
-  jsonPayload += ",\"tiempo\":" + String(t);
+  jsonPayload += "\n\t,\"velocidadViento\":" + String(Vviento);
+  jsonPayload += "\n\t,\"direccionViento\":\"" + direccionV + "\"";
+  jsonPayload += "\n\t,\"humedadRelativa\":" + String(humedad);
+  jsonPayload += "\n\t,\"radiacionSolar\":" + String(radiacion);
+  jsonPayload += "\n\t,\"temperatura\":" + String(Temperatura);
+  jsonPayload += "\n\t,\"hojaMojada\":" + String(hojaMojada);
+  jsonPayload += "\n\t,\"tiempo\":" + String(t);
+  jsonPayload += "\n}";
   return jsonPayload;
 }
