@@ -75,9 +75,9 @@ void loop() {
     radiacion = setRadiacion(analogRead(radiacion));
     Temperatura = setTemperatura(analogRead(SENSOR_TEMPERATURA));
     hojaMojada = setHoja(analogRead(SENSOR_HOJA));
-    setLluvia();
+    // setLluvia();
 
-    mostrarDatos();     // imprime por puerto serie los valores de los sensores analogicos.
+    // mostrarDatos();     // imprime por puerto serie los valores de los sensores analogicos.
 
     Serial.println("JSON GENERADO:");
     Serial.println(setPayload());
@@ -284,13 +284,13 @@ void setLluvia(){
  */
 String setPayload() {
   String jsonPayload = "{\"lluvia\":" + String(contadorPluv * 0.25);
-  jsonPayload += "\n\t,\"velocidadViento\":" + String(Vviento);
-  jsonPayload += "\n\t,\"direccionViento\":\"" + direccionV + "\"";
-  jsonPayload += "\n\t,\"humedadRelativa\":" + String(humedad);
-  jsonPayload += "\n\t,\"radiacionSolar\":" + String(radiacion);
-  jsonPayload += "\n\t,\"temperatura\":" + String(Temperatura);
-  jsonPayload += "\n\t,\"hojaMojada\":" + String(hojaMojada);
-  jsonPayload += "\n\t,\"tiempo\":" + String(t);
-  jsonPayload += "\n}";
+  jsonPayload += ",\"velocidadViento\":" + String(Vviento);
+  jsonPayload += ",\"direccionViento\":\"" + direccionV + "\"";
+  jsonPayload += ",\"humedadRelativa\":" + String(humedad);
+  jsonPayload += ",\"radiacionSolar\":" + String(radiacion);
+  jsonPayload += ",\"temperatura\":" + String(Temperatura);
+  jsonPayload += ",\"hojaMojada\":" + String(hojaMojada);
+  jsonPayload += ",\"tiempo\":" + String(t);
+  jsonPayload += "}";
   return jsonPayload;
 }
