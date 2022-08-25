@@ -71,8 +71,8 @@ void loop() {
 
     Vviento = setVelocidadViento(analogRead(SENSOR_VEL_VIENTO));       //se leen las entradas analogicas Estación meteorológica.
     direccionV = setDireccionViento(analogRead(SENSOR_DIR_VIENTO));
-    SENSOR_HUMEDAD = setSENSOR_HUMEDAD(analogRead(SENSOR_HUMEDAD));
-    SENSOR_RADIACION = setSENSOR_RADIACION(analogRead(SENSOR_RADIACION));
+    SENSOR_HUMEDAD = setHumedad(analogRead(SENSOR_HUMEDAD));
+    SENSOR_RADIACION = setRadiacion(analogRead(SENSOR_RADIACION));
     Temperatura = setTemperatura(analogRead(SENSOR_TEMPERATURA));
     hojaMojada = setHoja(analogRead(SENSOR_HOJA));
     setLluvia();
@@ -111,7 +111,7 @@ void mostrarDatos(){
 /**
  * @brief Setea si la hoja del campo esta mojada o seca
  * 
- * @param sensHoja 
+ * @param sensHoja valor leido del sensor
  * @return String result indicando si la hoja está mojada o seca
  */
 String setHoja(int sensHoja) {
@@ -128,7 +128,7 @@ String setHoja(int sensHoja) {
 /**
  * @brief Setea la temperatura ambiente entre -25°C y 50°C
  * 
- * @param sensorTemp valor leido del sensor
+ * @param sensorTemp valor leido del sensor de temperatura
  * @return long int temp valor real de temperatura
  */
 long int setTemperatura(int sensorTemp) {
@@ -148,7 +148,7 @@ long int setTemperatura(int sensorTemp) {
  * @param sensorRad valor leido del sensor de radiación solar
  * @return uint rad valor de SENSOR_RADIACION solar
  */
-long int setSENSOR_RADIACION(long int sensorRad) {
+long int setRadiacion(long int sensorRad) {
   long int rad = 0;
   if(sensorRad < 41){
     rad = 0;
@@ -165,7 +165,7 @@ long int setSENSOR_RADIACION(long int sensorRad) {
  * @param sensorHum valor del sensor de SENSOR_HUMEDAD
  * @return uint SENSOR_HUMEDAD porcentaje de SENSOR_HUMEDAD
  */
-unsigned long int setSENSOR_HUMEDAD(int sensorHum) {
+unsigned long int setHumedad(int sensorHum) {
   unsigned long int SENSOR_HUMEDAD = 0;
   if(sensorHum<102){
     SENSOR_HUMEDAD = 0;
@@ -250,10 +250,6 @@ void resetContadorPluv () {
 }
 
 void setLluvia(){
-
-   // CUIDADO POSIBLE PROBLEMA DE CONCURRENCIA (le quitamos un segundo a las horas)
-   
-  if ( minute(t)==59 && second(t)==58) {   // Para separar por hora.
     if (millis() - startTime2 > 1000){
         pulsosXhora = contadorPluv;
         pulsosXdia =  pulsosXdia + pulsosXhora;
@@ -266,5 +262,4 @@ void setLluvia(){
         startTime2 = millis();
         contadorPluv = 0;    //Reseteamos el contador de las interrupciones
     }
-  }
 }
