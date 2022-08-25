@@ -1,3 +1,4 @@
+
 #include <Time.h>
 #include <TimeLib.h>
 
@@ -20,10 +21,10 @@
 #define TIME_THRESHOLD 150
 
 //------------ Variables para almacenar los datos -------------------------
-unsigned long int Vviento = 0;
-String direccionV = "";
+unsigned long int velViento = 0;
+String dirViento = "";
 unsigned long int radiacion = 0;
-long int Temperatura = 0;
+long int temperatura = 0;
 unsigned long int humedad = 0;
 String hojaMojada = "";
 int Celda1 = 0;
@@ -69,16 +70,12 @@ void loop() {
     Celda3 = analogRead(CELDA_3);
     Celda4 = analogRead(CELDA_4);
 
-    Vviento = setVelocidadViento(analogRead(SENSOR_VEL_VIENTO));       //se leen las entradas analogicas Estación meteorológica.
-    direccionV = setDireccionViento(analogRead(SENSOR_DIR_VIENTO));
+    velViento = setVelocidadViento(analogRead(SENSOR_VEL_VIENTO));       //se leen las entradas analogicas Estación meteorológica.
+    dirViento = setDireccionViento(analogRead(SENSOR_DIR_VIENTO));
     humedad = setHumedad(analogRead(SENSOR_HUMEDAD));
     radiacion = setRadiacion(analogRead(radiacion));
-    Temperatura = setTemperatura(analogRead(SENSOR_TEMPERATURA));
+    temperatura = setTemperatura(analogRead(SENSOR_TEMPERATURA));
     hojaMojada = setHoja(analogRead(SENSOR_HOJA));
-
-    // setLluvia();
-
-    // mostrarDatos();     // imprime por puerto serie los valores de los sensores analogicos.
 
     Serial.println("JSON GENERADO:");
     Serial.println(setPayload());
@@ -86,32 +83,6 @@ void loop() {
   }
 }
 
-/**
-* @brief Función mostrar los datos leidos y calculados en el arduino.
-* Cada 1 segudo, por el momento, dado como valor fijo
-*/
-void mostrarDatos(){
-    Serial.print("Velocidad del viento: ");     //ok 
-    Serial.print(Vviento);
-    Serial.println("Km/h");
-    
-    Serial.print("Dirección del viento:");
-    Serial.println(direccionV);  //ok
-    
-    Serial.print("SENSOR_HUMEDAD:");
-    Serial.print(humedad);     //ok
-    Serial.println("%");
-
-    Serial.print("Radiación:");
-    Serial.print(radiacion); //ok
-    Serial.println("W/m2");
-
-    Serial.print("Temperatura:");
-    Serial.print(Temperatura);  //ok
-    Serial.println("°C");
-    Serial.println(hojaMojada);   //ok
-  delay(1000);
-}
 
 /**
  * @brief Setea si la hoja del campo esta mojada o seca
@@ -185,26 +156,26 @@ unsigned long int setHumedad(int sensorHum) {
  * @brief Setea la dirección del viento
  * 
  * @param sensorDir valor del sensor
- * @return String direccionV que indica el nombre del punto cardinal donde apunta la dirección del viento
+ * @return String dirViento que indica el nombre del punto cardinal donde apunta la dirección del viento
  */
 String setDireccionViento(int sensorDir) {
-  String direccionV = "";
+  String dirViento = "";
   if(sensorDir>39 && sensorDir<103){
-    direccionV = "NORTE";
+    dirViento = "NORTE";
   }
   if(sensorDir>715 && sensorDir<779){
-    direccionV = "NORTE";
+    dirViento = "NORTE";
   }
   if(sensorDir>306 && sensorDir<431){
-    direccionV = "SUR";
+    dirViento = "SUR";
   }
   if(sensorDir>122 && sensorDir<247){
-    direccionV = "ESTE";
+    dirViento = "ESTE";
   }
   if(sensorDir>490 && sensorDir<615){
-    direccionV = "OESTE";
+    dirViento = "OESTE";
   }
-  return direccionV;
+  return dirViento;
 }
 
 /**
@@ -230,7 +201,7 @@ long int setVelocidadViento(long int sensorVel) {
 void cuentaPulsos () {
   // TODO: agregar una activacion de un led para indicar que se ha producido una interrupcion e iniciar un contador de tiempo
   if(millis() - startTime2 > TIME_THRESHOLD){
-    Serial.println("Interrupcion");
+    // Serial.println("Interrupcion");
     contadorPluv++;    
     startTime2 = millis();
   }
@@ -258,42 +229,28 @@ void resetContadorPluv () {
   contadorPluv = 0;
 }
 
-void setLluvia(){
-    if (millis() - startTime2 > 1000){
-        pulsosXhora = contadorPluv;
-        pulsosXdia =  pulsosXdia + pulsosXhora;
-        precipHORA = 0.25 * pulsosXhora;
-        Serial.print("Precipitaciones durante las: ");
-        Serial.print(hour(t));  
-        Serial.println(+ "hs") ;
-        Serial.print(precipHORA);
-        Serial.println(" mm/h");
-        startTime2 = millis();
-        contadorPluv = 0;    //Reseteamos el contador de las interrupciones
-    }
-}
 /**
  * @brief Funcion que crea un Payload con los datos de los sensores
  *        en formato JSON.
  * 
  * @param contadorPluv
- * @param Vviento
- * @param direccionV
+ * @param velViento
+ * @param dirViento
  * @param humedad
  * @param radiacion
- * @param Temperatura
+ * @param temperatura
  * @param hojaMojada
  * @param t
  * 
  * @return float humedad relativa
  */
 String setPayload() {
-  String jsonPayload = "{\"lluvia\":" + String(contadorPluv * 0.25);
-  jsonPayload += ",\"velocidadViento\":" + String(Vviento);
-  jsonPayload += ",\"direccionViento\":\"" + direccionV + "\"";
+  String jsonPayload = "{\"lluvia\":" + String(pluviometro(contadorPluv));
+  jsonPayload += ",\"velocidadViento\":" + String(velViento);
+  jsonPayload += ",\"direccionViento\":\"" + dirViento + "\"";
   jsonPayload += ",\"humedadRelativa\":" + String(humedad);
   jsonPayload += ",\"radiacionSolar\":" + String(radiacion);
-  jsonPayload += ",\"temperatura\":" + String(Temperatura);
+  jsonPayload += ",\"temperatura\":" + String(temperatura);
   jsonPayload += ",\"hojaMojada\":" + String(hojaMojada);
   jsonPayload += ",\"tiempo\":" + String(t);
   jsonPayload += "}";
