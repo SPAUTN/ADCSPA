@@ -213,7 +213,7 @@ void cuentaPulsos () {
  * @param contador cantidad de pulsos digitales
  * @return int 
  */
-int pluviometro (int contador) {
+float pluviometro (int contador) {
   // Un valor habitual de Paso es 0,25 mm lo cual significa que por cada 1 mm de
   // precipitación se producirán 4 vuelcos de cangilón
     return contador*0.25;
