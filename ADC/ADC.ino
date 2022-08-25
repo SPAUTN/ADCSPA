@@ -229,8 +229,11 @@ long int setVelocidadViento(long int sensorVel) {
  */
 void cuentaPulsos () {
   // TODO: agregar una activacion de un led para indicar que se ha producido una interrupcion e iniciar un contador de tiempo
-  Serial.println("Interrupcion");
-  contadorPluv++;
+  if(millis() - startTime2 > TIME_THRESHOLD){
+    Serial.println("Interrupcion");
+    contadorPluv++;    
+    startTime2 = millis();
+  }
 }
 
 /**
@@ -294,5 +297,8 @@ String setPayload() {
   jsonPayload += ",\"hojaMojada\":" + String(hojaMojada);
   jsonPayload += ",\"tiempo\":" + String(t);
   jsonPayload += "}";
+
+  resetContadorPluv();
+  
   return jsonPayload;
 }
