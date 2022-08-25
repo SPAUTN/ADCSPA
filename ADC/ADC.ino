@@ -62,7 +62,7 @@ void setup() {
 
 void loop() {
   t = now();                                  // Declaramos la variable time_t 
-  if (second(t)==58) {      // Tomamos los datos cada 1 hora.
+  if (second(t)==58 && millis() - startTime2 > 1000) {
     
     Celda1 = analogRead(CELDA_1);             // lectura de las entradas analogicas Lisimetro 
     Celda2 = analogRead(CELDA_2);
@@ -75,12 +75,14 @@ void loop() {
     radiacion = setRadiacion(analogRead(radiacion));
     Temperatura = setTemperatura(analogRead(SENSOR_TEMPERATURA));
     hojaMojada = setHoja(analogRead(SENSOR_HOJA));
+
     // setLluvia();
 
     // mostrarDatos();     // imprime por puerto serie los valores de los sensores analogicos.
 
     Serial.println("JSON GENERADO:");
     Serial.println(setPayload());
+    startTime2 = millis();
   }
 }
 
