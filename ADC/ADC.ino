@@ -2,19 +2,19 @@
 #include <TimeLib.h>
 
 //-------------- Definición de entradas analogicas -----------------------
-#define SVviento A0
-#define SDviento A1
-#define SRad A2
-#define SHumedad A3
-#define STemperatura A4
-#define SHMojada A5
-#define Ccarga1 A6
-#define Ccarga2 A7
-#define Ccarga3 A8
-#define Ccarga4 A9
+#define SENSOR_VEL_VIENTO A0
+#define SENSOR_DIR_VIENTO A1
+#define SENSOR_RADIACION A2
+#define SENSOR_HUMEDAD A3
+#define SENSOR_TEMPERATURA A4
+#define SENSOR_HOJA A5
+#define CELDA_1 A6
+#define CELDA_2 A7
+#define CELDA_3 A8
+#define CELDA_4 A9
 
 //------------- Definición entradas digitales -----------------------------
-#define PIN_PLUVIOMETRO 18     // pin digital que soporta interrupciones (validos: 2,3,18,19,20,21)
+#define SENSOR_PLUVIOMETRO 18     
 
 //------------ Constantes -------------------------
 #define TIME_THRESHOLD 150
@@ -22,9 +22,9 @@
 //------------ Variables para almacenar los datos -------------------------
 unsigned long int Vviento = 0;
 String direccionV = "";
-unsigned long int Radiacion = 0;
+unsigned long int SENSOR_RADIACION = 0;
 long int Temperatura = 0;
-unsigned long int Humedad = 0;
+unsigned long int SENSOR_HUMEDAD = 0;
 String hojaMojada = "";
 int Celda1 = 0;
 int Celda2 = 0;
@@ -44,56 +44,43 @@ time_t t;
 //----------------------------------------------------------------------------
 
 void setup() {
-  Serial.begin(9600);           // iniciar puerto serie
-  pinMode(SVviento, INPUT);     // Entrada analógica
-  pinMode(SDviento, INPUT);     // Entrada analógica
-  pinMode(SRad, INPUT);         // Entrada analógica
-  pinMode(SHumedad, INPUT);     // Entrada analógica
-  pinMode(STemperatura, INPUT); // Entrada analógica
-  pinMode(SHMojada, INPUT);     // Entrada analógica
-  pinMode(Ccarga1, INPUT);      // Entrada analógica
-  pinMode(Ccarga2, INPUT);      // Entrada analógica
-  pinMode(Ccarga3, INPUT);      // Entrada analógica
-  pinMode(Ccarga4, INPUT);      // Entrada analógica
-  attachInterrupt(digitalPinToInterrupt(PIN_PLUVIOMETRO), cuentaPulsos, RISING); // Interrupción por flanco de subida
+  Serial.begin(9600);
+
+  pinMode(SENSOR_VEL_VIENTO, INPUT);
+  pinMode(SENSOR_DIR_VIENTO, INPUT);
+  pinMode(SENSOR_RADIACION, INPUT);
+  pinMode(SENSOR_HUMEDAD, INPUT);
+  pinMode(SENSOR_TEMPERATURA, INPUT);
+  pinMode(SENSOR_HOJA, INPUT);
+  pinMode(CELDA_1, INPUT);
+  pinMode(CELDA_2, INPUT);
+  pinMode(CELDA_3, INPUT);
+  pinMode(CELDA_4, INPUT)
+
+  attachInterrupt(digitalPinToInterrupt(SENSOR_PLUVIOMETRO), cuentaPulsos, RISING); // Interrupción por flanco de subida
 }
 
 void loop() {
-  t = now();                                //Declaramos la variable time_t 
-  if ( minute(t)==59 && second(t)==58) {    // Tomamos los datos cada 1 hora.
-  
-  Celda1 = analogRead(Ccarga1);             // se leen las entradas analogicas Lisimeto 
-  Celda2 = analogRead(Ccarga2);
-  Celda3 = analogRead(Ccarga3);
-  Celda4 = analogRead(Ccarga4);
+  t = now();                                  // Declaramos la variable time_t 
+  if ( minute(t)==59 && second(t)==58) {      // Tomamos los datos cada 1 hora.
+    
+    Celda1 = analogRead(CELDA_1);             // lectura de las entradas analogicas Lisimetro 
+    Celda2 = analogRead(CELDA_2);
+    Celda3 = analogRead(CELDA_3);
+    Celda4 = analogRead(CELDA_4);
 
-  Vviento = setVelocidadViento(analogRead(SVviento));       //se leen las entradas analogicas Estación meteorológica.
-  direccionV = setDireccionViento(analogRead(SDviento));
-  Humedad = setHumedad(analogRead(SHumedad));
-  Radiacion = setRadiacion(analogRead(SRad));
-  Temperatura = setTemperatura(analogRead(STemperatura));
-  hojaMojada = setHoja(analogRead(SHMojada));
-  setLluvia();
+    Vviento = setVelocidadViento(analogRead(SENSOR_VEL_VIENTO));       //se leen las entradas analogicas Estación meteorológica.
+    direccionV = setDireccionViento(analogRead(SENSOR_DIR_VIENTO));
+    SENSOR_HUMEDAD = setSENSOR_HUMEDAD(analogRead(SENSOR_HUMEDAD));
+    SENSOR_RADIACION = setSENSOR_RADIACION(analogRead(SENSOR_RADIACION));
+    Temperatura = setTemperatura(analogRead(SENSOR_TEMPERATURA));
+    hojaMojada = setHoja(analogRead(SENSOR_HOJA));
+    setLluvia();
 
-  mostrarDatos();     // imprime por puerto serie los valores de los sensores analogicos.
-   }
-
-    if (hour(t)==23 && minute(t)==59 && second(t)==59) {   // Para separar por dia.
-    if (millis() - startTime3 > 1000){                     // Lo coloque aca porque dentro del IF que separa por horas
-        precipDIA = 0.25*pulsosXdia;                       // nunca se ejecutaría
-        Serial.print("Precipitaciones del dia: ");
-        Serial.print(day(t));
-        Serial.print(+ "/") ;
-        Serial.print(month(t));
-        Serial.print(+ "/") ;
-        Serial.println(year(t)); 
-        Serial.print(precipDIA);
-        Serial.println(" mm");
-        startTime3 = millis();
-        pulsosXdia = 0;   // reseteamos el acumulado del dia
-    }
+    mostrarDatos();     // imprime por puerto serie los valores de los sensores analogicos.
   }
 }
+
 /**
 * @brief Función mostrar los datos leidos y calculados en el arduino.
 * Cada 1 segudo, por el momento, dado como valor fijo
@@ -106,12 +93,12 @@ void mostrarDatos(){
     Serial.print("Dirección del viento:");
     Serial.println(direccionV);  //ok
     
-    Serial.print("Humedad:");
-    Serial.print(Humedad);     //ok
+    Serial.print("SENSOR_HUMEDAD:");
+    Serial.print(SENSOR_HUMEDAD);     //ok
     Serial.println("%");
 
     Serial.print("Radiación:");
-    Serial.print(Radiacion); //ok
+    Serial.print(SENSOR_RADIACION); //ok
     Serial.println("W/m2");
 
     Serial.print("Temperatura:");
@@ -159,9 +146,9 @@ long int setTemperatura(int sensorTemp) {
  * @brief Setea la radiación solar entre 0 y 1400 W/m2
  * 
  * @param sensorRad valor leido del sensor de radiación solar
- * @return uint rad valor de radiacion solar
+ * @return uint rad valor de SENSOR_RADIACION solar
  */
-long int setRadiacion(long int sensorRad) {
+long int setSENSOR_RADIACION(long int sensorRad) {
   long int rad = 0;
   if(sensorRad < 41){
     rad = 0;
@@ -173,20 +160,20 @@ long int setRadiacion(long int sensorRad) {
 }
 
 /**
- * @brief Setea la humedad del ambiente entre 0% y 100%
+ * @brief Setea la SENSOR_HUMEDAD del ambiente entre 0% y 100%
  * 
- * @param sensorHum valor del sensor de humedad
- * @return uint humedad porcentaje de humedad
+ * @param sensorHum valor del sensor de SENSOR_HUMEDAD
+ * @return uint SENSOR_HUMEDAD porcentaje de SENSOR_HUMEDAD
  */
-unsigned long int setHumedad(int sensorHum) {
-  unsigned long int humedad = 0;
+unsigned long int setSENSOR_HUMEDAD(int sensorHum) {
+  unsigned long int SENSOR_HUMEDAD = 0;
   if(sensorHum<102){
-    humedad = 0;
+    SENSOR_HUMEDAD = 0;
   }
   if(sensorHum>102){
-    humedad = ((sensorHum - 102) * 5 * 20) / 716;
+    SENSOR_HUMEDAD = ((sensorHum - 102) * 5 * 20) / 716;
   }
-  return humedad;
+  return SENSOR_HUMEDAD;
 }
 
 /**
