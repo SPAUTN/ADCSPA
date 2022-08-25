@@ -55,14 +55,14 @@ void setup() {
   pinMode(CELDA_1, INPUT);
   pinMode(CELDA_2, INPUT);
   pinMode(CELDA_3, INPUT);
-  pinMode(CELDA_4, INPUT)
+  pinMode(CELDA_4, INPUT);
 
   attachInterrupt(digitalPinToInterrupt(SENSOR_PLUVIOMETRO), cuentaPulsos, RISING); // Interrupción por flanco de subida
 }
 
 void loop() {
   t = now();                                  // Declaramos la variable time_t 
-  if ( minute(t)==59 && second(t)==58) {      // Tomamos los datos cada 1 hora.
+  if ( second(t)==58) {      // Tomamos los datos cada 1 hora.
     
     Celda1 = analogRead(CELDA_1);             // lectura de las entradas analogicas Lisimetro 
     Celda2 = analogRead(CELDA_2);
@@ -287,7 +287,7 @@ String setPayload() {
   jsonPayload += ",\"direccionViento\":\"" + direccionV + "\"";
   jsonPayload += ",\"humedadRelativa\":" + String(humedad);
   jsonPayload += ",\"radiacionSolar\":" + String(radiacion);
-  jsonPayload += ",\"temperatura\":" + String(temperatura);
+  jsonPayload += ",\"temperatura\":" + String(Temperatura);
   jsonPayload += ",\"hojaMojada\":" + String(hojaMojada);
   jsonPayload += ",\"tiempo\":" + String(t);
   return jsonPayload;
