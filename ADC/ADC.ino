@@ -73,7 +73,7 @@ void loop() {
     velViento = setVelocidadViento(analogRead(SENSOR_VEL_VIENTO));       //se leen las entradas analogicas Estación meteorológica.
     dirViento = setDireccionViento(analogRead(SENSOR_DIR_VIENTO));
     humedad = setHumedad(analogRead(SENSOR_HUMEDAD));
-    radiacion = setRadiacion(analogRead(radiacion));
+    radiacion = setRadiacion(analogRead(SENSOR_RADIACION));
     temperatura = setTemperatura(analogRead(SENSOR_TEMPERATURA));
     hojaMojada = setHoja(analogRead(SENSOR_HOJA));
 
@@ -124,7 +124,7 @@ long int setTemperatura(int sensorTemp) {
  * @param sensorRad valor leido del sensor de radiación solar
  * @return uint rad valor de radiacion solar
  */
-long int setRadiacion(long int sensorRad) {
+unsigned long int setRadiacion(long int sensorRad) {
   long int rad = 0;
   if(sensorRad < 41){
     rad = 0;
