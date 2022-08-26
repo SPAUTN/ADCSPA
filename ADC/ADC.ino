@@ -1,30 +1,31 @@
+
 #include <Time.h>
 #include <TimeLib.h>
 
 //-------------- Definición de entradas analogicas -----------------------
-#define SVviento A0
-#define SDviento A1
-#define SRad A2
-#define SHumedad A3
-#define STemperatura A4
-#define SHMojada A5
-#define Ccarga1 A6
-#define Ccarga2 A7
-#define Ccarga3 A8
-#define Ccarga4 A9
+#define SENSOR_VEL_VIENTO A0
+#define SENSOR_DIR_VIENTO A1
+#define SENSOR_RADIACION A2
+#define SENSOR_HUMEDAD A3
+#define SENSOR_TEMPERATURA A4
+#define SENSOR_HOJA A5
+#define CELDA_1 A6
+#define CELDA_2 A7
+#define CELDA_3 A8
+#define CELDA_4 A9
 
 //------------- Definición entradas digitales -----------------------------
-#define PIN_PLUVIOMETRO 18     // pin digital que soporta interrupciones (validos: 2,3,18,19,20,21)
+#define SENSOR_PLUVIOMETRO 18     
 
 //------------ Constantes -------------------------
 #define TIME_THRESHOLD 150
 
 //------------ Variables para almacenar los datos -------------------------
-unsigned long int Vviento = 0;
-String direccionV = "";
-unsigned long int Radiacion = 0;
-long int Temperatura = 0;
-unsigned long int Humedad = 0;
+unsigned long int velViento = 0;
+String dirViento = "";
+unsigned long int radiacion = 0;
+long int temperatura = 0;
+unsigned long int humedad = 0;
 String hojaMojada = "";
 int Celda1 = 0;
 int Celda2 = 0;
@@ -44,87 +45,49 @@ time_t t;
 //----------------------------------------------------------------------------
 
 void setup() {
-  Serial.begin(9600);           // iniciar puerto serie
-  pinMode(SVviento, INPUT);     // Entrada analógica
-  pinMode(SDviento, INPUT);     // Entrada analógica
-  pinMode(SRad, INPUT);         // Entrada analógica
-  pinMode(SHumedad, INPUT);     // Entrada analógica
-  pinMode(STemperatura, INPUT); // Entrada analógica
-  pinMode(SHMojada, INPUT);     // Entrada analógica
-  pinMode(Ccarga1, INPUT);      // Entrada analógica
-  pinMode(Ccarga2, INPUT);      // Entrada analógica
-  pinMode(Ccarga3, INPUT);      // Entrada analógica
-  pinMode(Ccarga4, INPUT);      // Entrada analógica
-  attachInterrupt(digitalPinToInterrupt(PIN_PLUVIOMETRO), cuentaPulsos, RISING); // Interrupción por flanco de subida
+  Serial.begin(9600);
+
+  pinMode(SENSOR_VEL_VIENTO, INPUT);
+  pinMode(SENSOR_DIR_VIENTO, INPUT);
+  pinMode(SENSOR_RADIACION, INPUT);
+  pinMode(SENSOR_HUMEDAD, INPUT);
+  pinMode(SENSOR_TEMPERATURA, INPUT);
+  pinMode(SENSOR_HOJA, INPUT);
+  pinMode(CELDA_1, INPUT);
+  pinMode(CELDA_2, INPUT);
+  pinMode(CELDA_3, INPUT);
+  pinMode(CELDA_4, INPUT);
+
+  attachInterrupt(digitalPinToInterrupt(SENSOR_PLUVIOMETRO), cuentaPulsos, RISING); // Interrupción por flanco de subida
 }
 
 void loop() {
-  t = now();                                //Declaramos la variable time_t 
-  if ( minute(t)==59 && second(t)==58) {    // Tomamos los datos cada 1 hora.
-  
-  Celda1 = analogRead(Ccarga1);             // se leen las entradas analogicas Lisimeto 
-  Celda2 = analogRead(Ccarga2);
-  Celda3 = analogRead(Ccarga3);
-  Celda4 = analogRead(Ccarga4);
+  t = now();                                  // Declaramos la variable time_t 
+  if (second(t)==58 && millis() - startTime2 > 1000) {
+    
+    Celda1 = analogRead(CELDA_1);             // lectura de las entradas analogicas Lisimetro 
+    Celda2 = analogRead(CELDA_2);
+    Celda3 = analogRead(CELDA_3);
+    Celda4 = analogRead(CELDA_4);
 
-  Vviento = setVelocidadViento(analogRead(SVviento));       //se leen las entradas analogicas Estación meteorológica.
-  direccionV = setDireccionViento(analogRead(SDviento));
-  Humedad = setHumedad(analogRead(SHumedad));
-  Radiacion = setRadiacion(analogRead(SRad));
-  Temperatura = setTemperatura(analogRead(STemperatura));
-  hojaMojada = setHoja(analogRead(SHMojada));
-  setLluvia();
+    velViento = setVelocidadViento(analogRead(SENSOR_VEL_VIENTO));       //se leen las entradas analogicas Estación meteorológica.
+    dirViento = setDireccionViento(analogRead(SENSOR_DIR_VIENTO));
+    humedad = setHumedad(analogRead(SENSOR_HUMEDAD));
+    radiacion = setRadiacion(analogRead(radiacion));
+    temperatura = setTemperatura(analogRead(SENSOR_TEMPERATURA));
+    hojaMojada = setHoja(analogRead(SENSOR_HOJA));
 
-  mostrarDatos();     // imprime por puerto serie los valores de los sensores analogicos.
-   }
-
-    if (hour(t)==23 && minute(t)==59 && second(t)==59) {   // Para separar por dia.
-    if (millis() - startTime3 > 1000){                     // Lo coloque aca porque dentro del IF que separa por horas
-        precipDIA = 0.25*pulsosXdia;                       // nunca se ejecutaría
-        Serial.print("Precipitaciones del dia: ");
-        Serial.print(day(t));
-        Serial.print(+ "/") ;
-        Serial.print(month(t));
-        Serial.print(+ "/") ;
-        Serial.println(year(t)); 
-        Serial.print(precipDIA);
-        Serial.println(" mm");
-        startTime3 = millis();
-        pulsosXdia = 0;   // reseteamos el acumulado del dia
-    }
+    Serial.println("JSON GENERADO:");
+    Serial.println(setPayload());
+    startTime2 = millis();
   }
 }
-/**
-* @brief Función mostrar los datos leidos y calculados en el arduino.
-* Cada 1 segudo, por el momento, dado como valor fijo
-*/
-void mostrarDatos(){
-    Serial.print("Velocidad del viento: ");     //ok 
-    Serial.print(Vviento);
-    Serial.println("Km/h");
-    
-    Serial.print("Dirección del viento:");
-    Serial.println(direccionV);  //ok
-    
-    Serial.print("Humedad:");
-    Serial.print(Humedad);     //ok
-    Serial.println("%");
 
-    Serial.print("Radiación:");
-    Serial.print(Radiacion); //ok
-    Serial.println("W/m2");
-
-    Serial.print("Temperatura:");
-    Serial.print(Temperatura);  //ok
-    Serial.println("°C");
-    Serial.println(hojaMojada);   //ok
-  delay(1000);
-}
 
 /**
  * @brief Setea si la hoja del campo esta mojada o seca
  * 
- * @param sensHoja 
+ * @param sensHoja valor leido del sensor
  * @return String result indicando si la hoja está mojada o seca
  */
 String setHoja(int sensHoja) {
@@ -141,7 +104,7 @@ String setHoja(int sensHoja) {
 /**
  * @brief Setea la temperatura ambiente entre -25°C y 50°C
  * 
- * @param sensorTemp valor leido del sensor
+ * @param sensorTemp valor leido del sensor de temperatura
  * @return long int temp valor real de temperatura
  */
 long int setTemperatura(int sensorTemp) {
@@ -175,8 +138,8 @@ long int setRadiacion(long int sensorRad) {
 /**
  * @brief Setea la humedad del ambiente entre 0% y 100%
  * 
- * @param sensorHum valor del sensor de humedad
- * @return uint humedad porcentaje de humedad
+ * @param sensorHum valor del sensor de SENSOR_HUMEDAD
+ * @return uint humedad porcentaje de SENSOR_HUMEDAD
  */
 unsigned long int setHumedad(int sensorHum) {
   unsigned long int humedad = 0;
@@ -193,26 +156,26 @@ unsigned long int setHumedad(int sensorHum) {
  * @brief Setea la dirección del viento
  * 
  * @param sensorDir valor del sensor
- * @return String direccionV que indica el nombre del punto cardinal donde apunta la dirección del viento
+ * @return String dirViento que indica el nombre del punto cardinal donde apunta la dirección del viento
  */
 String setDireccionViento(int sensorDir) {
-  String direccionV = "";
+  String dirViento = "";
   if(sensorDir>39 && sensorDir<103){
-    direccionV = "NORTE";
+    dirViento = "NORTE";
   }
   if(sensorDir>715 && sensorDir<779){
-    direccionV = "NORTE";
+    dirViento = "NORTE";
   }
   if(sensorDir>306 && sensorDir<431){
-    direccionV = "SUR";
+    dirViento = "SUR";
   }
   if(sensorDir>122 && sensorDir<247){
-    direccionV = "ESTE";
+    dirViento = "ESTE";
   }
   if(sensorDir>490 && sensorDir<615){
-    direccionV = "OESTE";
+    dirViento = "OESTE";
   }
-  return direccionV;
+  return dirViento;
 }
 
 /**
@@ -237,7 +200,11 @@ long int setVelocidadViento(long int sensorVel) {
  */
 void cuentaPulsos () {
   // TODO: agregar una activacion de un led para indicar que se ha producido una interrupcion e iniciar un contador de tiempo
-  contadorPluv++;
+  if(millis() - startTime2 > TIME_THRESHOLD){
+    // Serial.println("Interrupcion");
+    contadorPluv++;    
+    startTime2 = millis();
+  }
 }
 
 /**
@@ -246,7 +213,7 @@ void cuentaPulsos () {
  * @param contador cantidad de pulsos digitales
  * @return int 
  */
-int pluviometro (int contador) {
+float pluviometro (int contador) {
   // Un valor habitual de Paso es 0,25 mm lo cual significa que por cada 1 mm de
   // precipitación se producirán 4 vuelcos de cangilón
     return contador*0.25;
@@ -262,22 +229,33 @@ void resetContadorPluv () {
   contadorPluv = 0;
 }
 
-void setLluvia(){
+/**
+ * @brief Funcion que crea un Payload con los datos de los sensores
+ *        en formato JSON.
+ * 
+ * @param contadorPluv
+ * @param velViento
+ * @param dirViento
+ * @param humedad
+ * @param radiacion
+ * @param temperatura
+ * @param hojaMojada
+ * @param t
+ * 
+ * @return float humedad relativa
+ */
+String setPayload() {
+  String jsonPayload = "{\"lluvia\":" + String(pluviometro(contadorPluv));
+  jsonPayload += ",\"velocidadViento\":" + String(velViento);
+  jsonPayload += ",\"direccionViento\":\"" + dirViento + "\"";
+  jsonPayload += ",\"humedadRelativa\":" + String(humedad);
+  jsonPayload += ",\"radiacionSolar\":" + String(radiacion);
+  jsonPayload += ",\"temperatura\":" + String(temperatura);
+  jsonPayload += ",\"hojaMojada\":" + String(hojaMojada);
+  jsonPayload += ",\"tiempo\":" + String(t);
+  jsonPayload += "}";
 
-   // CUIDADO POSIBLE PROBLEMA DE CONCURRENCIA (le quitamos un segundo a las horas)
-   
-  if ( minute(t)==59 && second(t)==58) {   // Para separar por hora.
-    if (millis() - startTime2 > 1000){
-        pulsosXhora = contadorPluv;
-        pulsosXdia =  pulsosXdia + pulsosXhora;
-        precipHORA = 0.25 * pulsosXhora;
-        Serial.print("Precipitaciones durante las: ");
-        Serial.print(hour(t));  
-        Serial.println(+ "hs") ;
-        Serial.print(precipHORA);
-        Serial.println(" mm/h");
-        startTime2 = millis();
-        contadorPluv = 0;    //Reseteamos el contador de las interrupciones
-    }
-  }
+  resetContadorPluv();
+  
+  return jsonPayload;
 }
