@@ -1,8 +1,5 @@
 #include <Arduino.h>
 
-#ifndef R_H
-#define R_H
-
 long int setVelocidadViento(long int);
 String setDireccionViento(int);
 
@@ -16,4 +13,5 @@ String setHoja(int);
 
 float pluviometro (int);
 
-#endif
+void cuentaPulsos ();
+void resetContadorPluv ();

@@ -1,7 +1,12 @@
 #include <Arduino.h>
-
-
 #include "estacion.h"
+
+#define TIME_THRESHOLD 150
+
+extern volatile long contadorPluv;
+
+long initTime = 0;
+
 /**
  * @brief Calcula la velocidad del viento. Convertimos a Km/h teniendo en cuenta que
  * como maximo llegan 4V (818)(240km/h)
@@ -122,3 +127,28 @@ float pluviometro (int contador) {
     return contador*0.25;
 }
 
+
+/**
+ * @brief funcion ISR que aumenta el numero de pulsos al producirse
+ * una interrupcion por flanco de subida en el pin.
+ * Además debe indicar cuando se ha producido el primer conteo para que
+ * se pueda calcular el tiempo de lluvia
+ */
+void cuentaPulsos () {
+  // TODO: agregar una activacion de un led para indicar que se ha producido una interrupcion e iniciar un contador de tiempo
+  if(millis() - initTime > TIME_THRESHOLD){
+    // Serial.println("Interrupcion");
+    contadorPluv++;    
+    initTime = millis();
+  }
+}
+
+/**
+ * @brief funcion para volver a cero el contador de pulsos del pluviometro
+ * debe determinarse si hacerlo cada cierto tiempo o mediante una señal
+ * externa de reset.
+ * 
+ */
+void resetContadorPluv () {
+  contadorPluv = 0;
+}
