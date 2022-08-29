@@ -18,8 +18,9 @@ Código para realizar las lecturas analógicas de los sensores de todo el sistem
 * Pluviometro - Entrada digital que permita ISR (pin 18)
 
 ## Ramas
-* **Rama main**: donde se agregan todas las pruebas y códigos listos y/o hardcodeados.
+* **Rama master**: donde se agregan todas las pruebas y códigos listos y/o hardcodeados.
 * **Rama production**: donde solo se encuentra el código listo para ser enviado al arduino.
+* **Rama master.platformio**: donde se encuentran los códigos en C++ creados mediante PlatformIO.
 
 > Cambio de nombre de rama main a master: 
 ```
