@@ -1,10 +1,12 @@
+#include <stdio.h>
 #include <Arduino.h>
-
 #include <TimeLib.h>
-
 #include <LowPower.h>
 
+#define getName(var)  #var
+
 #include "estacion.h"
+#include "sendData.h"
 #include "luzindicadora.h"
 
 //-------------- Definición de entradas analogicas -----------------------
@@ -40,38 +42,6 @@ float precipDIA = 0;
 float precipHORA = 0;
 long startTime = 0;  //para anti rebote.
 time_t t;
-
-
-/**
- * @brief Funcion que crea un Payload con los datos de los sensores
- *        en formato JSON.
- * 
- * @param contadorPluv
- * @param velViento
- * @param dirViento
- * @param humedad
- * @param radiacion
- * @param temperatura
- * @param hojaMojada
- * @param t
- * 
- * @return float humedad relativa
- */
-String setPayload() {
-  String jsonPayload = "{\"lluvia\":" + String(pluviometro(contadorPluv));
-  jsonPayload += ",\"velocidadViento\":" + String(velViento);
-  jsonPayload += ",\"direccionViento\":\"" + dirViento + "\"";
-  jsonPayload += ",\"humedadRelativa\":" + String(humedad);
-  jsonPayload += ",\"radiacionSolar\":" + String(radiacion);
-  jsonPayload += ",\"temperatura\":" + String(temperatura);
-  jsonPayload += ",\"hojaMojada\":" + String(hojaMojada);
-  jsonPayload += ",\"tiempo\":" + String(t);
-  jsonPayload += "}";
-
-  resetContadorPluv();
-  
-  return jsonPayload;
-}
 
 void setup() {
   Serial.begin(9600);
@@ -121,6 +91,6 @@ void loop() {
     startTime = millis();
     lightsOff(); // Apagamos las luces
     delay(1000);
-    LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF); // Apagamos el microcontrolador durante 8 segundos.
+    LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_ON); // Apagamos el microcontrolador durante 8 segundos. 
   }
 }
