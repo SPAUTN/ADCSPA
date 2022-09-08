@@ -1,0 +1,23 @@
+name: Build PlatformIO project
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ master.platformio ]
+  pull_request:
+    branches: [ master.platformio ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      # Setup PlatformIO in PATH
+      - name: Setup PlatformIO
+        uses: n-vr/setup-platformio-action@v1
+      
+      # Build the PlatformIO project
+      - name: Build PlatformIO project
+        run: pio run
