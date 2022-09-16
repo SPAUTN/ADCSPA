@@ -30,7 +30,7 @@ extern time_t t;
 String setPayload() {
   String jsonPayload = "{\"lluvia\":" + String(pluviometro(contadorPluv));
   jsonPayload += ",\"velocidadViento\":" + String(velViento);
-  jsonPayload += ",\"hojaMojada\":" + String(hojaMojada);
+  jsonPayload += ",\"hojaMojada\":\"" + String(hojaMojada)+ "\"";
   jsonPayload += ",\"direccionViento\":\"" + dirViento + "\"";
   jsonPayload += ",\"humedadRelativa\":" + String(humedad);
   jsonPayload += ",\"radiacionSolar\":" + String(radiacion);
