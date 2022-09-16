@@ -1,3 +1,5 @@
+#ifndef UNIT_TEST
+
 #include <stdio.h>
 #include <Arduino.h>
 #include <TimeLib.h>
@@ -72,7 +74,7 @@ void loop() {
   
   t = now();                                  // Declaramos la variable time_t 
 
-  if (second(t)==58 && millis() - startTime > 1000) {
+  if (/*second(t)==58 &&*/ millis() - startTime > 1000) {
 
     for (int i = 0; i < 4; i++) {            // lectura de las entradas analogicas Lisimetro 
       celdas[i] = analogRead(CELDAS[i]);
@@ -83,7 +85,14 @@ void loop() {
     humedad = setHumedad(analogRead(SENSOR_HUMEDAD));
     radiacion = setRadiacion(analogRead(SENSOR_RADIACION));
     temperatura = setTemperatura(analogRead(SENSOR_TEMPERATURA));
-    hojaMojada = setHoja(analogRead(SENSOR_HOJA));
+    //hojaMojada = setHoja(analogRead(SENSOR_HOJA));
+    hojaMojada = setHoja(600);
+    hojaMojada = setHoja(500);
+    hojaMojada = setHoja(400);
+    hojaMojada = setHoja(300);
+    hojaMojada = setHoja(200);
+    hojaMojada = setHoja(100);
+    hojaMojada = setHoja(50);
     LUCES ? loadEffect() : lightsOff();  // Efecto de luces
 
     Serial.println("JSON GENERADO:");
@@ -94,3 +103,5 @@ void loop() {
     LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_ON); // Apagamos el microcontrolador durante 8 segundos. 
   }
 }
+
+#endif

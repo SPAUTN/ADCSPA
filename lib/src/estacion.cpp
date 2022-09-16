@@ -104,13 +104,8 @@ long int setTemperatura(int sensorTemp) {
  * @return String result indicando si la hoja está mojada o seca
  */
 String setHoja(int sensHoja) {
-  String resul = "";
-  if(sensHoja < 7){
-    resul = "HOJA SECA";
-  }
-  if(sensHoja > 11){
-    resul = "HOJA MOJADA";
-  }
+  String options[5] = {"Seca", "Poco humeda", "Humeda", "Muy humeda", "Mojada"};
+  String resul = options[(int)(sensHoja/125)-1 > 0? (int)(sensHoja/100)-1 : 0];
   return resul;
 }
 
