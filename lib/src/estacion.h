@@ -1,4 +1,6 @@
 #include <Arduino.h>
+#ifndef ESTACION_H
+#define ESTACION_H
 
 long int setVelocidadViento(long int);
 String setDireccionViento(int);
@@ -15,3 +17,5 @@ float pluviometro (int);
 
 void cuentaPulsos ();
 void resetContadorPluv ();
+
+#endif

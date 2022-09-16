@@ -1,3 +1,5 @@
+#ifndef UNIT_TEST
+
 #include <stdio.h>
 #include <Arduino.h>
 #include <TimeLib.h>
@@ -94,3 +96,5 @@ void loop() {
     LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_ON); // Apagamos el microcontrolador durante 8 segundos. 
   }
 }
+
+#endif
