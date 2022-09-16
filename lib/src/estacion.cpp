@@ -28,22 +28,40 @@ long int setVelocidadViento(long int sensorVel) {
  */
 String setDireccionViento(int sensorDir) {
   String dirViento = "";
-  if(sensorDir>39 && sensorDir<103){
+  float valorVoltaje;            // variable que almacena el voltaje (0.0 a 5.0)
+  valorVoltaje = fmap(sensorDir, 0, 1023, 0.0, 5.0);   // cambiar escala a 0.0 - 5.0
+  if(valorVoltaje>0,17 && valorVoltaje<0,40){
     dirViento = "NORTE";
   }
-  if(sensorDir>715 && sensorDir<779){
-    dirViento = "NORTE";
+  if(valorVoltaje>0,41 && valorVoltaje<0,74){
+    dirViento = "NORESTE";
   }
-  if(sensorDir>306 && sensorDir<431){
-    dirViento = "SUR";
-  }
-  if(sensorDir>122 && sensorDir<247){
+  if(valorVoltaje>0,75 && valorVoltaje<1,17){
     dirViento = "ESTE";
   }
-  if(sensorDir>490 && sensorDir<615){
+  if(valorVoltaje>1,18 && valorVoltaje<1,59){
+    dirViento = "SURESTE";
+  }
+  if(valorVoltaje>1,60 && valorVoltaje<2){
+    dirViento = "SUR";
+  }
+  if(valorVoltaje>2,01 && valorVoltaje<2,34){
+    dirViento = "SUROESTE";
+  }
+  if(valorVoltaje>2,35 && valorVoltaje<2,82){
     dirViento = "OESTE";
   }
+  if(valorVoltaje>2,83 && valorVoltaje<3,15){
+    dirViento = "NOROESTE";
+  }
+  if(valorVoltaje>3,16 && valorVoltaje<3,60){
+    dirViento = "NORTE";
+  }
   return dirViento;
+}
+// cambio de escala entre floats
+float fmap(float x, float in_min, float in_max, float out_min, float out_max) {
+   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 /**
