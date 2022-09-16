@@ -105,7 +105,7 @@ long int setTemperatura(int sensorTemp) {
  */
 String setHoja(int sensHoja) {
   String options[5] = {"Seca", "Poco humeda", "Humeda", "Muy humeda", "Mojada"};
-  String resul = options[(int)(sensHoja/125)-1 > 0? (int)(sensHoja/100)-1 : 0];
+  String resul = options[(int)(sensHoja/125)-1 > 0 ? (int)(sensHoja/100)-1 : 0];
   return resul;
 }
 
