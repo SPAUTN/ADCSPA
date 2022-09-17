@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include "estacion.h"
+#include <SFE_BMP180.h>
+SFE_BMP180 bmp180i;
 
 #define TIME_THRESHOLD 150
 
@@ -30,31 +32,31 @@ String setDireccionViento(int sensorDir) {
   String dirViento = "";
   float valorVoltaje;            // variable que almacena el voltaje (0.0 a 5.0)
   valorVoltaje = fmap(sensorDir, 0, 1023, 0.0, 5.0);   // cambiar escala a 0.0 - 5.0
-  if(valorVoltaje>0,17 && valorVoltaje<0,40){
+  if(valorVoltaje>0.17 && valorVoltaje<0.40){
     dirViento = "NORTE";
   }
-  if(valorVoltaje>0,41 && valorVoltaje<0,74){
+  if(valorVoltaje>0.41 && valorVoltaje<0.74){
     dirViento = "NORESTE";
   }
-  if(valorVoltaje>0,75 && valorVoltaje<1,17){
+  if(valorVoltaje>0.75 && valorVoltaje<1.17){
     dirViento = "ESTE";
   }
-  if(valorVoltaje>1,18 && valorVoltaje<1,59){
+  if(valorVoltaje>1.18 && valorVoltaje<1.59){
     dirViento = "SURESTE";
   }
-  if(valorVoltaje>1,60 && valorVoltaje<2){
+  if(valorVoltaje>1.60 && valorVoltaje<2){
     dirViento = "SUR";
   }
-  if(valorVoltaje>2,01 && valorVoltaje<2,34){
+  if(valorVoltaje>2.01 && valorVoltaje<2.34){
     dirViento = "SUROESTE";
   }
-  if(valorVoltaje>2,35 && valorVoltaje<2,82){
+  if(valorVoltaje>2.35 && valorVoltaje<2.82){
     dirViento = "OESTE";
   }
-  if(valorVoltaje>2,83 && valorVoltaje<3,15){
+  if(valorVoltaje>2.83 && valorVoltaje<3.15){
     dirViento = "NOROESTE";
   }
-  if(valorVoltaje>3,16 && valorVoltaje<3,60){
+  if(valorVoltaje>3.16 && valorVoltaje<3.60){
     dirViento = "NORTE";
   }
   return dirViento;
@@ -99,20 +101,43 @@ unsigned long int setRadiacion(long int sensorRad) {
 }
 
 /**
- * @brief Setea la temperatura ambiente entre -25°C y 50°C
+ * @brief Lectura de la temperatura del sensor bmp180
  * 
- * @param sensorTemp valor leido del sensor de temperatura
- * @return long int temp valor real de temperatura
+ * @param status retorno de las funciones del sensor bmp180 (0 o 1)
+ * @return long int temperatura valor real de temperatura
  */
-long int setTemperatura(int sensorTemp) {
-  long int temp = 0;
-  if(sensorTemp < 41){
-    temp = -25;
+long int setTemperatura(double temperatura) {
+  char status;
+  status = bmp180i.startTemperature();//Inicio de lectura de temperatura
+  if (status != 0) {
+    delay(status); //Pausa para que finalice la lectura
+    status = bmp180i.getTemperature(temperatura); //Obtener la temperatura
   }
-  if(sensorTemp > 41){
-    temp = (((sensorTemp - 41) * 5 * 15) / 696) - 25;
+  return temperatura;
+}
+
+/**
+ * @brief Lectura de la presion del sensor bmp180
+ * 
+ * @param status retorno de las funciones del sensor bmp180 (0 o 1)
+ * @return long int presion valor real de temperatura
+ */
+long int setPresion(double presion){
+  double temperatura; //es necesario medir temperatura para poder medir la presion
+  char status;
+  status = bmp180i.startTemperature();//Inicio de lectura de temperatura
+  if (status != 0){   
+    delay(status); //Pausa para que finalice la lectura
+    status = bmp180i.getTemperature(temperatura); //Obtener la temperatura
+    if (status != 0){
+      status = bmp180i.startPressure(3); //Inicio lectura de presión
+      if (status != 0){        
+        delay(status);//Pausa para que finalice la lectura        
+        status = bmp180i.getPressure(presion,temperatura); //Obtenemos la presión     
+      }      
+    }   
   }
-  return temp;
+  return presion; 
 }
 
 /**

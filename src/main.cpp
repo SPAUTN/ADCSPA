@@ -10,6 +10,8 @@
 #include "estacion.h"
 #include "sendData.h"
 #include "luzindicadora.h"
+#include <SFE_BMP180.h>
+SFE_BMP180 bmp180;
 
 //-------------- Definición de entradas analogicas -----------------------
 #define SENSOR_VEL_VIENTO A0
@@ -30,6 +32,7 @@ unsigned long int velViento = 0;
 String dirViento = "";
 unsigned long int radiacion = 0;
 long int temperatura = 0;
+long int presion = 0;
 unsigned long int humedad = 0;
 String hojaMojada = "";
 
@@ -47,11 +50,11 @@ time_t t;
 
 void setup() {
   Serial.begin(9600);
+  bmp180.begin();
 
   pinMode(SENSOR_VEL_VIENTO, INPUT);
   pinMode(SENSOR_DIR_VIENTO, INPUT);
   pinMode(SENSOR_RADIACION, INPUT);
-  pinMode(SENSOR_HUMEDAD, INPUT);
   pinMode(SENSOR_TEMPERATURA, INPUT);
   pinMode(SENSOR_HOJA, INPUT);
 
@@ -84,7 +87,8 @@ void loop() {
     dirViento = setDireccionViento(analogRead(SENSOR_DIR_VIENTO));
     humedad = setHumedad(analogRead(SENSOR_HUMEDAD));
     radiacion = setRadiacion(analogRead(SENSOR_RADIACION));
-    temperatura = setTemperatura(analogRead(SENSOR_TEMPERATURA));
+    temperatura = setTemperatura(temperatura);
+    presion = setPresion(presion);
     hojaMojada = setHoja(analogRead(SENSOR_HOJA));
     LUCES ? loadEffect() : lightsOff();  // Efecto de luces
 
