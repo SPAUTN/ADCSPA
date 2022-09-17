@@ -9,7 +9,8 @@ unsigned long int setHumedad(int);
 
 unsigned long int setRadiacion(long int);
 
-long int setTemperatura(int);
+long int setTemperatura(double);
+long int setPresion(double);
 
 String setHoja(int);
 
