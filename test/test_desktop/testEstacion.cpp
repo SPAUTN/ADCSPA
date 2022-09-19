@@ -3,6 +3,54 @@
 
 #ifdef UNIT_TEST
 
+void testSetHumedad(){
+
+    // Test valores negativos y menores a 102
+    TEST_ASSERT_EQUAL(0, setHumedad(0));
+    TEST_ASSERT_EQUAL(0, setHumedad(-10));
+    TEST_ASSERT_EQUAL(0, setHumedad(-20));
+    TEST_ASSERT_EQUAL(0, setHumedad(100));
+    TEST_ASSERT_EQUAL(0, setHumedad(102));
+
+    // Test valores mayores a 102
+    TEST_ASSERT_EQUAL( 0.14, setHumedad(103));
+    TEST_ASSERT_EQUAL( ((110 - 102) * 5 * 20) / 716, setHumedad(110));
+    TEST_ASSERT_EQUAL( ((120 - 102) * 5 * 20) / 716, setHumedad(120));
+
+    // Valores específicos de humedad
+    // Humedad 25%
+    TEST_ASSERT_EQUAL(25, setHumedad(281));
+    // Humedad 40%
+    TEST_ASSERT_EQUAL(40, setHumedad(389));
+    // Humedad 45%
+    TEST_ASSERT_EQUAL(45, setHumedad(425));
+        // Humedad 47%
+    TEST_ASSERT_EQUAL(47, setHumedad(439));
+    // Humedad de 50%
+    TEST_ASSERT_EQUAL(50, setHumedad(460));
+    // Humedad de 75%
+    TEST_ASSERT_EQUAL(75, setHumedad(639));
+    // Humedad de 100%
+    TEST_ASSERT_EQUAL(100, setHumedad(818));
+
+    // Test valor mayor a 818
+    TEST_ASSERT_EQUAL(100, setHumedad(900));
+    
+
+}
+
+void testSetRadiacion(){
+    // Test valores negativos y menores a 41
+    TEST_ASSERT_EQUAL(0, setRadiacion(0));
+    TEST_ASSERT_EQUAL(0, setRadiacion(-10));
+    TEST_ASSERT_EQUAL(0, setRadiacion(-20));
+
+    // Test valores muy altos
+    TEST_ASSERT_EQUAL(760, setRadiacion(430));
+    TEST_ASSERT_EQUAL(995, setRadiacion(550));
+    TEST_ASSERT_EQUAL(1922, setRadiacion(1024));
+
+}
 
 void testSetHoja(){
 
@@ -32,6 +80,8 @@ void testSetHoja(){
 int main(){
     UNITY_BEGIN();
     RUN_TEST(testSetHoja);
+    RUN_TEST(testSetHumedad);
+    RUN_TEST(testSetRadiacion);
     UNITY_END();
 }
 
