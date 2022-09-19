@@ -76,9 +76,8 @@ unsigned long int setHumedad(int sensorHum) {
   unsigned long int humedad = 0;
   if(sensorHum<102){
     humedad = 0;
-  }
-  if(sensorHum>102){
-    humedad = ((sensorHum - 102) * 5 * 20) / 716;
+  } else {
+    humedad = sensorHum > 818 ? 100 : ((sensorHum - 102.f) * 100.f) / 716.f;
   }
   return humedad;
 }
@@ -95,7 +94,7 @@ unsigned long int setRadiacion(long int sensorRad) {
     rad = 0;
   }
   if(sensorRad > 41){
-     rad = ((sensorRad - 41) * 5 * 280) / 716;
+     rad = ((sensorRad - 41) * 1400) / 716;
   }
   return rad;
 }
