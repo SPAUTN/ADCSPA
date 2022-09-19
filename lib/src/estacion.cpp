@@ -32,31 +32,31 @@ String setDireccionViento(int sensorDir) {
   String dirViento = "";
   float valorVoltaje;            // variable que almacena el voltaje (0.0 a 5.0)
   valorVoltaje = fmap(sensorDir, 0, 1023, 0.0, 5.0);   // cambiar escala a 0.0 - 5.0
-  if(valorVoltaje>0.17 && valorVoltaje<0.40){
+  if(valorVoltaje>=0.17 && valorVoltaje<0.40){
     dirViento = "NORTE";
   }
-  if(valorVoltaje>0.41 && valorVoltaje<0.74){
+  if(valorVoltaje>=0.40 && valorVoltaje<0.74){
     dirViento = "NORESTE";
   }
-  if(valorVoltaje>0.75 && valorVoltaje<1.17){
+  if(valorVoltaje>=0.74 && valorVoltaje<1.17){
     dirViento = "ESTE";
   }
-  if(valorVoltaje>1.18 && valorVoltaje<1.59){
+  if(valorVoltaje>=1.17 && valorVoltaje<1.59){
     dirViento = "SURESTE";
   }
-  if(valorVoltaje>1.60 && valorVoltaje<2){
+  if(valorVoltaje>=1.59 && valorVoltaje<2.){
     dirViento = "SUR";
   }
-  if(valorVoltaje>2.01 && valorVoltaje<2.34){
+  if(valorVoltaje>=2.0 && valorVoltaje<2.34){
     dirViento = "SUROESTE";
   }
-  if(valorVoltaje>2.35 && valorVoltaje<2.82){
+  if(valorVoltaje>=2.34 && valorVoltaje<2.82){
     dirViento = "OESTE";
   }
-  if(valorVoltaje>2.83 && valorVoltaje<3.15){
+  if(valorVoltaje>=2.82 && valorVoltaje<3.15){
     dirViento = "NOROESTE";
   }
-  if(valorVoltaje>3.16 && valorVoltaje<3.60){
+  if(valorVoltaje>=3.15 && valorVoltaje<3.60){
     dirViento = "NORTE";
   }
   return dirViento;
