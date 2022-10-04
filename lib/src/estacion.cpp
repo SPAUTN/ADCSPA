@@ -105,14 +105,15 @@ unsigned long int setRadiacion(long int sensorRad) {
  * @param status retorno de las funciones del sensor bmp180 (0 o 1)
  * @return long int temperatura valor real de temperatura
  */
-long int setTemperatura(double temperatura) {
+long int setTemperatura() {
+  double temperatura;
   char status;
   status = bmp180i.startTemperature();//Inicio de lectura de temperatura
   if (status != 0) {
     delay(status); //Pausa para que finalice la lectura
     status = bmp180i.getTemperature(temperatura); //Obtener la temperatura
   }
-  return temperatura;
+  return static_cast<long int>(temperatura);
 }
 
 /**
