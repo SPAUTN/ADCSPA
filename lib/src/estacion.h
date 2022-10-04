@@ -10,7 +10,7 @@ unsigned long int setHumedad(int);
 unsigned long int setRadiacion(long int);
 
 long int setTemperatura();
-long int setPresion(double);
+long int setPresion();
 
 String setHoja(int);
 

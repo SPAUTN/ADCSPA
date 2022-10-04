@@ -122,22 +122,16 @@ long int setTemperatura() {
  * @param status retorno de las funciones del sensor bmp180 (0 o 1)
  * @return long int presion valor real de temperatura
  */
-long int setPresion(double presion){
-  double temperatura; //es necesario medir temperatura para poder medir la presion
+long int setPresion(){
+  double presion;
+  double temperatura = setTemperatura(); //es necesario medir temperatura para poder medir la presion
   char status;
-  status = bmp180i.startTemperature();//Inicio de lectura de temperatura
-  if (status != 0){   
-    delay(status); //Pausa para que finalice la lectura
-    status = bmp180i.getTemperature(temperatura); //Obtener la temperatura
-    if (status != 0){
-      status = bmp180i.startPressure(3); //Inicio lectura de presión
-      if (status != 0){        
-        delay(status);//Pausa para que finalice la lectura        
-        status = bmp180i.getPressure(presion,temperatura); //Obtenemos la presión     
-      }      
-    }   
-  }
-  return presion; 
+    status = bmp180i.startPressure(3); //Inicio lectura de presión
+    if (status != 0){        
+      delay(status);//Pausa para que finalice la lectura        
+      status = bmp180i.getPressure(presion,temperatura); //Obtenemos la presión     
+    }      
+  return static_cast<long int>(presion); 
 }
 
 /**
