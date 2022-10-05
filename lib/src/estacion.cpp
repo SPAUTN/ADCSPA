@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "estacion.h"
 #include <SFE_BMP180.h>
+
 SFE_BMP180 bmp180i;
 
 #define TIME_THRESHOLD 150
@@ -105,7 +106,7 @@ unsigned long int setRadiacion(long int sensorRad) {
  * @param status retorno de las funciones del sensor bmp180 (0 o 1)
  * @return long int temperatura valor real de temperatura
  */
-long int setTemperatura(double temperatura) {
+long int setTemperatura(double temperatura, SFE_BMP180 bmp180i) {
   char status;
   status = bmp180i.startTemperature();//Inicio de lectura de temperatura
   if (status != 0) {
@@ -121,7 +122,7 @@ long int setTemperatura(double temperatura) {
  * @param status retorno de las funciones del sensor bmp180 (0 o 1)
  * @return long int presion valor real de temperatura
  */
-long int setPresion(double presion){
+long int setPresion(double presion, SFE_BMP180 bmp180i){
   double temperatura; //es necesario medir temperatura para poder medir la presion
   char status;
   status = bmp180i.startTemperature();//Inicio de lectura de temperatura

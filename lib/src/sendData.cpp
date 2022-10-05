@@ -3,7 +3,7 @@
 #include <TimeLib.h>
 #include "estacion.h"
 
-extern volatile long int contadorPluv;;
+extern volatile long int contadorPluv;
 extern unsigned long int velViento;
 extern String dirViento;
 extern unsigned long int radiacion;
