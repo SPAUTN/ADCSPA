@@ -2,8 +2,6 @@
 #include "estacion.h"
 #include <SFE_BMP180.h>
 
-SFE_BMP180 bmp180i;
-
 #define TIME_THRESHOLD 150
 
 extern volatile long contadorPluv;
@@ -106,14 +104,15 @@ unsigned long int setRadiacion(long int sensorRad) {
  * @param status retorno de las funciones del sensor bmp180 (0 o 1)
  * @return long int temperatura valor real de temperatura
  */
-long int setTemperatura(double temperatura, SFE_BMP180 bmp180i) {
+long int setTemperatura(SFE_BMP180 bmp180i) {
   char status;
+  double temperatura;
   status = bmp180i.startTemperature();//Inicio de lectura de temperatura
   if (status != 0) {
     delay(status); //Pausa para que finalice la lectura
     status = bmp180i.getTemperature(temperatura); //Obtener la temperatura
   }
-  return temperatura;
+  return static_cast<long int>(temperatura);
 }
 
 /**
@@ -122,22 +121,16 @@ long int setTemperatura(double temperatura, SFE_BMP180 bmp180i) {
  * @param status retorno de las funciones del sensor bmp180 (0 o 1)
  * @return long int presion valor real de temperatura
  */
-long int setPresion(double presion, SFE_BMP180 bmp180i){
-  double temperatura; //es necesario medir temperatura para poder medir la presion
+long int setPresion(SFE_BMP180 bmp180i){
+  double presion;
+  double temperatura = setTemperatura(bmp180i); //es necesario medir temperatura para poder medir la presion
   char status;
-  status = bmp180i.startTemperature();//Inicio de lectura de temperatura
-  if (status != 0){   
-    delay(status); //Pausa para que finalice la lectura
-    status = bmp180i.getTemperature(temperatura); //Obtener la temperatura
-    if (status != 0){
-      status = bmp180i.startPressure(3); //Inicio lectura de presión
-      if (status != 0){        
-        delay(status);//Pausa para que finalice la lectura        
-        status = bmp180i.getPressure(presion,temperatura); //Obtenemos la presión     
-      }      
-    }   
-  }
-  return presion; 
+    status = bmp180i.startPressure(3); //Inicio lectura de presión
+    if (status != 0){        
+      delay(status);//Pausa para que finalice la lectura        
+      status = bmp180i.getPressure(presion,temperatura); //Obtenemos la presión     
+    }      
+  return static_cast<long int>(presion); 
 }
 
 /**

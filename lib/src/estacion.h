@@ -10,8 +10,9 @@ unsigned long int setHumedad(int);
 
 unsigned long int setRadiacion(long int);
 
-long int setTemperatura(double, SFE_BMP180);
-long int setPresion(double, SFE_BMP180);
+
+long int setTemperatura(SFE_BMP180);
+long int setPresion(SFE_BMP180);
 
 String setHoja(int);
 
