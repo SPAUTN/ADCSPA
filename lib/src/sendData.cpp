@@ -8,6 +8,7 @@ extern unsigned long int velViento;
 extern String dirViento;
 extern unsigned long int radiacion;
 extern long int temperatura;
+extern long int presion;
 extern unsigned long int humedad;
 extern String hojaMojada;
 extern time_t t;
@@ -35,6 +36,7 @@ String setPayload() {
   jsonPayload += ",\"humedadRelativa\":" + String(humedad);
   jsonPayload += ",\"radiacionSolar\":" + String(radiacion);
   jsonPayload += ",\"temperatura\":" + String(temperatura);
+  jsonPayload += ",\"presion\":" + String(presion);
   jsonPayload += ",\"tiempo\":" + String(t);
   jsonPayload += "}";
 
