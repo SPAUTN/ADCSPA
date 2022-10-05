@@ -88,7 +88,7 @@ void loop() {
     humedad = setHumedad(analogRead(SENSOR_HUMEDAD));
     radiacion = setRadiacion(analogRead(SENSOR_RADIACION));
     temperatura = setTemperatura(temperatura, bmp180);
-    presion = setPresion(presion);
+    presion = setPresion(presion, bmp180);
     hojaMojada = setHoja(analogRead(SENSOR_HOJA));
     LUCES ? loadEffect() : lightsOff();  // Efecto de luces
 

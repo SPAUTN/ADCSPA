@@ -122,7 +122,7 @@ long int setTemperatura(double temperatura, SFE_BMP180 bmp180i) {
  * @param status retorno de las funciones del sensor bmp180 (0 o 1)
  * @return long int presion valor real de temperatura
  */
-long int setPresion(double presion){
+long int setPresion(double presion, SFE_BMP180 bmp180i){
   double temperatura; //es necesario medir temperatura para poder medir la presion
   char status;
   status = bmp180i.startTemperature();//Inicio de lectura de temperatura
