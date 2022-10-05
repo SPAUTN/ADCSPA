@@ -87,8 +87,8 @@ void loop() {
     dirViento = setDireccionViento(analogRead(SENSOR_DIR_VIENTO));
     humedad = setHumedad(analogRead(SENSOR_HUMEDAD));
     radiacion = setRadiacion(analogRead(SENSOR_RADIACION));
-    temperatura = setTemperatura();
-    presion = setPresion();
+    temperatura = setTemperatura(bmp180);
+    presion = setPresion(bmp180);
     hojaMojada = setHoja(analogRead(SENSOR_HOJA));
     LUCES ? loadEffect() : lightsOff();  // Efecto de luces
 

@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #ifndef ESTACION_H
 #define ESTACION_H
+#include <SFE_BMP180.h>
 
 long int setVelocidadViento(long int);
 String setDireccionViento(int);
@@ -9,8 +10,9 @@ unsigned long int setHumedad(int);
 
 unsigned long int setRadiacion(long int);
 
-long int setTemperatura();
-long int setPresion();
+
+long int setTemperatura(SFE_BMP180);
+long int setPresion(SFE_BMP180);
 
 String setHoja(int);
 
