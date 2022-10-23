@@ -92,7 +92,7 @@ unsigned long int setRadiacion(long int sensorRad) {
   if(sensorRad < 121){
     rad = 0;
   }
-  if(sensorRad > 120){
+  else {
      rad = ((sensorRad - 121) * 1400) / 637;
   }
   return rad;
