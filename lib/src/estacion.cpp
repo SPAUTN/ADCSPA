@@ -89,11 +89,11 @@ unsigned long int setHumedad(int sensorHum) {
  */
 unsigned long int setRadiacion(long int sensorRad) {
   long int rad = 0;
-  if(sensorRad < 41){
+  if(sensorRad < 121){
     rad = 0;
   }
-  if(sensorRad > 41){
-     rad = ((sensorRad - 41) * 1400) / 716;
+  else {
+     rad = ((sensorRad - 121) * 1400) / 637;
   }
   return rad;
 }
