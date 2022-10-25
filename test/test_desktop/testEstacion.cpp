@@ -44,12 +44,17 @@ void testSetRadiacion(){
     TEST_ASSERT_EQUAL(0, setRadiacion(0));
     TEST_ASSERT_EQUAL(0, setRadiacion(-10));
     TEST_ASSERT_EQUAL(0, setRadiacion(-20));
+    TEST_ASSERT_EQUAL(0, setRadiacion(69));
+    TEST_ASSERT_EQUAL(0, setRadiacion(120));
+    TEST_ASSERT_EQUAL(0, setRadiacion(121));
 
     // TODO: rehacerlos, se cambió la funcion
     // // Test valores muy altos
-    // TEST_ASSERT_EQUAL(760, setRadiacion(430));
-    // TEST_ASSERT_EQUAL(995, setRadiacion(550));
-    // TEST_ASSERT_EQUAL(1922, setRadiacion(1024));
+    TEST_ASSERT_EQUAL(2, setRadiacion(122));
+    TEST_ASSERT_EQUAL(138, setRadiacion(184));
+    TEST_ASSERT_EQUAL(679, setRadiacion(430));
+    TEST_ASSERT_EQUAL(942, setRadiacion(550));
+    TEST_ASSERT_EQUAL(1984, setRadiacion(1024));
 
 }
 
