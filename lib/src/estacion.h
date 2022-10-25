@@ -4,7 +4,7 @@
 #include <SFE_BMP180.h>
 
 long int setVelocidadViento(long int);
-String setDireccionViento(int);
+int setDireccionViento(int);
 
 unsigned long int setHumedad(int);
 
