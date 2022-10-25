@@ -25,41 +25,16 @@ long int setVelocidadViento(long int sensorVel) {
  * @brief Setea la dirección del viento
  * 
  * @param sensorDir valor del sensor
- * @return String dirViento que indica el nombre del punto cardinal donde apunta la dirección del viento
+ * @return int valor de la dirección del viento en grados respecto al norte
  */
-String setDireccionViento(int sensorDir) {
-  String dirViento = "";
-  float valorVoltaje;            // variable que almacena el voltaje (0.0 a 5.0)
-  valorVoltaje = fmap(sensorDir, 0, 1023, 0.0, 5.0);   // cambiar escala a 0.0 - 5.0
-  if(valorVoltaje>=0.17 && valorVoltaje<0.40){
-    dirViento = "NORTE";
-  }
-  if(valorVoltaje>=0.40 && valorVoltaje<0.74){
-    dirViento = "NORESTE";
-  }
-  if(valorVoltaje>=0.74 && valorVoltaje<1.17){
-    dirViento = "ESTE";
-  }
-  if(valorVoltaje>=1.17 && valorVoltaje<1.59){
-    dirViento = "SURESTE";
-  }
-  if(valorVoltaje>=1.59 && valorVoltaje<2.){
-    dirViento = "SUR";
-  }
-  if(valorVoltaje>=2.0 && valorVoltaje<2.34){
-    dirViento = "SUROESTE";
-  }
-  if(valorVoltaje>=2.34 && valorVoltaje<2.82){
-    dirViento = "OESTE";
-  }
-  if(valorVoltaje>=2.82 && valorVoltaje<3.15){
-    dirViento = "NOROESTE";
-  }
-  if(valorVoltaje>=3.15 && valorVoltaje<3.60){
-    dirViento = "NORTE";
-  }
-  return dirViento;
+int setDireccionViento(int sensorDir) {
+  
+  // Variable que almacena el voltaje (0.0 a 5.0)
+  float valorVoltaje = fmap(sensorDir, 0, 1023, 0.0, 5.0);
+
+  return (int) (valorVoltaje * 100);
 }
+
 // cambio de escala entre floats
 float fmap(float x, float in_min, float in_max, float out_min, float out_max) {
    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;

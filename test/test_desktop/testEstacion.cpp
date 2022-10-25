@@ -3,7 +3,7 @@
 
 #ifdef UNIT_TEST
 
-void testSetHumedad(){
+void testSetHumedad() {
 
     // Test valores negativos y menores a 102
     TEST_ASSERT_EQUAL(0, setHumedad(0));
@@ -39,7 +39,7 @@ void testSetHumedad(){
 
 }
 
-void testSetRadiacion(){
+void testSetRadiacion() {
     // Test valores negativos y menores a 121
     TEST_ASSERT_EQUAL(0, setRadiacion(0));
     TEST_ASSERT_EQUAL(0, setRadiacion(-10));
@@ -48,7 +48,6 @@ void testSetRadiacion(){
     TEST_ASSERT_EQUAL(0, setRadiacion(120));
     TEST_ASSERT_EQUAL(0, setRadiacion(121));
 
-    // TODO: rehacerlos, se cambió la funcion
     // // Test valores muy altos
     TEST_ASSERT_EQUAL(2, setRadiacion(122));
     TEST_ASSERT_EQUAL(138, setRadiacion(184));
@@ -58,7 +57,7 @@ void testSetRadiacion(){
 
 }
 
-void testSetHoja(){
+void testSetHoja() {
 
     /// Test valor de sensor 500 = Hoja mojada
     String stringMojada = "Mojada";
@@ -81,6 +80,12 @@ void testSetHoja(){
     String valorSecaCero = setHoja(0);
     TEST_ASSERT_EQUAL_STRING(stringSecaCero.c_str(), valorSecaCero.c_str());
 
+}
+
+
+// TODO: Realizar los test cases correspondientes
+void testSetDireccion() {
+    //TEST_ASSERT_EQUAL();
 }
 
 int main(){

@@ -29,7 +29,7 @@ const int CELDAS[4] = {A6, A7, A8, A9};
 
 //------------ Variables para almacenar los datos -------------------------
 unsigned long int velViento = 0;
-String dirViento = "";
+int dirViento = 0;
 unsigned long int radiacion = 0;
 long int temperatura = 0;
 long int presion = 0;
