@@ -25,7 +25,7 @@ long int setVelocidadViento(long int sensorVel) {
  * @brief Setea la dirección del viento
  * 
  * @param sensorDir valor del sensor
- * @return String dirViento que indica el nombre del punto cardinal donde apunta la dirección del viento
+ * @return int valor de la dirección del viento en grados respecto al norte
  */
 int setDireccionViento(int sensorDir) {
   
