@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <Arduino.h>
 #include <TimeLib.h>
-#include <LowPower.h>
+//#include <LowPower.h>
 
 #define getName(var)  #var
 
@@ -14,15 +14,15 @@
 SFE_BMP180 bmp180;
 
 //-------------- Definición de entradas analogicas -----------------------
-#define SENSOR_VEL_VIENTO A0
-#define SENSOR_DIR_VIENTO A1
-#define SENSOR_RADIACION A2
-#define SENSOR_HUMEDAD A3
-#define SENSOR_TEMPERATURA A4
-#define SENSOR_HOJA A5
+#define SENSOR_VEL_VIENTO 30
+#define SENSOR_DIR_VIENTO 29
+#define SENSOR_RADIACION 26
+#define SENSOR_HUMEDAD 25
+#define SENSOR_TEMPERATURA 24
+#define SENSOR_HOJA 23
 #define LUCES true   //true para activar juego de luces al encender y enviar datos
 
-const int CELDAS[4] = {A6, A7, A8, A9};
+//const int CELDAS[4] = {A6, A7, A8, A9};
 
 //------------- Definición entradas digitales -----------------------------
 #define SENSOR_PLUVIOMETRO 18     
@@ -58,14 +58,14 @@ void setup() {
   pinMode(SENSOR_TEMPERATURA, INPUT);
   pinMode(SENSOR_HOJA, INPUT);
 
-  for (int i = 0; i < 4; i++) {
+ /* for (int i = 0; i < 4; i++) {
     pinMode(CELDAS[i], INPUT);
   }
 
   for(int i=2; i<12; i++){
       pinMode(i, OUTPUT);
   }
-
+*/
 
   attachInterrupt(digitalPinToInterrupt(SENSOR_PLUVIOMETRO), cuentaPulsos, RISING); // Interrupción por flanco de subida
 
@@ -79,9 +79,9 @@ void loop() {
 
   if (second(t)==58 && millis() - startTime > 1000) {
 
-    for (int i = 0; i < 4; i++) {            // lectura de las entradas analogicas Lisimetro 
+    /*for (int i = 0; i < 4; i++) {            // lectura de las entradas analogicas Lisimetro 
       celdas[i] = analogRead(CELDAS[i]);
-    }
+    }*/
 
     velViento = setVelocidadViento(analogRead(SENSOR_VEL_VIENTO));       //se leen las entradas analogicas Estación meteorológica.
     dirViento = setDireccionViento(analogRead(SENSOR_DIR_VIENTO));
@@ -97,7 +97,7 @@ void loop() {
     startTime = millis();
     lightsOff(); // Apagamos las luces
     delay(1000);
-    LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_ON); // Apagamos el microcontrolador durante 8 segundos. 
+   // LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_ON); // Apagamos el microcontrolador durante 8 segundos. 
   }
 }
 
