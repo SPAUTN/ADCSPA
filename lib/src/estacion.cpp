@@ -167,8 +167,6 @@ void resetContadorPluv () {
  * @param lisimetro valor leido del lisimetro
  * @return peso valor real del peso
  */
-long int setLisimetro(HX711 lisimetro) {
-  int peso;
-  peso = (lisimetro.get_units(),4); //Obtener el peso
-  return peso;
+float setLisimetro(HX711 lisimetro) {
+  return lisimetro.get_units(4); //Obtener el peso;
 }

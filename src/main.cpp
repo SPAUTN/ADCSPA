@@ -45,7 +45,7 @@ long int temperatura = 0;
 long int presion = 0;
 unsigned long int humedad = 0;
 String hojaMojada = "";
-int peso = 0;
+float peso = 0;
 
 int celdas[4] = {0, 0, 0, 0};
 

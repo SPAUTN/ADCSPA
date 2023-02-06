@@ -24,6 +24,6 @@ void resetContadorPluv ();
 
 float fmap(float x, float in_min, float in_max, float out_min, float out_max);
 
-long int setLisimetro(HX711);
+float setLisimetro(HX711);
 
 #endif
