@@ -12,7 +12,7 @@ extern long int presion;
 extern unsigned long int humedad;
 extern String hojaMojada;
 extern time_t t;
-extern int peso;
+extern float peso;
 
 /**
  * @brief Funcion que crea un Payload con los datos de los sensores
