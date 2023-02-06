@@ -2,6 +2,7 @@
 #ifndef ESTACION_H
 #define ESTACION_H
 #include <SFE_BMP180.h>
+#include "HX711.h"
 
 long int setVelocidadViento(long int);
 int setDireccionViento(int);
@@ -22,5 +23,7 @@ void cuentaPulsos ();
 void resetContadorPluv ();
 
 float fmap(float x, float in_min, float in_max, float out_min, float out_max);
+
+long int setLisimetro(HX711);
 
 #endif

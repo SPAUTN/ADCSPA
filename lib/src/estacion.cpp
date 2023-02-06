@@ -1,7 +1,9 @@
 #include <Arduino.h>
 #include "estacion.h"
 #include <SFE_BMP180.h>
+#include "HX711.h"
 
+#define DEBUG_HX711
 #define TIME_THRESHOLD 150
 
 extern volatile long contadorPluv;
@@ -157,4 +159,16 @@ void cuentaPulsos () {
  */
 void resetContadorPluv () {
   contadorPluv = 0;
+}
+
+/**
+ * @brief Lectura de la temperatura del sensor bmp180
+ * 
+ * @param lisimetro valor leido del lisimetro
+ * @return peso valor real del peso
+ */
+long int setLisimetro(HX711 lisimetro) {
+  int peso;
+  peso = (lisimetro.get_units(),4); //Obtener el peso
+  return peso;
 }

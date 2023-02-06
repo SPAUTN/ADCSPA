@@ -12,6 +12,7 @@ extern long int presion;
 extern unsigned long int humedad;
 extern String hojaMojada;
 extern time_t t;
+extern int peso;
 
 /**
  * @brief Funcion que crea un Payload con los datos de los sensores
@@ -24,6 +25,7 @@ extern time_t t;
  * @param radiacion - Radiacion solar en W/m^2
  * @param temperatura - Temperatura en grados centigrados
  * @param hojaMojada - Estado de la hoja de la planta
+ * @param peso - Peso del lisimetro en Kg
  * @param t
  * 
  * @return float humedad relativa
@@ -40,6 +42,7 @@ String setPayload() {
   jsonPayload += ",\"temperatura\":" + String(temperatura);
   jsonPayload += ",\"presion\":" + String(presion);
   jsonPayload += ",\"tiempo\":" + String(t);
+  jsonPayload += ",\"peso\":" + String(peso);
   
   jsonPayload += "}";
 
