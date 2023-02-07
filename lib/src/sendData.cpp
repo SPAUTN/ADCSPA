@@ -1,16 +1,7 @@
-
 #include <Arduino.h>
 #include <TimeLib.h>
-#include "estacion.h"
+#include "Estacion.hpp"
 
-extern volatile long int contadorPluv;
-extern unsigned long int velViento;
-extern int dirViento;
-extern unsigned long int radiacion;
-extern long int temperatura;
-extern long int presion;
-extern unsigned long int humedad;
-extern String hojaMojada;
 extern time_t t;
 
 /**
@@ -28,22 +19,26 @@ extern time_t t;
  * 
  * @return float humedad relativa
  */
-String setPayload() {
+String setPayload(Estacion estacion) {
+
+  float test = 1.21 * 1.26;
+
   String jsonPayload = "{";
   
-  jsonPayload += "\"lluvia\":" + String(pluviometro(contadorPluv));
-  jsonPayload += ",\"velocidadViento\":" + String(velViento);
-  jsonPayload += ",\"hojaMojada\":\"" + String(hojaMojada)+ "\"";
-  jsonPayload += ",\"direccionViento\":" + String(dirViento);
-  jsonPayload += ",\"humedadRelativa\":" + String(humedad);
-  jsonPayload += ",\"radiacionSolar\":" + String(radiacion);
-  jsonPayload += ",\"temperatura\":" + String(temperatura);
-  jsonPayload += ",\"presion\":" + String(presion);
+  jsonPayload += "\"lluvia\":" + String(estacion.getContadorPluv());
+  jsonPayload += ",\"velocidadViento\":" + String(estacion.getVelViento());
+  jsonPayload += ",\"hojaMojada\":\"" + String(estacion.getHumHoja())+ "\"";
+  jsonPayload += ",\"direccionViento\":" + String(estacion.getDirViento());
+  jsonPayload += ",\"humedadRelativa\":" + String(estacion.getHumedad());
+  jsonPayload += ",\"radiacionSolar\":" + String(estacion.getRadiacion());
+  jsonPayload += ",\"temperatura\":" + String(estacion.getTemperatura());
+  jsonPayload += ",\"presion\":" + String(estacion.getPresion());
   jsonPayload += ",\"tiempo\":" + String(t);
+  jsonPayload += ",\"prueba\":" + String(test, 4);
   
   jsonPayload += "}";
 
-  resetContadorPluv();
+  estacion.resetContadorPluv();
   
   return jsonPayload;
 }

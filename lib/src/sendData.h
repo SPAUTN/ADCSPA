@@ -1,3 +1,3 @@
 #include <Arduino.h>
-
-String setPayload();
+#include "Estacion.hpp"
+String setPayload(Estacion);
