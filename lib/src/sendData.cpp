@@ -42,7 +42,7 @@ String setPayload() {
   jsonPayload += ",\"temperatura\":" + String(temperatura);
   jsonPayload += ",\"presion\":" + String(presion);
   jsonPayload += ",\"tiempo\":" + String(t);
-  jsonPayload += ",\"peso\":" + String(peso);
+  jsonPayload += ",\"peso\":" + String(peso,4);
   
   jsonPayload += "}";
 
