@@ -18,8 +18,6 @@ SFE_BMP180 bmp180;
 
 #define TIME_THRESHOLD 150
 
-//------------- Definición entradas digitales -----------------------------
-int celdas[4] = {0, 0, 0, 0};
 
 //------------ Variables para controlar pluviometro ------------------------
 
