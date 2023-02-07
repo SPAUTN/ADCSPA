@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include <SFE_BMP180.h>
 #include <TimeLib.h>
 

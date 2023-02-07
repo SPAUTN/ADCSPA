@@ -1,5 +1,3 @@
-#ifndef UNIT_TEST
-
 #include <stdio.h>
 #include <Arduino.h>
 #include <TimeLib.h>
@@ -81,5 +79,3 @@ void pulseDetector(){
         initialTime = millis();
       }
 }
-
-#endif
