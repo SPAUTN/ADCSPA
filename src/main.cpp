@@ -18,7 +18,7 @@ long int initialTime = 0;
 
 void pulseDetector();
 
-Estacion estacion = Estacion();
+Estacion estacion = Estacion(0);
 
 void setup() {
   Serial.begin(9600);  
