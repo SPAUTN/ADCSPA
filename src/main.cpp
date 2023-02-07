@@ -7,7 +7,7 @@
 
 #define getName(var)  #var
 
-#include "Estacion.hpp"
+#include "Estacion.h"
 #include "sendData.h"
 #include "luzindicadora.h"
 #include <SFE_BMP180.h>
@@ -22,6 +22,8 @@ SFE_BMP180 bmp180;
 #define SENSOR_HOJA A5
 #define LUCES true   //true para activar juego de luces al encender y enviar datos
 
+#define TEST false
+
 #define TIME_THRESHOLD 150
 
 const int CELDAS[4] = {A6, A7, A8, A9};
@@ -34,10 +36,11 @@ int celdas[4] = {0, 0, 0, 0};
 
 volatile long int contadorPluv = 0;
 long startTime = 0;  //para anti rebote.
-time_t t;
 long int initialTime = 0;
 
-Estacion estacion = Estacion();
+void pulseDetector();
+
+Estacion estacion = Estacion(0);
 
 void setup() {
   Serial.begin(9600);
@@ -65,10 +68,10 @@ void setup() {
 }
 
 void loop() {
-  
-  t = now();                                  // Declaramos la variable time_t 
 
-  //if (second(t)==58 && millis() - startTime > 1000) {
+  time_t t = now();
+  
+  if (second(t) == 30 && millis() - startTime > 1000 || TEST) {
 
     for (int i = 0; i < 4; i++) {            // lectura de las entradas analogicas Lisimetro 
       celdas[i] = analogRead(CELDAS[i]);
@@ -91,7 +94,7 @@ void loop() {
     delay(1000);
     LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_ON); // Apagamos el microcontrolador durante 8 segundos. 
   }
-//}
+}
 
 void pulseDetector(){
   // TODO: agregar una activacion de un led para indicar que se ha producido una interrupcion e iniciar un contador de tiempo

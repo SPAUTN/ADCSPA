@@ -1,8 +1,6 @@
 #include <Arduino.h>
 #include <TimeLib.h>
-#include "Estacion.hpp"
-
-extern time_t t;
+#include "Estacion.h"
 
 /**
  * @brief Funcion que crea un Payload con los datos de los sensores
@@ -20,9 +18,6 @@ extern time_t t;
  * @return float humedad relativa
  */
 String setPayload(Estacion estacion) {
-
-  float test = 1.21 * 1.26;
-
   String jsonPayload = "{";
   
   jsonPayload += "\"lluvia\":" + String(estacion.getContadorPluv());
@@ -33,9 +28,6 @@ String setPayload(Estacion estacion) {
   jsonPayload += ",\"radiacionSolar\":" + String(estacion.getRadiacion());
   jsonPayload += ",\"temperatura\":" + String(estacion.getTemperatura());
   jsonPayload += ",\"presion\":" + String(estacion.getPresion());
-  jsonPayload += ",\"tiempo\":" + String(t);
-  jsonPayload += ",\"prueba\":" + String(test, 4);
-  
   jsonPayload += "}";
 
   estacion.resetContadorPluv();
