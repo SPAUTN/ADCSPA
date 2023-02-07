@@ -1,5 +1,6 @@
 #include <SFE_BMP180.h>
 #include <TimeLib.h>
+#include "HX711.h"
 
 #ifndef ESTACION_H
 #define ESTACION_H
@@ -14,21 +15,25 @@ class Estacion {
         long int presion;
         String humHoja;
         long contadorPluv;
+        SFE_BMP180 bmp180;
+        HX711 lisimetro;
     public:
         Estacion(long);
         Estacion();
+        // -------------------------------------- Inits --------------------------------------
+        void init();
         // -------------------------------------- Setters --------------------------------------
         void setVelocidadViento(long int);
         void setDireccionViento(int);
         static float fmap(float, float, float, float, float);
         void setHumedad(int);
         void setRadiacion(long int);
-        void setTemperatura(SFE_BMP180);
-        void setPresion(SFE_BMP180);
+        void setTemperatura();
+        void setPresion();
         void setHoja(int);
         void cuentaPulsos (long int);
         void resetContadorPluv();
-
+        
         // -------------------------------------- Getters --------------------------------------
         long int getVelViento();
         int getDirViento ();
@@ -38,5 +43,6 @@ class Estacion {
         long int getPresion();
         String getHumHoja();
         long getContadorPluv();
+        float getPesoLisimetro();
 };
 #endif

@@ -4,6 +4,7 @@
 #include "Estacion.h"
 
 #define TIME_THRESHOLD 150
+#define CALIBRACION 462000.0
 
 // Constructor
 Estacion::Estacion(long contadorPluv){
@@ -14,6 +15,13 @@ Estacion::Estacion(long contadorPluv){
 Estacion::Estacion(){
     this -> initTime = 0;
     this -> contadorPluv = 0;
+}
+// -------------------------------------- Inits --------------------------------------
+void Estacion::init(){
+    this -> bmp180.begin();
+    this -> lisimetro.begin(16, 4);
+    this -> lisimetro.set_scale(CALIBRACION);
+    this -> lisimetro.tare();
 }
 
 // -------------------------------------- Setters --------------------------------------
@@ -87,13 +95,13 @@ void Estacion::setRadiacion(long int sensorRad) {
  * @param status retorno de las funciones del sensor bmp180 (0 o 1)
  * @return long int temperatura valor real de temperatura
  */
-void Estacion::setTemperatura(SFE_BMP180 bmp180i) {
+void Estacion::setTemperatura() {
     char status;
     double temperatura;
-    status = bmp180i.startTemperature();//Inicio de lectura de temperatura
+    status = this -> bmp180.startTemperature();//Inicio de lectura de temperatura
     if (status != 0) {
         delay(status); //Pausa para que finalice la lectura
-        status = bmp180i.getTemperature(temperatura); //Obtener la temperatura
+        status = this -> bmp180.getTemperature(temperatura); //Obtener la temperatura
     }
     this -> temperatura = static_cast<long int>(temperatura);
 }
@@ -104,15 +112,15 @@ void Estacion::setTemperatura(SFE_BMP180 bmp180i) {
  * @param status retorno de las funciones del sensor bmp180 (0 o 1)
  * @return long int presion valor real de temperatura
  */
-void Estacion::setPresion(SFE_BMP180 bmp180i){
+void Estacion::setPresion(){
     double presion;
-    setTemperatura(bmp180i);
+    setTemperatura();
     double temperatura = this -> getTemperatura(); //es necesario medir temperatura para poder medir la presion
     char status;
-    status = bmp180i.startPressure(3); //Inicio lectura de presión
+    status = this -> bmp180.startPressure(3); //Inicio lectura de presión
     if (status != 0){        
         delay(status);//Pausa para que finalice la lectura        
-        status = bmp180i.getPressure(presion,temperatura); //Obtenemos la presión     
+        status = this -> bmp180.getPressure(presion,temperatura); //Obtenemos la presión     
     }      
     this -> presion = static_cast<long int>(presion); 
 }
@@ -181,4 +189,8 @@ String Estacion::getHumHoja() {
 
 long Estacion::getContadorPluv() {
     return this -> contadorPluv*0.25;
+}
+
+float Estacion::getPesoLisimetro(){
+    return this -> lisimetro.get_units(4);
 }

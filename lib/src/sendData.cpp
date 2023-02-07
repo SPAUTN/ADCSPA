@@ -28,6 +28,7 @@ String setPayload(Estacion estacion) {
   jsonPayload += ",\"radiacionSolar\":" + String(estacion.getRadiacion());
   jsonPayload += ",\"temperatura\":" + String(estacion.getTemperatura());
   jsonPayload += ",\"presion\":" + String(estacion.getPresion());
+  jsonPayload += ",\"peso\":" + String(estacion.getPesoLisimetro(), 4);
   jsonPayload += "}";
 
   estacion.resetContadorPluv();
