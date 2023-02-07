@@ -22,7 +22,7 @@ String setPayload(Estacion estacion) {
   
   jsonPayload += "\"lluvia\":" + String(estacion.getContadorPluv());
   jsonPayload += ",\"velocidadViento\":" + String(estacion.getVelViento());
-  jsonPayload += ",\"hojaMojada\":\"" + String(estacion.getHumHoja())+ "\"";
+  jsonPayload += ",\"humedadHoja\":\"" + String(estacion.getHumHoja())+ "\"";
   jsonPayload += ",\"direccionViento\":" + String(estacion.getDirViento());
   jsonPayload += ",\"humedadRelativa\":" + String(estacion.getHumedad());
   jsonPayload += ",\"radiacionSolar\":" + String(estacion.getRadiacion());
