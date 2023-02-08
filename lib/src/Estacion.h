@@ -24,9 +24,13 @@ class Estacion {
         static float fmap(float, float, float, float, float);
     public:
         Estacion(long);
+
         Estacion();
+
         // -------------------------------------- Inits --------------------------------------
+
         void init();
+        
         // -------------------------------------- Setters --------------------------------------
         
         /**
