@@ -22,7 +22,7 @@ Estacion estacion = Estacion(0);
 
 void setup() {
   Serial.begin(9600);  
-  estacion.init();
+  estacion.getTempModulo().begin();
   pinMode(SENSOR_VEL_VIENTO_ENV, INPUT);
   pinMode(SENSOR_DIR_VIENTO_ENV, INPUT);
   pinMode(SENSOR_RADIACION_ENV, INPUT);
