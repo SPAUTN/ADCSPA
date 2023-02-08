@@ -9,14 +9,15 @@
 Estacion::Estacion(long contadorPluv){
     this -> initTime = 0;
     this -> contadorPluv = contadorPluv;
+    init();
 }
 
 Estacion::Estacion(){
     this -> initTime = 0;
     this -> contadorPluv = 0;
+    init();
 }
-void Estacion::init(SFE_BMP180 bmp180){
-    this -> bmp180 = bmp180;
+void Estacion::init(){
     this -> lisimetro.begin(16, 4);
     this -> lisimetro.set_scale(CALIBRACION);
     this -> lisimetro.tare();
@@ -59,27 +60,27 @@ void Estacion::setRadiacion(long int sensorRad) {
     this -> radiacion = rad;
 }
 
-void Estacion::setTemperatura() {
+void Estacion::setTemperatura(SFE_BMP180 bmp180) {
     char status;
     double temperatura;
-    status = this -> bmp180.startTemperature();//Inicio de lectura de temperatura
+    status = bmp180.startTemperature();//Inicio de lectura de temperatura
     if (status != 0) {
         delay(status); //Pausa para que finalice la lectura
-        status = this -> bmp180.getTemperature(temperatura); //Obtener la temperatura
+        status = bmp180.getTemperature(temperatura); //Obtener la temperatura
     }
-    this -> temperatura = static_cast<long int>(temperatura);
+    temperatura = static_cast<long int>(temperatura);
 }
 
 
-void Estacion::setPresion(){
+void Estacion::setPresion(SFE_BMP180 bmp180){
     double presion;
-    setTemperatura();
+    setTemperatura(bmp180);
     double temperatura = this -> getTemperatura(); //es necesario medir temperatura para poder medir la presion
     char status;
-    status = this -> bmp180.startPressure(3); //Inicio lectura de presión
+    status = bmp180.startPressure(3); //Inicio lectura de presión
     if (status != 0){        
         delay(status);//Pausa para que finalice la lectura        
-        status = this -> bmp180.getPressure(presion,temperatura); //Obtenemos la presión     
+        status = bmp180.getPressure(presion,temperatura); //Obtenemos la presión     
     }      
     this -> presion = static_cast<long int>(presion); 
 }
@@ -134,8 +135,4 @@ long Estacion::getContadorPluv() {
 
 float Estacion::getPesoLisimetro(){
     return this -> lisimetro.get_units(4);
-}
-
-SFE_BMP180 Estacion::getTempModulo(){
-    return this -> bmp180;
 }

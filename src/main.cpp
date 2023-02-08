@@ -22,8 +22,7 @@ Estacion estacion = Estacion(0);
 void setup() {
   Serial.begin(9600);
 
-  bmp180.begin();  
-  estacion.init(bmp180);
+  bmp180.begin();
 
   pinMode(SENSOR_VEL_VIENTO_ENV, INPUT);
   pinMode(SENSOR_DIR_VIENTO_ENV, INPUT);
@@ -50,8 +49,8 @@ void loop() {
     estacion.setDireccionViento(analogRead(SENSOR_DIR_VIENTO_ENV));
     estacion.setHumedad(analogRead(SENSOR_HUMEDAD_ENV));
     estacion.setRadiacion(analogRead(SENSOR_RADIACION_ENV));
-    estacion.setTemperatura();
-    estacion.setPresion();
+    estacion.setTemperatura(bmp180);
+    estacion.setPresion(bmp180);
     estacion.setHoja(analogRead(SENSOR_HOJA_ENV));
 
     LUCES ? loadEffect() : lightsOff();  // Efecto de luces
