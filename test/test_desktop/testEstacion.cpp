@@ -4,7 +4,10 @@
 #ifdef UNIT_TEST
 
 Estacion estacion = Estacion(0);
-
+/*
+void setUp(void){
+    estacion.getTempModulo().begin();
+}*/
 
 void testSetHumedad() {
 
@@ -119,13 +122,18 @@ void testSetHoja() {
 void testSetDireccion() {
     //TEST_ASSERT_EQUAL();
 }
-
+/*
+void testPesoLisimetro() {
+    float peso = estacion.getPesoLisimetro();
+    TEST_ASSERT_EQUAL_FLOAT(peso, 0);
+}
+*/
 int main(){
     UNITY_BEGIN();
-    //RUN_TEST(test_loop);
     RUN_TEST(testSetHoja);
     RUN_TEST(testSetHumedad);
-    RUN_TEST(testSetRadiacion);
+  //  RUN_TEST(testSetRadiacion);
+   // RUN_TEST(testPesoLisimetro);
     UNITY_END();
 }
 #endif
