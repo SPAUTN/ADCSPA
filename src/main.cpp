@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <Arduino.h>
 #include <TimeLib.h>
+#include <SFE_BMP180.h>
+
 #include "Estacion.h"
 #include "sendData.h"
 #include "luzindicadora.h"
@@ -9,20 +11,20 @@
 #define TEST true     // true para modo test, sin espera de 1 minuto 
 #define TIME_THRESHOLD 150
 
-
-//------------ Variables para controlar pluviometro ------------------------
-
 volatile long int contadorPluv = 0;
 long startTime = 0;  //para anti rebote.
 long int initialTime = 0;
 
 void pulseDetector();
-
+SFE_BMP180 bmp180;
 Estacion estacion = Estacion(0);
 
 void setup() {
-  Serial.begin(9600);  
-  estacion.getTempModulo().begin();
+  Serial.begin(9600);
+
+  bmp180.begin();  
+  estacion.init(bmp180);
+
   pinMode(SENSOR_VEL_VIENTO_ENV, INPUT);
   pinMode(SENSOR_DIR_VIENTO_ENV, INPUT);
   pinMode(SENSOR_RADIACION_ENV, INPUT);

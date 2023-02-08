@@ -15,8 +15,8 @@ Estacion::Estacion(){
     this -> initTime = 0;
     this -> contadorPluv = 0;
 }
-void Estacion::init(){
-    this -> bmp180.begin();
+void Estacion::init(SFE_BMP180 bmp180){
+    this -> bmp180 = bmp180;
     this -> lisimetro.begin(16, 4);
     this -> lisimetro.set_scale(CALIBRACION);
     this -> lisimetro.tare();
