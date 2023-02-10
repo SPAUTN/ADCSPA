@@ -16,13 +16,13 @@ class Estacion {
         String humHoja;
         long contadorPluv;
         HX711 lisimetro;
+        SFE_BMP180 bmp180;
 
         /**
          * @brief cambio de escala entre floats
          */
-        static float fmap(float, float, float, float, float);
-        
-        void init();
+        float fmap(float, float, float, float, float);
+
 
     public:
         Estacion(long);
@@ -31,6 +31,11 @@ class Estacion {
 
         // -------------------------------------- Inits --------------------------------------
 
+        /**
+         * @brief Inicialización de los objetos bmp180 y lisímetro
+         * 
+         */
+        void init();
         
         // -------------------------------------- Setters --------------------------------------
         
@@ -70,12 +75,12 @@ class Estacion {
         /**
          * @brief Lectura de la temperatura del sensor bmp180
          */
-        void setTemperatura(SFE_BMP180);
+        void setTemperatura();
 
         /**
          * @brief Lectura de la presion del sensor bmp180
          */
-        void setPresion(SFE_BMP180);
+        void setPresion();
 
         /**
          * @brief Setea si la hoja del campo esta mojada o seca
@@ -164,6 +169,12 @@ class Estacion {
          * @return float 
          */
         float getPesoLisimetro();
+
+        /**
+         * @brief Retorna el payload generado con los valores de la estación
+         * 
+         */
+        String getPayload();
 
 };
 #endif

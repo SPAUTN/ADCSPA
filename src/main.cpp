@@ -4,7 +4,6 @@
 #include <SFE_BMP180.h>
 
 #include "Estacion.h"
-#include "sendData.h"
 #include "luzindicadora.h"
 
 #define LUCES true    // true para activar juego de luces al encender y enviar datos
@@ -16,13 +15,12 @@ long startTime = 0;  //para anti rebote.
 long int initialTime = 0;
 
 void pulseDetector();
-SFE_BMP180 bmp180;
 Estacion estacion = Estacion(0);
 
 void setup() {
   Serial.begin(9600);
 
-  bmp180.begin();
+  estacion.init();
 
   pinMode(SENSOR_VEL_VIENTO_ENV, INPUT);
   pinMode(SENSOR_DIR_VIENTO_ENV, INPUT);
@@ -31,6 +29,7 @@ void setup() {
   pinMode(SENSOR_TEMPERATURA_ENV, INPUT);
   pinMode(SENSOR_HOJA_ENV, INPUT);
 
+  // TODO: determinar los 10 pines a usar para las luces indicadoras en esp32
   /*for(int i=2; i<12; i++){
       pinMode(i, OUTPUT);
   }*/
@@ -50,14 +49,13 @@ void loop() {
     estacion.setDireccionViento(analogRead(SENSOR_DIR_VIENTO_ENV));
     estacion.setHumedad(analogRead(SENSOR_HUMEDAD_ENV));
     estacion.setRadiacion(analogRead(SENSOR_RADIACION_ENV));
-    estacion.setTemperatura(bmp180);
-    estacion.setPresion(bmp180);
+    estacion.setTemperatura();
+    estacion.setPresion();
     estacion.setHoja(analogRead(SENSOR_HOJA_ENV));
 
-    LUCES ? loadEffect() : lightsOff();  // Efecto de luces
+    //LUCES ? loadEffect() : lightsOff();  // Efecto de luces
 
-    Serial.println("JSON GENERADO:");
-    Serial.println(setPayload(estacion));
+    Serial.println(estacion.getPayload());
     startTime = millis();
     lightsOff(); // Apagamos las luces
     delay(1000);

@@ -9,24 +9,24 @@
 Estacion::Estacion(long contadorPluv){
     this -> initTime = 0;
     this -> contadorPluv = contadorPluv;
-    init();
 }
 
 Estacion::Estacion(){
     this -> initTime = 0;
     this -> contadorPluv = 0;
-    init();
 }
 void Estacion::init(){
     this -> lisimetro.begin(16, 4);
     this -> lisimetro.set_scale(CALIBRACION);
     this -> lisimetro.tare();
+    this -> bmp180.begin();
 }
 
 void Estacion::setVelocidadViento(long int sensorVel) {
     long int vel=0;
     vel=(sensorVel * 5 * 48) / 818;
     this -> velViento = vel;
+    this -> bmp180.begin();
 }
 
 void Estacion::setDireccionViento(int sensorDir) {
@@ -60,21 +60,21 @@ void Estacion::setRadiacion(long int sensorRad) {
     this -> radiacion = rad;
 }
 
-void Estacion::setTemperatura(SFE_BMP180 bmp180) {
+void Estacion::setTemperatura() {
     char status;
     double temperatura;
-    status = bmp180.startTemperature();//Inicio de lectura de temperatura
+    status = this -> bmp180.startTemperature();//Inicio de lectura de temperatura
     if (status != 0) {
         delay(status); //Pausa para que finalice la lectura
-        status = bmp180.getTemperature(temperatura); //Obtener la temperatura
+        status = this -> bmp180.getTemperature(temperatura); //Obtener la temperatura
     }
-    temperatura = static_cast<long int>(temperatura);
+    this -> temperatura = static_cast<long int>(temperatura);
 }
 
 
-void Estacion::setPresion(SFE_BMP180 bmp180){
+void Estacion::setPresion(){
     double presion;
-    setTemperatura(bmp180);
+    setTemperatura();
     double temperatura = this -> getTemperatura(); //es necesario medir temperatura para poder medir la presion
     char status;
     status = bmp180.startPressure(3); //Inicio lectura de presión
@@ -135,4 +135,23 @@ long Estacion::getContadorPluv() {
 
 float Estacion::getPesoLisimetro(){
     return this -> lisimetro.get_units(4);
+}
+
+String Estacion::getPayload(){
+    String jsonPayload = "{";
+  
+    jsonPayload += "\"lluvia\":" + String(this ->  getContadorPluv());
+    jsonPayload += ",\"velocidadViento\":" + String(this ->  getVelViento());
+    jsonPayload += ",\"humedadHoja\":\"" + String(this ->  getHumHoja())+ "\"";
+    jsonPayload += ",\"direccionViento\":" + String(this ->  getDirViento());
+    jsonPayload += ",\"humedadRelativa\":" + String(this ->  getHumedad());
+    jsonPayload += ",\"radiacionSolar\":" + String(this ->  getRadiacion());
+    jsonPayload += ",\"temperatura\":" + String(this ->  getTemperatura());
+    jsonPayload += ",\"presion\":" + String(this ->  getPresion());
+    jsonPayload += ",\"peso\":" + String(this ->  getPesoLisimetro(), 4);
+    jsonPayload += "}";
+
+    resetContadorPluv();
+    
+    return jsonPayload;
 }
