@@ -27,16 +27,17 @@ void setup() {
   pinMode(SENSOR_VEL_VIENTO_ENV, INPUT);
   pinMode(SENSOR_DIR_VIENTO_ENV, INPUT);
   pinMode(SENSOR_RADIACION_ENV, INPUT);
+  pinMode(SENSOR_HUMEDAD_ENV, INPUT);
   pinMode(SENSOR_TEMPERATURA_ENV, INPUT);
   pinMode(SENSOR_HOJA_ENV, INPUT);
 
-  for(int i=2; i<12; i++){
+  /*for(int i=2; i<12; i++){
       pinMode(i, OUTPUT);
-  }
+  }*/
 
   attachInterrupt(digitalPinToInterrupt(PLUVIOMETRO_PORT), pulseDetector, RISING); // Interrupción por flanco de subida
 
-  LUCES ? loadEffect() : lightsOff();
+  //LUCES ? loadEffect() : lightsOff();
  
 }
 
