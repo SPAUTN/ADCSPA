@@ -5,11 +5,11 @@
 #include "WeatherStation.h"
 //----------#include "luzindicadora.h"
 
-#define LUCES true    // true para activar juego de luces al encender y enviar datos
+#define LUCES false    // true para activar juego de luces al encender y enviar datos
 #define TEST true     // true para modo test, sin espera de 1 minuto 
 #define TIME_THRESHOLD 150
 
-volatile long int contadorPluv = 0;
+volatile static long int contadorPluv = 0;
 long startTime = 0;  //para anti rebote.
 long int initialTime = 0;
 
@@ -51,10 +51,13 @@ void loop() {
     weatherStation.setTemperature();
     weatherStation.setPresion();
     weatherStation.setLeafMoisture(analogRead(LEAF_MOISTURE_SENSOR_PORT));
+    weatherStation.setPulseCounter(contadorPluv);
 
     //LUCES ? loadEffect() : lightsOff();  // Efecto de luces
 
     Serial.println(weatherStation.getPayload());
+
+    contadorPluv = 0;
     startTime = millis();
     //lightsOff(); // Apagamos las luces
     delay(1000);
@@ -65,7 +68,6 @@ void pulseDetector(){
   // TODO: agregar una activacion de un led para indicar que se ha producido una interrupcion e iniciar un contador de tiempo
     if(millis() - initialTime > TIME_THRESHOLD){
         contadorPluv++;
-        weatherStation.pulseCounter(contadorPluv);    
         initialTime = millis();
-      }
+    }
 }
