@@ -85,10 +85,11 @@ void WeatherStation::setPresion() {
     this -> pressure = static_cast<long int>(pressure); 
 }
 
+// TODO: hacer que retorne un valor numérico.
 void WeatherStation::setLeafMoisture(int leafHumididtySensor) {
     String options[5] = {"Seca", "Poco humeda", "Humeda", "Muy humeda", "Mojada"};
-    String resul = options[(int)(leafHumididtySensor/125)-1 > 0 ? (int)(leafHumididtySensor/100)-1 : 0];
-    this -> leafMoisture = resul;
+    String result = options[(int)(leafHumididtySensor/125)-1 > 0 ? (int)(leafHumididtySensor/100)-1 : 0];
+    this -> leafMoisture = result;
 }
 
 void WeatherStation::setPulseCounter(long int currentCount) {
@@ -141,18 +142,18 @@ float WeatherStation::getLysimeterWeight() {
 String WeatherStation::getPayload() {
     String jsonPayload = "{";
   
-    jsonPayload += "\"lluvia\":" + String(this ->  getPluviometerCounter());
-    jsonPayload += ",\"velocidadViento\":" + String(this ->  getWindSpeed());
-    jsonPayload += ",\"humedadHoja\":\"" + String(this ->  getLeafMoisture())+ "\"";
-    jsonPayload += ",\"direccionViento\":" + String(this ->  getWindDirection());
-    jsonPayload += ",\"humedadRelativa\":" + String(this ->  getHumidity());
-    jsonPayload += ",\"radiacionSolar\":" + String(this ->  getRadiation());
-    jsonPayload += ",\"temperatura\":" + String(this ->  getTemperature());
-    jsonPayload += ",\"presion\":" + String(this ->  getPressure());
-    jsonPayload += ",\"peso\":" + String(this ->  getLysimeterWeight(), 4);
+    jsonPayload += "\"rain_milimeters\":" + String(this ->  getPluviometerCounter());
+    jsonPayload += ",\"wing_speed\":" + String(this ->  getWindSpeed());
+    jsonPayload += ",\"wing_direction\":" + String(this ->  getWindDirection());
+    jsonPayload += ",\"leaf_moisture\":\"" + String(this ->  getLeafMoisture())+ "\"";
+    jsonPayload += ",\"relative_humidity\":" + String(this ->  getHumidity());
+    jsonPayload += ",\"solar_radiation\":" + String(this ->  getRadiation());
+    jsonPayload += ",\"temperature\":" + String(this ->  getTemperature());
+    jsonPayload += ",\"pressure\":" + String(this ->  getPressure());
+    jsonPayload += ",\"weight\":" + String(this ->  getLysimeterWeight(), 4);
     jsonPayload += "}";
 
-    resetPulseCounter();
+    this -> resetPulseCounter();
 
     return jsonPayload;
 }

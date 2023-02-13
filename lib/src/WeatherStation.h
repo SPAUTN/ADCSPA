@@ -23,6 +23,13 @@ class WeatherStation {
          */
         float fmap(float, float, float, float, float);
 
+        /**
+         * @brief funcion para volver a cero el contador de pulsos del pluviometro
+         * debe determinarse si hacerlo cada cierto tiempo o mediante una señal
+         * externa de reset.
+         */
+        void resetPulseCounter();
+
 
     public:
         WeatherStation(long);
@@ -97,13 +104,6 @@ class WeatherStation {
          * se pueda calcular el tiempo de lluvia
          */
         void setPulseCounter (long int);
-
-        /**
-         * @brief funcion para volver a cero el contador de pulsos del pluviometro
-         * debe determinarse si hacerlo cada cierto tiempo o mediante una señal
-         * externa de reset.
-         */
-        void resetPulseCounter();
         
         // -------------------------------------- Getters --------------------------------------
 
