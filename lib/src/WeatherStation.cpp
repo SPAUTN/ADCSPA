@@ -91,8 +91,8 @@ void WeatherStation::setLeafMoisture(int leafHumididtySensor) {
     this -> leafMoisture = resul;
 }
 
-void WeatherStation::pulseCounter(long int pulses) {
-    this -> pluviometerCounter = pulses;
+void WeatherStation::setPulseCounter(long int currentCount) {
+    this -> pluviometerCounter += currentCount;
 }
 
 void WeatherStation::resetPulseCounter() {
@@ -129,13 +129,14 @@ String WeatherStation::getLeafMoisture() {
     return this -> leafMoisture;
 }
 
-long WeatherStation::getPluviometerCounter() {
+float WeatherStation::getPluviometerCounter() {
     return this -> pluviometerCounter*0.25;
 }
 
 float WeatherStation::getLysimeterWeight() {
     return this -> lysimeter.get_units(4);
 }
+
 
 String WeatherStation::getPayload() {
     String jsonPayload = "{";
@@ -152,6 +153,6 @@ String WeatherStation::getPayload() {
     jsonPayload += "}";
 
     resetPulseCounter();
-    
+
     return jsonPayload;
 }

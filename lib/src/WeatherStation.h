@@ -96,7 +96,7 @@ class WeatherStation {
          * Además debe indicar cuando se ha producido el primer conteo para que
          * se pueda calcular el tiempo de lluvia
          */
-        void pulseCounter (long int);
+        void setPulseCounter (long int);
 
         /**
          * @brief funcion para volver a cero el contador de pulsos del pluviometro
@@ -161,7 +161,7 @@ class WeatherStation {
          * 
          * @return long 
          */
-        long getPluviometerCounter();
+        float getPluviometerCounter();
 
         /**
          * @brief Get the Peso Lisimetro object
