@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <Arduino.h>
 #include <TimeLib.h>
-#include <SFE_BMP180.h>
 
-#include "Estacion.h"
-#include "luzindicadora.h"
+#include "WeatherStation.h"
+//----------#include "luzindicadora.h"
 
 #define LUCES true    // true para activar juego de luces al encender y enviar datos
 #define TEST true     // true para modo test, sin espera de 1 minuto 
@@ -15,19 +14,19 @@ long startTime = 0;  //para anti rebote.
 long int initialTime = 0;
 
 void pulseDetector();
-Estacion estacion = Estacion(0);
+WeatherStation weatherStation;
 
 void setup() {
   Serial.begin(9600);
 
-  estacion.init();
+  weatherStation.init();
 
-  pinMode(SENSOR_VEL_VIENTO_ENV, INPUT);
-  pinMode(SENSOR_DIR_VIENTO_ENV, INPUT);
-  pinMode(SENSOR_RADIACION_ENV, INPUT);
-  pinMode(SENSOR_HUMEDAD_ENV, INPUT);
-  pinMode(SENSOR_TEMPERATURA_ENV, INPUT);
-  pinMode(SENSOR_HOJA_ENV, INPUT);
+  pinMode(WIND_SPEED_SENSOR_PORT, INPUT);
+  pinMode(WIND_DIRECTION_SENSOR_PORT, INPUT);
+  pinMode(RADIATION_SENSOR_PORT, INPUT);
+  pinMode(HUMIDITY_SENSOR_PORT, INPUT);
+  pinMode(TEMPERATURE_SENSOR_PORT, INPUT);
+  pinMode(LEAF_MOISTURE_SENSOR_PORT, INPUT);
 
   // TODO: determinar los 10 pines a usar para las luces indicadoras en esp32
   /*for(int i=2; i<12; i++){
@@ -45,19 +44,19 @@ void loop() {
   time_t t = now();  
   if ((second(t) == 30 && millis() - startTime > 1000) || TEST) {
 
-    estacion.setVelocidadViento(analogRead(SENSOR_VEL_VIENTO_ENV));       //se leen las entradas analogicas Estación meteorológica.
-    estacion.setDireccionViento(analogRead(SENSOR_DIR_VIENTO_ENV));
-    estacion.setHumedad(analogRead(SENSOR_HUMEDAD_ENV));
-    estacion.setRadiacion(analogRead(SENSOR_RADIACION_ENV));
-    estacion.setTemperatura();
-    estacion.setPresion();
-    estacion.setHoja(analogRead(SENSOR_HOJA_ENV));
+    weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       //se leen las entradas analogicas Estación meteorológica.
+    weatherStation.setwindDirection(analogRead(WIND_DIRECTION_SENSOR_PORT));
+    weatherStation.setHumidity(analogRead(HUMIDITY_SENSOR_PORT));
+    weatherStation.setRadiation(analogRead(RADIATION_SENSOR_PORT));
+    weatherStation.setTemperature();
+    weatherStation.setPresion();
+    weatherStation.setLeafMoisture(analogRead(LEAF_MOISTURE_SENSOR_PORT));
 
     //LUCES ? loadEffect() : lightsOff();  // Efecto de luces
 
-    Serial.println(estacion.getPayload());
+    Serial.println(weatherStation.getPayload());
     startTime = millis();
-    lightsOff(); // Apagamos las luces
+    //lightsOff(); // Apagamos las luces
     delay(1000);
   }
 }
@@ -66,7 +65,7 @@ void pulseDetector(){
   // TODO: agregar una activacion de un led para indicar que se ha producido una interrupcion e iniciar un contador de tiempo
     if(millis() - initialTime > TIME_THRESHOLD){
         contadorPluv++;
-        estacion.cuentaPulsos(contadorPluv);    
+        weatherStation.pulseCounter(contadorPluv);    
         initialTime = millis();
       }
 }

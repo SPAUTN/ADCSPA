@@ -4,19 +4,19 @@
 
 #ifndef ESTACION_H
 #define ESTACION_H
-class Estacion {
+class WeatherStation {
     private:
         long initTime;
-        long int velViento;
-        int dirViento;
-        unsigned long int humedad;
-        unsigned long int radiacion;
-        long int temperatura;
-        long int presion;
-        String humHoja;
-        long contadorPluv;
-        HX711 lisimetro;
-        SFE_BMP180 bmp180;
+        long int windSpeed;
+        int windDirection;
+        unsigned long int humidity;
+        unsigned long int radiation;
+        long int temperature;
+        long int pressure;
+        String leafMoisture;
+        long pluviometerCounter;
+        HX711 lysimeter;
+        SFE_BMP180 bmp180Sensor;
 
         /**
          * @brief cambio de escala entre floats
@@ -25,14 +25,14 @@ class Estacion {
 
 
     public:
-        Estacion(long);
+        WeatherStation(long);
 
-        Estacion();
+        WeatherStation();
 
         // -------------------------------------- Inits --------------------------------------
 
         /**
-         * @brief Inicialización de los objetos bmp180 y lisímetro
+         * @brief Inicialización de los objetos bmp180Sensor y lisímetro
          * 
          */
         void init();
@@ -46,7 +46,7 @@ class Estacion {
          * @param sensorVel del sensor
          * @return long int valor de velocidad del viento
          */
-        void setVelocidadViento(long int);
+        void setWindSpeed(long int);
         
         /**
          * @brief Setea la dirección del viento
@@ -54,7 +54,7 @@ class Estacion {
          * @param sensorDir valor del sensor
          * @return int valor de la dirección del viento en grados respecto al norte
          */
-        void setDireccionViento(int);
+        void setwindDirection(int);
 
         /**
          * @brief Setea la humedad del ambiente entre 0% y 100%
@@ -62,7 +62,7 @@ class Estacion {
          * @param sensorHum valor del sensor de SENSOR_HUMEDAD
          * @return uint humedad porcentaje de SENSOR_HUMEDAD
          */
-        void setHumedad(int);
+        void setHumidity(int);
 
         /**
          * @brief Setea la radiación solar entre 0 y 1400 W/m2
@@ -70,15 +70,15 @@ class Estacion {
          * @param sensorRad valor leido del sensor de radiación solar
          * @return uint rad valor de radiacion solar
          */
-        void setRadiacion(long int);
+        void setRadiation(long int);
 
         /**
-         * @brief Lectura de la temperatura del sensor bmp180
+         * @brief Lectura de la temperatura del sensor bmp180Sensor
          */
-        void setTemperatura();
+        void setTemperature();
 
         /**
-         * @brief Lectura de la presion del sensor bmp180
+         * @brief Lectura de la presion del sensor bmp180Sensor
          */
         void setPresion();
 
@@ -88,7 +88,7 @@ class Estacion {
          * @param sensHoja valor leido del sensor
          * @return String result indicando si la hoja está mojada o seca
          */
-        void setHoja(int);
+        void setLeafMoisture(int);
 
         /**
          * @brief funcion ISR que aumenta el numero de pulsos al producirse
@@ -96,14 +96,14 @@ class Estacion {
          * Además debe indicar cuando se ha producido el primer conteo para que
          * se pueda calcular el tiempo de lluvia
          */
-        void cuentaPulsos (long int);
+        void pulseCounter (long int);
 
         /**
          * @brief funcion para volver a cero el contador de pulsos del pluviometro
          * debe determinarse si hacerlo cada cierto tiempo o mediante una señal
          * externa de reset.
          */
-        void resetContadorPluv();
+        void resetPulseCounter();
         
         // -------------------------------------- Getters --------------------------------------
 
@@ -112,63 +112,63 @@ class Estacion {
          * 
          * @return long int 
          */
-        long int getVelViento();
+        long int getWindSpeed();
 
         /**
          * @brief Get the Dir Viento object
          * 
          * @return int 
          */
-        int getDirViento ();
+        int getWindDirection();
 
         /**
          * @brief Get the Humedad object
          * 
          * @return unsigned long int 
          */
-        unsigned long int getHumedad();
+        unsigned long int getHumidity();
 
         /**
          * @brief Get the Radiacion object
          * 
          * @return unsigned long int 
          */
-        unsigned long int getRadiacion();
+        unsigned long int getRadiation();
 
         /**
          * @brief Get the Temperatura object
          * 
          * @return long int 
          */
-        long int getTemperatura();
+        long int getTemperature();
         
         /**
          * @brief Get the Presion object
          * 
          * @return long int 
          */
-        long int getPresion();
+        long int getPressure();
         
         /**
          * @brief Get the Hum Hoja object
          * 
          * @return String 
          */
-        String getHumHoja();
+        String getLeafMoisture();
 
         /**
          * @brief Get the Contador Pluv object
          * 
          * @return long 
          */
-        long getContadorPluv();
+        long getPluviometerCounter();
 
         /**
          * @brief Get the Peso Lisimetro object
          * 
          * @return float 
          */
-        float getPesoLisimetro();
+        float getLysimeterWeight();
 
         /**
          * @brief Retorna el payload generado con los valores de la estación
