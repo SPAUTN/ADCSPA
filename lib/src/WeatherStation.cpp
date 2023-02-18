@@ -87,7 +87,7 @@ void WeatherStation::setPresion() {
 
 // TODO: hacer que retorne un valor numérico.
 void WeatherStation::setLeafMoisture(int leafHumididtySensor) {
-    this -> leafMoisture = (leafHumididtySensor/4095)*100;
+    this -> leafMoisture = round((leafHumididtySensor*100)/4095);
 }
 
 void WeatherStation::setPulseCounter(long int currentCount) {
