@@ -26,7 +26,6 @@ void WeatherStation::setWindSpeed(long int windSpeedSensor) {
     long int vel=0;
     vel=(windSpeedSensor * 3.3 * 72.7) / 2978;
     this -> windSpeed = vel;
-    this -> bmp180Sensor.begin();
 }
 
 void WeatherStation::setwindDirection(int windDirectionSensor) {
