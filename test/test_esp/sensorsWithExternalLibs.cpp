@@ -1,9 +1,5 @@
-#include <Arduino.h>
 #include <unity.h>
 #include "WeatherStation.h"
-
-//WeatherStation weatherStation = WeatherStation(0);
-
 void setUp(void){
 }
 

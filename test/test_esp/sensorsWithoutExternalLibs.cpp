@@ -1,8 +1,5 @@
-#include <Arduino.h>
 #include <unity.h>
 #include "WeatherStation.h"
-
-#include "sensorsWithExternalLibs.h"
 
 WeatherStation weatherStation = WeatherStation(0);
 
@@ -123,15 +120,3 @@ void testSetwindDirection() {
     weatherStation.setwindDirection(400);
     TEST_ASSERT_EQUAL_INT((400 * 3.3 * 72.7) / 2978,weatherStation.getWindDirection());
 }
-
-void setup() {
-    weatherStation.init();
-    UNITY_BEGIN();
-    RUN_TEST(testsetLeafMoisture);
-    RUN_TEST(testsetHumidity);
-    RUN_TEST(testLysimeterWeight);
-    UNITY_END();
-}
-
-void loop(){}
-
