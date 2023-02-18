@@ -13,7 +13,7 @@ class WeatherStation {
         unsigned long int radiation;
         long int temperature;
         long int pressure;
-        String leafMoisture;
+        int leafMoisture;
         long pluviometerCounter;
         HX711 lysimeter;
         SFE_BMP180 bmp180Sensor;
@@ -152,9 +152,9 @@ class WeatherStation {
         /**
          * @brief Get the Hum Hoja object
          * 
-         * @return String 
+         * @return int with percentage of humidity in the leaf
          */
-        String getLeafMoisture();
+        int getLeafMoisture();
 
         /**
          * @brief Get the Contador Pluv object
