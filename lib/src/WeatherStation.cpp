@@ -24,14 +24,14 @@ void WeatherStation::init() {
 
 void WeatherStation::setWindSpeed(long int windSpeedSensor) {
     long int vel=0;
-    vel=(windSpeedSensor * 5 * 48) / 818;
+    vel=(windSpeedSensor * 3.3 * 72.7) / 2978;
     this -> windSpeed = vel;
     this -> bmp180Sensor.begin();
 }
 
 void WeatherStation::setwindDirection(int windDirectionSensor) {
     // Variable que almacena el voltaje (0.0 a 5.0)
-    float valorVoltaje = fmap(windDirectionSensor, 0, 1023, 0.0, 5.0);
+    float valorVoltaje = fmap(windDirectionSensor, 0, 4095, 0.0, 3.3);
     this -> windDirection = (int) (valorVoltaje * 100);
 }
 
@@ -41,21 +41,21 @@ float WeatherStation::fmap(float x, float in_min, float in_max, float out_min, f
 
 void WeatherStation::setHumidity(int humiditySensor) {
     unsigned long int humedad = 0;
-    if(humiditySensor<102){
+    if(humiditySensor<372){
         humedad = 0;
     } else {
-        humedad = humiditySensor > 818 ? 100 : ((humiditySensor - 102.f) * 100.f) / 716.f;
+        humedad = humiditySensor > 3152 ? 100 : ((humiditySensor - 372.f) * 100.f) / 2780.f;
     }
     this -> humidity = humedad;
 }
 
 void WeatherStation::setRadiation(long int radiationSensor) {
     unsigned long int rad = 0;
-    if(radiationSensor < 121){
+    if(radiationSensor < 621){
         rad = 0;
     }
     else {
-        rad = ((radiationSensor - 121) * 1400) / 637;
+        rad = ((radiationSensor - 621) * 1400) / 2543.3;
     }
     this -> radiation = rad;
 }
