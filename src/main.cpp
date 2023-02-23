@@ -1,13 +1,20 @@
-#include <stdio.h>
+#ifndef UNIT_TEST
 #include <Arduino.h>
+#include <SFE_BMP180.h>
 #include <TimeLib.h>
-
 #include "WeatherStation.h"
+#include <stdio.h>
+#include <driver/uart.h>
+
 //----------#include "luzindicadora.h"
 
 #define LUCES false    // true para activar juego de luces al encender y enviar datos
 #define TEST true     // true para modo test, sin espera de 1 minuto 
 #define TIME_THRESHOLD 150
+
+#define UART_NUM UART_NUM_0
+#define BUF_SIZE 1024
+#define TASK_MEMORY 1024
 
 volatile static long int contadorPluv = 0;
 long startTime = 0;  //para anti rebote.
@@ -34,9 +41,22 @@ void setup() {
   }*/
 
   attachInterrupt(digitalPinToInterrupt(PLUVIOMETRO_PORT), pulseDetector, RISING); // Interrupción por flanco de subida
+  
+  // Configuración de UART
+  uart_config_t uart_config = {
+      .baud_rate = 9600,
+      .data_bits = UART_DATA_8_BITS,
+      .parity = UART_PARITY_DISABLE,
+      .stop_bits = UART_STOP_BITS_1,
+      .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
+      .source_clk = UART_SCLK_APB
+  };
+  uart_param_config(UART_NUM, &uart_config);
+  uart_set_pin(UART_NUM, 3, 1, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+  uart_driver_install(UART_NUM, BUF_SIZE, BUF_SIZE, 0, NULL, 0);
 
+  ESP_LOGI(tag, "init uart completed!");
   //LUCES ? loadEffect() : lightsOff();
- 
 }
 
 void loop() {
@@ -56,7 +76,7 @@ void loop() {
     //LUCES ? loadEffect() : lightsOff();  // Efecto de luces
 
     Serial.println(weatherStation.getPayload());
-
+    uart_write_bytes(UART_NUM, (const char *) weatherStation.getPayload().c_str(), strlen(weatherStation.getPayload().c_str()));
     contadorPluv = 0;
     startTime = millis();
     //lightsOff(); // Apagamos las luces
@@ -71,3 +91,4 @@ void pulseDetector(){
         initialTime = millis();
     }
 }
+#endif
