@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <Arduino.h>
 #include <TimeLib.h>
+#include <SPI.h>
 
 #include "WeatherStation.h"
 //----------#include "luzindicadora.h"
@@ -13,11 +14,22 @@ volatile static long int contadorPluv = 0;
 long startTime = 0;  //para anti rebote.
 long int initialTime = 0;
 
+SPIClass Hspi(HSPI);
+
 void pulseDetector();
 WeatherStation weatherStation;
 
 void setup() {
   Serial.begin(9600);
+  Serial.println("MISO: " + String(MISO));
+  Serial.println("MOSI: " + String(MOSI));
+  Serial.println("SCK: " + String(SCK));
+  Serial.println("SS: " + String(SS));
+
+  //Hspi.begin(HSPI_SCLK
+  pinMode(MISO, OUTPUT);
+  SPI.begin();
+  SPI.setBitOrder(LSBFIRST);
 
   weatherStation.init();
 
@@ -56,6 +68,7 @@ void loop() {
     //LUCES ? loadEffect() : lightsOff();  // Efecto de luces
 
     Serial.println(weatherStation.getPayload());
+    SPI.transfer32((const char *) weatherStation.getPayload().c_str()); // Enviamos los datos por SPI
 
     contadorPluv = 0;
     startTime = millis();
