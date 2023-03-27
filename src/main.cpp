@@ -1,15 +1,8 @@
 #include <stdio.h>
 #include <Arduino.h>
 #include <TimeLib.h>
-#include <ATFunctions.h>
-#include <HexFunctions.h>
+#include <Utils.h>
 #include "WeatherStation.h"
-
-#define AT_RESET "ATZ"
-#define AT_BAUD_CONFIG_SET "AT+BAUD=115200"
-#define AT_P2P_CONFIG_SET "AT+P2P=915000000:7:0:0:10:14"
-#define AT_P2P_CONFIG_GET "AT+P2P=?"
-#define AT_P2P_CONFIG_TX_SET "AT+PRECV=0"
 
 #define TEST true     // true para modo test, sin espera de 1 minuto 
 #define TIME_THRESHOLD 150
@@ -25,7 +18,7 @@ void setup() {
   Serial.begin(115200);
   Serial2.begin(115200);
   sendATCommand(AT_RESET);
-  sendATCommand(AT_BAUD_CONFIG_SET);
+  sendATCommand(AT_BAUD_115200_CONFIG_SET);
   sendATCommand(AT_P2P_CONFIG_SET);
   sendATCommand(AT_P2P_CONFIG_GET);
   sendATCommand(AT_P2P_CONFIG_TX_SET);
@@ -56,10 +49,10 @@ void loop() {
     weatherStation.setLeafMoisture(analogRead(LEAF_MOISTURE_SENSOR_PORT));
     weatherStation.setPulseCounter(contadorPluv);
 
-    String sendPacketP2P = "AT+PSEND=" + asciiToHex(weatherStation.getPayload());
-    Serial.println(sendPacketP2P);
-    String sendPacketResponse = sendATCommand(sendPacketP2P);
-    Serial.println(sendPacketResponse);
+    Serial.println("Sending packet...");
+    String response = sendP2PPacket(weatherStation.getPayload()); 
+    Serial.print("Response: ");
+    Serial.println(response);
 
     contadorPluv = 0;
     startTime = millis();
