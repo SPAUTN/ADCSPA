@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <Arduino.h>
 #include <TimeLib.h>
-
+#include <ATFunctions.h>
+#include <HexFunctions.h>
 #include "WeatherStation.h"
+
 #define AT_RESET "ATZ"
 #define AT_BAUD_CONFIG_SET "AT+BAUD=115200"
 #define AT_P2P_CONFIG_SET "AT+P2P=915000000:7:0:0:10:14"
@@ -17,10 +19,6 @@ long startTime = 0;  //para anti rebote.
 long int initialTime = 0;
 
 void pulseDetector();
-String sendATCommand(String);
-String readSerial2();
-String hexToASCII(String);
-String asciiToHex(String);
 WeatherStation weatherStation;
 
 void setup() {
@@ -75,54 +73,4 @@ void pulseDetector(){
         contadorPluv++;
         initialTime = millis();
     }
-}
-
-String sendATCommand(String command) {
-  String response = "";
-  bool configCommand = command.indexOf('?') == -1;
-  if(configCommand) {
-    delay(1000);
-  }
-  Serial2.flush();
-  Serial2.println();
-  Serial2.println(command);
-  delay(500);
-  Serial2.flush();
-  response = readSerial2();
-  if( !configCommand ) {
-    response = response.substring(0, response.indexOf('\r'));
-  }
-  response.trim();
-  return response;
-}
-
-String readSerial2() {
-  String readed = "";
-  while(Serial2.available()>0) {
-    char c = Serial2.read();
-    Serial.print(c);
-    readed += c;
-  }
-  return readed;
-}
-
-String hexToASCII(String hex) {
-  String ascii = "";
-  for(int i=0; i<hex.length(); i+=2) {
-    String ch = hex.substring(i, i+2);
-    char c = (char) (int)strtol(ch.c_str(), NULL, HEX);
-    ascii += (char) c;
-  }
-  return ascii;
-}
-
-String asciiToHex(String ascii) {
-  String hex = "";
-  for(int i=0; i<ascii.length(); i++) {
-    char c = ascii.charAt(i);
-    int code = c;
-    String h = String(code, HEX);
-    hex += h;
-  }
-  return hex;
 }
