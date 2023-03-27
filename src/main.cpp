@@ -65,7 +65,7 @@ void loop() {
 
     contadorPluv = 0;
     startTime = millis();
-    delay(1000);
+    delay(3000);
   }
 }
 
