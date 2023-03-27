@@ -31,7 +31,7 @@ void setup() {
   sendATCommand(AT_P2P_CONFIG_SET);
   sendATCommand(AT_P2P_CONFIG_GET);
   sendATCommand(AT_P2P_CONFIG_TX_SET);
-  
+
   weatherStation.init();
 
   pinMode(WIND_SPEED_SENSOR_PORT, INPUT);
@@ -65,7 +65,6 @@ void loop() {
 
     contadorPluv = 0;
     startTime = millis();
-    //lightsOff(); // Apagamos las luces
     delay(1000);
   }
 }
