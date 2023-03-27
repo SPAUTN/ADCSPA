@@ -3,8 +3,11 @@
 #include <TimeLib.h>
 
 #include "WeatherStation.h"
-#define AT_COMMAND_P2P_CONFIG_SET "AT+P2P=915000000:7:0:0:10:14"
-#define AT_COMMAND_P2P_CONFIG_TX_SET "AT+PRECV=0"
+#define AT_RESET "ATZ"
+#define AT_BAUD_CONFIG_SET "AT+BAUD=115200"
+#define AT_P2P_CONFIG_SET "AT+P2P=915000000:7:0:0:10:14"
+#define AT_P2P_CONFIG_GET "AT+P2P=?"
+#define AT_P2P_CONFIG_TX_SET "AT+PRECV=0"
 
 #define TEST true     // true para modo test, sin espera de 1 minuto 
 #define TIME_THRESHOLD 150
@@ -23,8 +26,12 @@ WeatherStation weatherStation;
 void setup() {
   Serial.begin(115200);
   Serial2.begin(115200);
-  sendATCommand(AT_COMMAND_P2P_CONFIG_SET);
-  sendATCommand(AT_COMMAND_P2P_CONFIG_TX_SET);
+  sendATCommand(AT_RESET);
+  sendATCommand(AT_BAUD_CONFIG_SET);
+  sendATCommand(AT_P2P_CONFIG_SET);
+  sendATCommand(AT_P2P_CONFIG_GET);
+  sendATCommand(AT_P2P_CONFIG_TX_SET);
+  
   weatherStation.init();
 
   pinMode(WIND_SPEED_SENSOR_PORT, INPUT);
