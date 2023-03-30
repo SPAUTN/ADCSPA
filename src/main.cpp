@@ -17,11 +17,11 @@ WeatherStation weatherStation;
 void setup() {
   Serial.begin(115200);
   Serial2.begin(115200);
-  sendATCommand(AT_RESET);
-  sendATCommand(AT_BAUD_115200_CONFIG_SET);
-  sendATCommand(AT_P2P_CONFIG_SET);
-  sendATCommand(AT_P2P_CONFIG_GET);
-  sendATCommand(AT_P2P_CONFIG_TX_SET);
+  sendATCommand(Serial2, AT_RESET);
+  sendATCommand(Serial2, AT_BAUD_115200_CONFIG_SET);
+  sendATCommand(Serial2, AT_P2P_CONFIG_SET);
+  sendATCommand(Serial2, AT_P2P_CONFIG_GET);
+  sendATCommand(Serial2, AT_P2P_CONFIG_TX_SET);
 
   weatherStation.init();
 
@@ -49,8 +49,9 @@ void loop() {
     weatherStation.setLeafMoisture(analogRead(LEAF_MOISTURE_SENSOR_PORT));
     weatherStation.setPulseCounter(contadorPluv);
 
-    Serial.println("Sending packet...");
-    String response = sendP2PPacket(weatherStation.getPayload()); 
+    Serial.print("Sending packet:");
+    Serial.println(weatherStation.getPayload());
+    String response = sendP2PPacket(Serial2, weatherStation.getPayload()); 
     Serial.print("Response: ");
     Serial.println(response);
 
