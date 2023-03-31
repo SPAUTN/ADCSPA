@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <TimeLib.h>
 #include <Utils.h>
+#include <HardwareSerial.h>
 #include "WeatherStation.h"
 
 #define TEST true     // true para modo test, sin espera de 1 minuto 
@@ -16,12 +17,12 @@ WeatherStation weatherStation;
 
 void setup() {
   Serial.begin(115200);
-  Serial2.begin(115200);
-  sendATCommand(AT_RESET);
-  sendATCommand(AT_BAUD_115200_CONFIG_SET);
-  sendATCommand(AT_P2P_CONFIG_SET);
-  sendATCommand(AT_P2P_CONFIG_GET);
-  sendATCommand(AT_P2P_CONFIG_TX_SET);
+  Serial1.begin(115200, SERIAL_8N1, 19, 5);
+  sendATCommand(Serial1, AT_RESET);
+  sendATCommand(Serial1, AT_BAUD_115200_CONFIG_SET);
+  sendATCommand(Serial1, AT_P2P_CONFIG_SET);
+  sendATCommand(Serial1, AT_P2P_CONFIG_GET);
+  sendATCommand(Serial1, AT_P2P_CONFIG_TX_SET);
 
   weatherStation.init();
 
@@ -49,8 +50,9 @@ void loop() {
     weatherStation.setLeafMoisture(analogRead(LEAF_MOISTURE_SENSOR_PORT));
     weatherStation.setPulseCounter(contadorPluv);
 
-    Serial.println("Sending packet...");
-    String response = sendP2PPacket(weatherStation.getPayload()); 
+    Serial.print("Sending packet:");
+    Serial.println(weatherStation.getPayload());
+    String response = sendP2PPacket(Serial1, weatherStation.getPayload()); 
     Serial.print("Response: ");
     Serial.println(response);
 
