@@ -18,7 +18,7 @@ WeatherStation::WeatherStation() {
 void WeatherStation::init() {
     this -> lysimeter.begin(16, 4);
     this -> lysimeter.set_scale(CALIBRATION);
-    this -> lysimeter.tare();
+    //this -> lysimeter.tare();
     this -> bmp180Sensor.begin();
 }
 
@@ -146,7 +146,7 @@ String WeatherStation::getPayload() {
     jsonPayload += ",\"solar_radiation\":" + String(this ->  getRadiation());
     jsonPayload += ",\"temperature\":" + String(this ->  getTemperature());
     jsonPayload += ",\"pressure\":" + String(this ->  getPressure());
-    jsonPayload += ",\"weight\":" + String(this ->  getLysimeterWeight(), 4);
+    //jsonPayload += ",\"weight\":" + String(this ->  getLysimeterWeight(), 4);
     jsonPayload += "}";
 
     this -> resetPulseCounter();
