@@ -19,12 +19,12 @@ WeatherStation weatherStation;
 void setup() {
   Serial.begin(115200);
   Serial1.begin(115200, SERIAL_8N1, 19, 5);
-  String response1 = sendATCommand(Serial1, AT_RESET);
-  String response2 = sendATCommand(Serial1, AT_BAUD_115200_CONFIG_SET);
-  String response3 = sendATCommand(Serial1, AT_P2P_CONFIG_SET);
-  String response4 = sendATCommand(Serial1, AT_P2P_CONFIG_GET);
-  String response5 = sendATCommand(Serial1, AT_CONTINUOUS_PRECV_CONFIG_SET);
-  //String response5 = sendATCommand(Serial1, AT_P2P_CONFIG_TX_SET);
+  
+  Serial.println(sendATCommand(Serial1, AT_RESET));
+  Serial.println(sendATCommand(Serial1, AT_BAUD_115200_CONFIG_SET));
+  Serial.println(sendATCommand(Serial1, AT_P2P_CONFIG_SET));
+  Serial.println(sendATCommand(Serial1, AT_P2P_CONFIG_GET));
+  Serial.println(sendATCommand(Serial1, AT_CONTINUOUS_PRECV_CONFIG_SET));
 
   weatherStation.init();
 
@@ -36,17 +36,6 @@ void setup() {
   pinMode(LEAF_MOISTURE_SENSOR_PORT, INPUT);
 
   attachInterrupt(digitalPinToInterrupt(PLUVIOMETRO_PORT), pulseDetector, RISING); // Interrupción por flanco de subida
-
-  Serial.print("Response1: ");
-  Serial.println(response1);
-  Serial.print("Response2: ");
-  Serial.println(response2);
-  Serial.print("Response3: ");
-  Serial.println(response3);
-  Serial.print("Response4: ");
-  Serial.println(response4);
-  Serial.print("Response5: ");
-  Serial.println(response5);
 
   Serial.println("Setup finished");
 }
