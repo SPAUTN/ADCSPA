@@ -7,6 +7,7 @@
 
 #define TEST true     // true para modo test, sin espera de 1 minuto 
 #define TIME_THRESHOLD 150
+#define AT_CONTINUOUS_PRECV_CONFIG_SET "AT+PRECV=65534" 
 
 volatile static long int contadorPluv = 0;
 long startTime = 0;  //para anti rebote.
@@ -18,11 +19,12 @@ WeatherStation weatherStation;
 void setup() {
   Serial.begin(115200);
   Serial1.begin(115200, SERIAL_8N1, 19, 5);
-  sendATCommand(Serial1, AT_RESET);
-  sendATCommand(Serial1, AT_BAUD_115200_CONFIG_SET);
-  sendATCommand(Serial1, AT_P2P_CONFIG_SET);
-  sendATCommand(Serial1, AT_P2P_CONFIG_GET);
-  sendATCommand(Serial1, AT_P2P_CONFIG_TX_SET);
+  
+  Serial.println(sendATCommand(Serial1, AT_RESET));
+  Serial.println(sendATCommand(Serial1, AT_BAUD_115200_CONFIG_SET));
+  Serial.println(sendATCommand(Serial1, AT_P2P_CONFIG_SET));
+  Serial.println(sendATCommand(Serial1, AT_P2P_CONFIG_GET));
+  Serial.println(sendATCommand(Serial1, AT_CONTINUOUS_PRECV_CONFIG_SET));
 
   weatherStation.init();
 
@@ -39,26 +41,35 @@ void setup() {
 }
 
 void loop() {
-  time_t t = now();  
-  if ((second(t) == 30 && millis() - startTime > 1000) || TEST) {
-    weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       //se leen las entradas analogicas Estación meteorológica.
-    weatherStation.setwindDirection(analogRead(WIND_DIRECTION_SENSOR_PORT));
-    weatherStation.setHumidity(analogRead(HUMIDITY_SENSOR_PORT));
-    weatherStation.setRadiation(analogRead(RADIATION_SENSOR_PORT));
-    weatherStation.setTemperature();
-    weatherStation.setPresion();
-    weatherStation.setLeafMoisture(analogRead(LEAF_MOISTURE_SENSOR_PORT));
-    weatherStation.setPulseCounter(contadorPluv);
+  if(Serial1.available()>0) {
+    String rxData = readSerial(Serial1);
+    rxData.trim();
+    rxData = hexToASCII(rxData.substring(rxData.lastIndexOf(':')+1));
+    Serial.print("Instruction received: ");
+    Serial.println(rxData);
+    if (rxData.equals("POLL")) {
+      weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       //se leen las entradas analogicas Estación meteorológica.
+      weatherStation.setwindDirection(analogRead(WIND_DIRECTION_SENSOR_PORT));
+      weatherStation.setHumidity(analogRead(HUMIDITY_SENSOR_PORT));
+      weatherStation.setRadiation(analogRead(RADIATION_SENSOR_PORT));
+      weatherStation.setTemperature();
+      weatherStation.setPresion();
+      weatherStation.setLeafMoisture(analogRead(LEAF_MOISTURE_SENSOR_PORT));
+      weatherStation.setPulseCounter(contadorPluv);
 
-    Serial.print("Sending packet:");
-    Serial.println(weatherStation.getPayload());
-    String response = sendP2PPacket(Serial1, weatherStation.getPayload()); 
-    Serial.print("Response: ");
-    Serial.println(response);
+      Serial.print("Sending packet:");
+      Serial.println(weatherStation.getPayload());
+      sendATCommand(Serial1, AT_P2P_CONFIG_TX_SET);
+      String response = sendP2PPacket(Serial1, weatherStation.getPayload()); 
+      Serial.print("Response: ");
+      response.replace('\n', ' ');
+      Serial.println(response);
+      sendATCommand(Serial1, AT_CONTINUOUS_PRECV_CONFIG_SET);
 
-    contadorPluv = 0;
-    startTime = millis();
-    delay(3000);
+      contadorPluv = 0;
+      startTime = millis();
+      delay(3000);
+    }
   }
 }
 
