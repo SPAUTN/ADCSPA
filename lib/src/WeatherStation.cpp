@@ -18,7 +18,7 @@ WeatherStation::WeatherStation() {
 void WeatherStation::init() {
     this -> lysimeter.begin(16, 4);
     this -> lysimeter.set_scale(CALIBRATION);
-    //this -> lysimeter.tare();
+    this -> lysimeter.tare();
     this -> bmp180Sensor.begin();
 }
 
@@ -139,14 +139,14 @@ float WeatherStation::getLysimeterWeight() {
 String WeatherStation::getPayload() {
     String jsonPayload = "{";
     jsonPayload += "\"rain_milimeters\":" + String(this ->  getPluviometerCounter());
-    jsonPayload += ",\"wing_speed\":" + String(this ->  getWindSpeed());
-    jsonPayload += ",\"wing_direction\":" + String(this ->  getWindDirection());
+    jsonPayload += ",\"wind_speed\":" + String(this ->  getWindSpeed());
+    jsonPayload += ",\"wind_direction\":" + String(this ->  getWindDirection());
     jsonPayload += ",\"leaf_moisture\":\"" + String(this ->  getLeafMoisture())+ "\"";
     jsonPayload += ",\"relative_humidity\":" + String(this ->  getHumidity());
     jsonPayload += ",\"solar_radiation\":" + String(this ->  getRadiation());
     jsonPayload += ",\"temperature\":" + String(this ->  getTemperature());
     jsonPayload += ",\"pressure\":" + String(this ->  getPressure());
-    //jsonPayload += ",\"weight\":" + String(this ->  getLysimeterWeight(), 4);
+    jsonPayload += ",\"weight\":" + String(this ->  getLysimeterWeight(), 4);
     jsonPayload += "}";
 
     this -> resetPulseCounter();

@@ -57,10 +57,12 @@ void loop() {
       weatherStation.setLeafMoisture(analogRead(LEAF_MOISTURE_SENSOR_PORT));
       weatherStation.setPulseCounter(contadorPluv);
 
+      String transmitionPacket = weatherStation.getPayload();
+
       Serial.print("Sending packet:");
-      Serial.println(weatherStation.getPayload());
+      Serial.println(transmitionPacket);
       sendATCommand(Serial1, AT_P2P_CONFIG_TX_SET);
-      String response = sendP2PPacket(Serial1, weatherStation.getPayload()); 
+      String response = sendP2PPacket(Serial1, transmitionPacket); 
       Serial.print("Response: ");
       response.replace('\n', ' ');
       Serial.println(response);
