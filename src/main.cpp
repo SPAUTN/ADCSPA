@@ -18,7 +18,7 @@ WeatherStation weatherStation;
 
 void setup() {
   Serial.begin(115200);
-  Serial1.begin(115200, SERIAL_8N1, 19, 5);
+  Serial1.begin(115200, SERIAL_8N1, 19, 5); //RX, TX
   
   Serial.println(sendATCommand(Serial1, AT_RESET));
   Serial.println(sendATCommand(Serial1, AT_BAUD_115200_CONFIG_SET));
