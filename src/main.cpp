@@ -34,6 +34,9 @@ void setup() {
   pinMode(HUMIDITY_SENSOR_PORT, INPUT);
   pinMode(TEMPERATURE_SENSOR_PORT, INPUT);
   pinMode(LEAF_MOISTURE_SENSOR_PORT, INPUT);
+  pinMode(IRRIGATION_CONTROL_PORT, OUTPUT);
+
+  digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
 
   attachInterrupt(digitalPinToInterrupt(PLUVIOMETRO_PORT), pulseDetector, RISING); // Interrupción por flanco de subida
 
@@ -70,7 +73,14 @@ void loop() {
 
       contadorPluv = 0;
       startTime = millis();
-      delay(3000);
+      delay(300);
+    }
+    if (rxData.equals("IRR")) {
+      Serial.println("\nOpening irrigation control...");
+      digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
+      delay(2000);
+      Serial.println("\nClosing irrigation control...");
+      digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
     }
   }
 }
