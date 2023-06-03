@@ -54,7 +54,10 @@ void WeatherStation::setRadiation(long int radiationSensor) {
         rad = 0;
     }
     else {
-        rad = ((radiationSensor - 621) * 1400) / 2543.3;
+        rad = ((radiationSensor - 621) * 1400) / 2853;
+    }
+    if(rad > 1400){       //no puede superar el valor de 1400 W/m2
+        rad = 1400;
     }
     this -> radiation = rad;
 }
