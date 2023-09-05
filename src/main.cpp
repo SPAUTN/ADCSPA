@@ -50,7 +50,7 @@ void loop() {
     rxData = hexToASCII(rxData.substring(rxData.lastIndexOf(':')+1));
     Serial.print("Instruction received: ");
     Serial.println(rxData);
-    if (rxData.equals("POLL")) {
+    if (rxData.equals("POLL") || rxData.equals("IRR")) {
       weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       //se leen las entradas analogicas Estación meteorológica.
       weatherStation.setwindDirection(analogRead(WIND_DIRECTION_SENSOR_PORT));
       weatherStation.setHumidity(analogRead(HUMIDITY_SENSOR_PORT));
@@ -71,16 +71,17 @@ void loop() {
       Serial.println(response);
       sendATCommand(Serial1, AT_CONTINUOUS_PRECV_CONFIG_SET);
 
+      if (rxData.equals("IRR")) {
+        Serial.println("\nOpening irrigation control...");
+        digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
+        delay(2000);
+        Serial.println("\nClosing irrigation control...");
+        digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
+      }
+
       contadorPluv = 0;
       startTime = millis();
       delay(300);
-    }
-    if (rxData.equals("IRR")) {
-      Serial.println("\nOpening irrigation control...");
-      digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
-      delay(2000);
-      Serial.println("\nClosing irrigation control...");
-      digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
     }
   }
 }
