@@ -53,7 +53,7 @@ void loop() {
     if (rxData.equals("POLL") || rxData.equals("IRR")) {
       weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       //se leen las entradas analogicas Estación meteorológica.
       weatherStation.setwindDirection(analogRead(WIND_DIRECTION_SENSOR_PORT));
-      weatherStation.setHumidity(analogRead(HUMIDITY_SENSOR_PORT));
+      weatherStation.setHumidity(HUMIDITY_SENSOR_PORT);
       weatherStation.setRadiation(analogRead(RADIATION_SENSOR_PORT));
       weatherStation.setTemperature();
       weatherStation.setPresion();
@@ -62,6 +62,17 @@ void loop() {
 
       String transmitionPacket = weatherStation.getPayload();
 
+      if (rxData.equals("IRR")) {
+        transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-2);
+        transmitionPacket += "\"dryweight\":" + String(weatherStation.getLysimeterWeight()) + ",";
+        Serial.println("\nOpening irrigation control...");
+        digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
+        delay(2000);
+        Serial.println("\nClosing irrigation control...");
+        digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
+        transmitionPacket = "\"wetweight\":" + String(weatherStation.getLysimeterWeight()) + "}";
+      }
+
       Serial.print("Sending packet:");
       Serial.println(transmitionPacket);
       sendATCommand(Serial1, AT_P2P_CONFIG_TX_SET);
@@ -69,15 +80,10 @@ void loop() {
       Serial.print("Response: ");
       response.replace('\n', ' ');
       Serial.println(response);
-      sendATCommand(Serial1, AT_CONTINUOUS_PRECV_CONFIG_SET);
 
-      if (rxData.equals("IRR")) {
-        Serial.println("\nOpening irrigation control...");
-        digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
-        delay(2000);
-        Serial.println("\nClosing irrigation control...");
-        digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
-      }
+      
+
+      sendATCommand(Serial1, AT_CONTINUOUS_PRECV_CONFIG_SET);
 
       contadorPluv = 0;
       startTime = millis();

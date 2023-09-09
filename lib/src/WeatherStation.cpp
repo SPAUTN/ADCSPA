@@ -1,6 +1,7 @@
 #include <SFE_BMP180.h>
 #include <TimeLib.h>
 
+#include "DHT.h"
 #include "WeatherStation.h"
 
 #define TIME_THRESHOLD 150
@@ -38,14 +39,9 @@ float WeatherStation::fmap(float x, float in_min, float in_max, float out_min, f
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-void WeatherStation::setHumidity(int humiditySensor) {
-    unsigned long int humedad = 0;
-    if(humiditySensor<372){
-        humedad = 0;
-    } else {
-        humedad = humiditySensor > 3152 ? 100 : ((humiditySensor - 372.f) * 100.f) / 2780.f;
-    }
-    this -> humidity = humedad;
+void WeatherStation::setHumidity(int humiditySensorPort) {
+    DHT sensorTH (humiditySensorPort, DHT22);
+    this -> humidity = sensorTH.readHumidity();
 }
 
 void WeatherStation::setRadiation(long int radiationSensor) {
@@ -110,7 +106,7 @@ int WeatherStation::getWindDirection() {
     return this -> windDirection;
 }
 
-unsigned long int WeatherStation::getHumidity() {
+float WeatherStation::getHumidity() {
     return this -> humidity;
 }
 
