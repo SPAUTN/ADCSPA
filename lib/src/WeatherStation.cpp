@@ -141,6 +141,7 @@ String WeatherStation::getPayload() {
     jsonPayload += ",\"wind_speed\":" + String(this ->  getWindSpeed());
     jsonPayload += ",\"wind_direction\":" + String(this ->  getWindDirection());
     jsonPayload += ",\"leaf_moisture\":" + String(this ->  getLeafMoisture());
+    // jsonPayload += ",\"relative_humidity\":" + String(this ->  getHumidity());
     jsonPayload += ",\"solar_radiation\":" + String(this ->  getRadiation());
     jsonPayload += ",\"temperature\":" + String(this ->  getTemperature());
     jsonPayload += ",\"pressure\":" + String(this ->  getPressure());
