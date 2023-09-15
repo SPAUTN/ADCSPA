@@ -63,14 +63,18 @@ void loop() {
       String transmitionPacket = weatherStation.getPayload();
 
       if (rxData.equals("IRR")) {
-        transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-2);
-        transmitionPacket += "\"dryweight\":" + String(weatherStation.getLysimeterWeight()) + ",";
+        Serial.println(transmitionPacket);
+        transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
+        Serial.println(transmitionPacket);
+        transmitionPacket += ",\"dryweight\":" + String(weatherStation.getLysimeterWeight()) + ",";
+        Serial.println(transmitionPacket);
         Serial.println("\nOpening irrigation control...");
         digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
         delay(2000);
         Serial.println("\nClosing irrigation control...");
         digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
-        transmitionPacket = "\"wetweight\":" + String(weatherStation.getLysimeterWeight()) + "}";
+        transmitionPacket += "\"wetweight\":" + String(weatherStation.getLysimeterWeight()) + "}";
+        Serial.println(transmitionPacket);
       }
 
       Serial.print("Sending packet:");
