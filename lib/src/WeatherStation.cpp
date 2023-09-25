@@ -5,7 +5,7 @@
 #include "WeatherStation.h"
 
 #define TIME_THRESHOLD 150
-#define CALIBRATION 462000.0
+#define CALIBRATION 470.75
 
 WeatherStation::WeatherStation(long initialCounter) {
     this -> initTime = 0;
@@ -40,6 +40,7 @@ float WeatherStation::fmap(float x, float in_min, float in_max, float out_min, f
 }
 
 void WeatherStation::setHumidity(int humiditySensorPort) {
+    delay(2000); //Para respetar la frecuencia del sensor
     DHT sensorTH (humiditySensorPort, DHT22);
     this -> humidity = sensorTH.readHumidity();
 }
