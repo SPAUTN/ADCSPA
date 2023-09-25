@@ -10,7 +10,7 @@
 #define AT_CONTINUOUS_PRECV_CONFIG_SET "AT+PRECV=65534" 
 
 volatile static long int contadorPluv = 0;
-long startTime = 0;  //para anti rebote.
+long startTime = 0;  
 long int initialTime = 0;
 
 void pulseDetector();
@@ -38,7 +38,7 @@ void setup() {
 
   digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
 
-  attachInterrupt(digitalPinToInterrupt(PLUVIOMETRO_PORT), pulseDetector, RISING); // Interrupción por flanco de subida
+  attachInterrupt(digitalPinToInterrupt(PLUVIOMETRO_PORT), pulseDetector, RISING); 
 
   Serial.println("Setup finished");
 }
@@ -51,7 +51,7 @@ void loop() {
     Serial.print("Instruction received: ");
     Serial.println(rxData);
     if (rxData.equals("POLL") || rxData.equals("IRR")) {
-      weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       //se leen las entradas analogicas Estación meteorológica.
+      weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       
       weatherStation.setwindDirection(analogRead(WIND_DIRECTION_SENSOR_PORT));
       weatherStation.setHumidity(HUMIDITY_SENSOR_PORT);
       weatherStation.setRadiation(analogRead(RADIATION_SENSOR_PORT));
@@ -97,7 +97,7 @@ void loop() {
 }
 
 void pulseDetector(){
-  // TODO: agregar una activacion de un led para indicar que se ha producido una interrupcion e iniciar un contador de tiempo
+  
     if(millis() - initialTime > TIME_THRESHOLD){
         contadorPluv++;
         initialTime = millis();
