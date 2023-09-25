@@ -10,7 +10,7 @@
 #define AT_CONTINUOUS_PRECV_CONFIG_SET "AT+PRECV=65534" 
 
 volatile static long int contadorPluv = 0;
-long startTime = 0;  //para anti rebote.
+long startTime = 0;  
 long int initialTime = 0;
 
 void pulseDetector();
@@ -38,7 +38,7 @@ void setup() {
 
   digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
 
-  attachInterrupt(digitalPinToInterrupt(PLUVIOMETRO_PORT), pulseDetector, RISING); // Interrupción por flanco de subida
+  attachInterrupt(digitalPinToInterrupt(PLUVIOMETRO_PORT), pulseDetector, RISING); 
 
   Serial.println("Setup finished");
 }
@@ -50,10 +50,10 @@ void loop() {
     rxData = hexToASCII(rxData.substring(rxData.lastIndexOf(':')+1));
     Serial.print("Instruction received: ");
     Serial.println(rxData);
-    if (rxData.equals("POLL")) {
-      weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       //se leen las entradas analogicas Estación meteorológica.
+    if (rxData.equals("POLL") || rxData.equals("IRR")) {
+      weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       
       weatherStation.setwindDirection(analogRead(WIND_DIRECTION_SENSOR_PORT));
-      weatherStation.setHumidity(analogRead(HUMIDITY_SENSOR_PORT));
+      weatherStation.setHumidity(HUMIDITY_SENSOR_PORT);
       weatherStation.setRadiation(analogRead(RADIATION_SENSOR_PORT));
       weatherStation.setTemperature();
       weatherStation.setPresion();
@@ -62,6 +62,21 @@ void loop() {
 
       String transmitionPacket = weatherStation.getPayload();
 
+      if (rxData.equals("IRR")) {
+        Serial.println(transmitionPacket);
+        transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
+        Serial.println(transmitionPacket);
+        transmitionPacket += ",\"dryweight\":" + String(weatherStation.getLysimeterWeight()) + ",";
+        Serial.println(transmitionPacket);
+        Serial.println("\nOpening irrigation control...");
+        digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
+        delay(2000);
+        Serial.println("\nClosing irrigation control...");
+        digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
+        transmitionPacket += "\"wetweight\":" + String(weatherStation.getLysimeterWeight()) + "}";
+        Serial.println(transmitionPacket);
+      }
+
       Serial.print("Sending packet:");
       Serial.println(transmitionPacket);
       sendATCommand(Serial1, AT_P2P_CONFIG_TX_SET);
@@ -69,24 +84,20 @@ void loop() {
       Serial.print("Response: ");
       response.replace('\n', ' ');
       Serial.println(response);
+
+      
+
       sendATCommand(Serial1, AT_CONTINUOUS_PRECV_CONFIG_SET);
 
       contadorPluv = 0;
       startTime = millis();
       delay(300);
     }
-    if (rxData.equals("IRR")) {
-      Serial.println("\nOpening irrigation control...");
-      digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
-      delay(2000);
-      Serial.println("\nClosing irrigation control...");
-      digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
-    }
   }
 }
 
 void pulseDetector(){
-  // TODO: agregar una activacion de un led para indicar que se ha producido una interrupcion e iniciar un contador de tiempo
+  
     if(millis() - initialTime > TIME_THRESHOLD){
         contadorPluv++;
         initialTime = millis();

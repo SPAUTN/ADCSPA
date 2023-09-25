@@ -1,6 +1,7 @@
 #include <SFE_BMP180.h>
 #include <TimeLib.h>
 #include "HX711.h"
+#include "DHT.h"
 
 #ifndef ESTACION_H
 #define ESTACION_H
@@ -9,7 +10,7 @@ class WeatherStation {
         long initTime;
         long int windSpeed;
         int windDirection;
-        unsigned long int humidity;
+        float humidity;
         unsigned long int radiation;
         long int temperature;
         long int pressure;
@@ -126,7 +127,7 @@ class WeatherStation {
          * 
          * @return unsigned long int 
          */
-        unsigned long int getHumidity();
+        float getHumidity();
 
         /**
          * @brief Get the Radiacion object

@@ -1,10 +1,11 @@
 #include <SFE_BMP180.h>
 #include <TimeLib.h>
 
+#include "DHT.h"
 #include "WeatherStation.h"
 
 #define TIME_THRESHOLD 150
-#define CALIBRATION 462000.0
+#define CALIBRATION 470.75
 
 WeatherStation::WeatherStation(long initialCounter) {
     this -> initTime = 0;
@@ -29,7 +30,7 @@ void WeatherStation::setWindSpeed(long int windSpeedSensor) {
 }
 
 void WeatherStation::setwindDirection(int windDirectionSensor) {
-    // Variable que almacena el voltaje (0.0 a 5.0)
+    
     float valorVoltaje = fmap(windDirectionSensor, 0, 4095, 0.0, 3.3);
     this -> windDirection = (int) (valorVoltaje * 100);
 }
@@ -38,14 +39,10 @@ float WeatherStation::fmap(float x, float in_min, float in_max, float out_min, f
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-void WeatherStation::setHumidity(int humiditySensor) {
-    unsigned long int humedad = 0;
-    if(humiditySensor<372){
-        humedad = 0;
-    } else {
-        humedad = humiditySensor > 3152 ? 100 : ((humiditySensor - 372.f) * 100.f) / 2780.f;
-    }
-    this -> humidity = humedad;
+void WeatherStation::setHumidity(int humiditySensorPort) {
+    delay(2000); //Para respetar la frecuencia del sensor
+    DHT sensorTH (humiditySensorPort, DHT22);
+    this -> humidity = sensorTH.readHumidity();
 }
 
 void WeatherStation::setRadiation(long int radiationSensor) {
@@ -56,7 +53,7 @@ void WeatherStation::setRadiation(long int radiationSensor) {
     else {
         rad = ((radiationSensor - 621) * 1400) / 2853;
     }
-    if(rad > 1400){       //no puede superar el valor de 1400 W/m2
+    if(rad > 1400){       
         rad = 1400;
     }
     this -> radiation = rad;
@@ -65,10 +62,10 @@ void WeatherStation::setRadiation(long int radiationSensor) {
 void WeatherStation::setTemperature() {
     char status;
     double temperature;
-    status = this -> bmp180Sensor.startTemperature();//Inicio de lectura de temperatura
+    status = this -> bmp180Sensor.startTemperature();
     if (status != 0) {
-        delay(status); //Pausa para que finalice la lectura
-        status = this -> bmp180Sensor.getTemperature(temperature); //Obtener la temperatura
+        delay(status); 
+        status = this -> bmp180Sensor.getTemperature(temperature); 
     }
     this -> temperature = static_cast<long int>(temperature);
 }
@@ -77,17 +74,17 @@ void WeatherStation::setTemperature() {
 void WeatherStation::setPresion() {
     double pressure;
     setTemperature();
-    double temperature = this -> getTemperature(); //es necesario medir temperature para poder medir la presion
+    double temperature = this -> getTemperature(); 
     char status;
-    status = bmp180Sensor.startPressure(3); //Inicio lectura de presión
+    status = bmp180Sensor.startPressure(3); 
     if (status != 0){        
-        delay(status);//Pausa para que finalice la lectura        
-        status = bmp180Sensor.getPressure(pressure,temperature); //Obtenemos la presión     
+        delay(status);
+        status = bmp180Sensor.getPressure(pressure,temperature); 
     }      
     this -> pressure = static_cast<long int>(pressure); 
 }
 
-// TODO: hacer que retorne un valor numérico.
+
 void WeatherStation::setLeafMoisture(int leafHumididtySensor) {
     this -> leafMoisture = round((leafHumididtySensor*100)/4095);
 }
@@ -100,7 +97,6 @@ void WeatherStation::resetPulseCounter() {
     this -> pluviometerCounter = 0;
 }
 
-// -------------------------------------- Getters --------------------------------------
 
 long int WeatherStation::getWindSpeed() {
     return this -> windSpeed;
@@ -110,7 +106,7 @@ int WeatherStation::getWindDirection() {
     return this -> windDirection;
 }
 
-unsigned long int WeatherStation::getHumidity() {
+float WeatherStation::getHumidity() {
     return this -> humidity;
 }
 
