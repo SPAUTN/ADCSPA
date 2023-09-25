@@ -30,7 +30,7 @@ void WeatherStation::setWindSpeed(long int windSpeedSensor) {
 }
 
 void WeatherStation::setwindDirection(int windDirectionSensor) {
-    // Variable que almacena el voltaje (0.0 a 5.0)
+    
     float valorVoltaje = fmap(windDirectionSensor, 0, 4095, 0.0, 3.3);
     this -> windDirection = (int) (valorVoltaje * 100);
 }
@@ -52,7 +52,7 @@ void WeatherStation::setRadiation(long int radiationSensor) {
     else {
         rad = ((radiationSensor - 621) * 1400) / 2853;
     }
-    if(rad > 1400){       //no puede superar el valor de 1400 W/m2
+    if(rad > 1400){       
         rad = 1400;
     }
     this -> radiation = rad;
@@ -61,10 +61,10 @@ void WeatherStation::setRadiation(long int radiationSensor) {
 void WeatherStation::setTemperature() {
     char status;
     double temperature;
-    status = this -> bmp180Sensor.startTemperature();//Inicio de lectura de temperatura
+    status = this -> bmp180Sensor.startTemperature();
     if (status != 0) {
-        delay(status); //Pausa para que finalice la lectura
-        status = this -> bmp180Sensor.getTemperature(temperature); //Obtener la temperatura
+        delay(status); 
+        status = this -> bmp180Sensor.getTemperature(temperature); 
     }
     this -> temperature = static_cast<long int>(temperature);
 }
@@ -73,17 +73,17 @@ void WeatherStation::setTemperature() {
 void WeatherStation::setPresion() {
     double pressure;
     setTemperature();
-    double temperature = this -> getTemperature(); //es necesario medir temperature para poder medir la presion
+    double temperature = this -> getTemperature(); 
     char status;
-    status = bmp180Sensor.startPressure(3); //Inicio lectura de presión
+    status = bmp180Sensor.startPressure(3); 
     if (status != 0){        
-        delay(status);//Pausa para que finalice la lectura        
-        status = bmp180Sensor.getPressure(pressure,temperature); //Obtenemos la presión     
+        delay(status);
+        status = bmp180Sensor.getPressure(pressure,temperature); 
     }      
     this -> pressure = static_cast<long int>(pressure); 
 }
 
-// TODO: hacer que retorne un valor numérico.
+
 void WeatherStation::setLeafMoisture(int leafHumididtySensor) {
     this -> leafMoisture = round((leafHumididtySensor*100)/4095);
 }
@@ -96,7 +96,6 @@ void WeatherStation::resetPulseCounter() {
     this -> pluviometerCounter = 0;
 }
 
-// -------------------------------------- Getters --------------------------------------
 
 long int WeatherStation::getWindSpeed() {
     return this -> windSpeed;
@@ -141,7 +140,7 @@ String WeatherStation::getPayload() {
     jsonPayload += ",\"wind_speed\":" + String(this ->  getWindSpeed());
     jsonPayload += ",\"wind_direction\":" + String(this ->  getWindDirection());
     jsonPayload += ",\"leaf_moisture\":" + String(this ->  getLeafMoisture());
-    // jsonPayload += ",\"relative_humidity\":" + String(this ->  getHumidity());
+    jsonPayload += ",\"relative_humidity\":" + String(this ->  getHumidity());
     jsonPayload += ",\"solar_radiation\":" + String(this ->  getRadiation());
     jsonPayload += ",\"temperature\":" + String(this ->  getTemperature());
     jsonPayload += ",\"pressure\":" + String(this ->  getPressure());
