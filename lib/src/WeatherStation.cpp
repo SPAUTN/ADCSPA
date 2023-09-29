@@ -25,7 +25,12 @@ void WeatherStation::init() {
 
 void WeatherStation::setWindSpeed(long int windSpeedSensor) {
     long int vel=0;
-    vel=(windSpeedSensor * 3.3 * 72.7) / 2978;
+    if(windSpeedSensor < 6){
+       vel = 0;
+    }
+    else{
+       vel = ((windSpeedSensor - 6) * 240) / 2972;
+    }
     this -> windSpeed = vel;
 }
 
@@ -47,11 +52,11 @@ void WeatherStation::setHumidity(int humiditySensorPort) {
 
 void WeatherStation::setRadiation(long int radiationSensor) {
     unsigned long int rad = 0;
-    if(radiationSensor < 621){
+    if(radiationSensor < 10){
         rad = 0;
     }
     else {
-        rad = ((radiationSensor - 621) * 1400) / 2853;
+        rad = ((radiationSensor - 10) * 1400) / 2596;
     }
     if(rad > 1400){       
         rad = 1400;
