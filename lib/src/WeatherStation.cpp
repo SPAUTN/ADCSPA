@@ -5,7 +5,7 @@
 #include "WeatherStation.h"
 
 #define TIME_THRESHOLD 150
-#define CALIBRATION 468600.0
+#define CALIBRATION 468.6
 
 WeatherStation::WeatherStation(long initialCounter) {
     this -> initTime = 0;
