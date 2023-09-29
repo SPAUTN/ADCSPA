@@ -25,11 +25,8 @@ void WeatherStation::init() {
 
 void WeatherStation::setWindSpeed(long int windSpeedSensor) {
     long int vel=0;
-    if(windSpeedSensor < 6){
-       vel = 0;
-    }
-    else{
-       vel = ((windSpeedSensor - 6) * 240) / 2972;
+    if ( windSpeedSensor >= 6) {
+        vel = ((windSpeedSensor - 6) * 240) / 2972;
     }
     this -> windSpeed = vel;
 }
@@ -47,19 +44,14 @@ float WeatherStation::fmap(float x, float in_min, float in_max, float out_min, f
 void WeatherStation::setHumidity(int humiditySensorPort) {
     delay(2000); //Para respetar la frecuencia del sensor
     DHT sensorTH (humiditySensorPort, DHT22);
+    sensorTH.begin ();
     this -> humidity = sensorTH.readHumidity();
 }
 
 void WeatherStation::setRadiation(long int radiationSensor) {
     unsigned long int rad = 0;
-    if(radiationSensor < 10){
-        rad = 0;
-    }
-    else {
+    if(radiationSensor >= 10){
         rad = ((radiationSensor - 10) * 1400) / 2596;
-    }
-    if(rad > 1400){       
-        rad = 1400;
     }
     this -> radiation = rad;
 }
