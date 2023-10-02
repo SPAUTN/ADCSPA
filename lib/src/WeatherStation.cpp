@@ -137,12 +137,12 @@ float WeatherStation::getLysimeterWeight() {
 
 String WeatherStation::getPayload() {
     String jsonPayload = "{";
-    jsonPayload += "\"rain_milimeters\":" + String(this ->  getPluviometerCounter());
-    jsonPayload += ",\"wind_speed\":" + String(this ->  getWindSpeed());
-    jsonPayload += ",\"wind_direction\":" + String(this ->  getWindDirection());
-    jsonPayload += ",\"leaf_moisture\":" + String(this ->  getLeafMoisture());
-    jsonPayload += ",\"relative_humidity\":" + String(this ->  getHumidity());
-    jsonPayload += ",\"solar_radiation\":" + String(this ->  getRadiation());
+    jsonPayload += "\"pluviometer\":" + String(this ->  getPluviometerCounter());
+    jsonPayload += ",\"windspeed\":" + String(this ->  getWindSpeed());
+    jsonPayload += ",\"winddirection\":" + String(this ->  getWindDirection());
+    jsonPayload += ",\"leafmoisture\":" + String(this ->  getLeafMoisture());
+    jsonPayload += ",\"humidity\":" + String(this ->  getHumidity());
+    jsonPayload += ",\"radiation\":" + String(this ->  getRadiation());
     jsonPayload += ",\"temperature\":" + String(this ->  getTemperature());
     jsonPayload += ",\"pressure\":" + String(this ->  getPressure());
     jsonPayload += ",\"weight\":" + String(this ->  getLysimeterWeight(), 4);
