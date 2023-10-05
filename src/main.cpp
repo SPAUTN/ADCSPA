@@ -21,6 +21,7 @@ void setup() {
   Serial1.begin(115200, SERIAL_8N1, 19, 5); //RX, TX
   
   Serial.println(sendATCommand(Serial1, AT_RESET));
+  Serial.println(sendATCommand(Serial1, AT_SET_P2P_MODE));
   Serial.println(sendATCommand(Serial1, AT_BAUD_115200_CONFIG_SET));
   Serial.println(sendATCommand(Serial1, AT_P2P_CONFIG_SET));
   Serial.println(sendATCommand(Serial1, AT_P2P_CONFIG_GET));

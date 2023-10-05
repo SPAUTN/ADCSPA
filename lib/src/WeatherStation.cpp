@@ -5,7 +5,7 @@
 #include "WeatherStation.h"
 
 #define TIME_THRESHOLD 150
-#define CALIBRATION 470.75
+#define CALIBRATION 468.6
 
 WeatherStation::WeatherStation(long initialCounter) {
     this -> initTime = 0;
@@ -25,7 +25,9 @@ void WeatherStation::init() {
 
 void WeatherStation::setWindSpeed(long int windSpeedSensor) {
     long int vel=0;
-    vel=(windSpeedSensor * 3.3 * 72.7) / 2978;
+    if ( windSpeedSensor >= 6) {
+        vel = ((windSpeedSensor - 6) * 240) / 2972;
+    }
     this -> windSpeed = vel;
 }
 
@@ -47,14 +49,8 @@ void WeatherStation::setHumidity(int humiditySensorPort) {
 
 void WeatherStation::setRadiation(long int radiationSensor) {
     unsigned long int rad = 0;
-    if(radiationSensor < 621){
-        rad = 0;
-    }
-    else {
-        rad = ((radiationSensor - 621) * 1400) / 2853;
-    }
-    if(rad > 1400){       
-        rad = 1400;
+    if(radiationSensor >= 10){
+        rad = ((radiationSensor - 10) * 1400) / 2596;
     }
     this -> radiation = rad;
 }
