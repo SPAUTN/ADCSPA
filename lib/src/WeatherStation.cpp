@@ -42,7 +42,7 @@ float WeatherStation::fmap(float x, float in_min, float in_max, float out_min, f
 void WeatherStation::setHumidity(int humiditySensorPort) {
     delay(2000); //Para respetar la frecuencia del sensor
     DHT sensorTH (humiditySensorPort, DHT22);
-    this -> humidity = sensorTH.readHumidity();
+    this -> humidity = isnan(sensorTH.readHumidity()) ? 0 : sensorTH.readHumidity();
 }
 
 void WeatherStation::setRadiation(long int radiationSensor) {
