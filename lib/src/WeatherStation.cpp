@@ -50,9 +50,9 @@ void WeatherStation::setHumidity(int humiditySensorPort) {
 void WeatherStation::setRadiation(long int radiationSensor) {
     unsigned long int rad = 0;
     if(radiationSensor >= 10){
-        rad = ((radiationSensor - 10) * 1400) / 2596;
+        rad = ((radiationSensor - 10) * 1400) / 2596;   
     }
-    this -> radiation = rad;
+    this -> radiation = rad > 1400?1400:rad;
 }
 
 void WeatherStation::setTemperature() {
@@ -82,7 +82,7 @@ void WeatherStation::setPresion() {
 
 
 void WeatherStation::setLeafMoisture(int leafHumididtySensor) {
-    this -> leafMoisture = round((leafHumididtySensor*100)/4095);
+    this -> leafMoisture = round((leafHumididtySensor*100)/2668);
 }
 
 void WeatherStation::setPulseCounter(long int currentCount) {
