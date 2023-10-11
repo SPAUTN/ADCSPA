@@ -44,16 +44,15 @@ float WeatherStation::fmap(float x, float in_min, float in_max, float out_min, f
 void WeatherStation::setHumidity(int humiditySensorPort) {
     delay(2000); //Para respetar la frecuencia del sensor
     DHT sensorTH (humiditySensorPort, DHT22);
-    sensorTH.begin ();
-    this -> humidity = sensorTH.readHumidity();
+    this -> humidity = isnan(sensorTH.readHumidity()) ? 0 : sensorTH.readHumidity();
 }
 
 void WeatherStation::setRadiation(long int radiationSensor) {
     unsigned long int rad = 0;
-    if(radiationSensor >= 10){
+    if (radiationSensor >= 10) {
         rad = ((radiationSensor - 10) * 1400) / 2596;
     }
-    this -> radiation = rad;
+    this -> radiation = rad > 1400 ? 1400 : rad;
 }
 
 void WeatherStation::setTemperature() {
@@ -83,7 +82,7 @@ void WeatherStation::setPresion() {
 
 
 void WeatherStation::setLeafMoisture(int leafHumididtySensor) {
-    this -> leafMoisture = round((leafHumididtySensor*100)/4095);
+    this -> leafMoisture = round((leafHumididtySensor*100)/2668);
 }
 
 void WeatherStation::setPulseCounter(long int currentCount) {
@@ -134,12 +133,12 @@ float WeatherStation::getLysimeterWeight() {
 
 String WeatherStation::getPayload() {
     String jsonPayload = "{";
-    jsonPayload += "\"rain_milimeters\":" + String(this ->  getPluviometerCounter());
-    jsonPayload += ",\"wind_speed\":" + String(this ->  getWindSpeed());
-    jsonPayload += ",\"wind_direction\":" + String(this ->  getWindDirection());
-    jsonPayload += ",\"leaf_moisture\":" + String(this ->  getLeafMoisture());
-    jsonPayload += ",\"relative_humidity\":" + String(this ->  getHumidity());
-    jsonPayload += ",\"solar_radiation\":" + String(this ->  getRadiation());
+    jsonPayload += "\"pluviometer\":" + String(this ->  getPluviometerCounter());
+    jsonPayload += ",\"windspeed\":" + String(this ->  getWindSpeed());
+    jsonPayload += ",\"winddirection\":" + String(this ->  getWindDirection());
+    jsonPayload += ",\"leafmoisture\":" + String(this ->  getLeafMoisture());
+    jsonPayload += ",\"humidity\":" + String(this ->  getHumidity());
+    jsonPayload += ",\"radiation\":" + String(this ->  getRadiation());
     jsonPayload += ",\"temperature\":" + String(this ->  getTemperature());
     jsonPayload += ",\"pressure\":" + String(this ->  getPressure());
     jsonPayload += ",\"weight\":" + String(this ->  getLysimeterWeight(), 4);
