@@ -106,6 +106,13 @@ class WeatherStation {
          */
         void setPulseCounter (long int);
         
+        /**
+         * @brief Función que calcula el riego, y lo ejecuta
+         * 
+         * @param 
+         * @return 
+         */
+        void plantIrrigation();
         // -------------------------------------- Getters --------------------------------------
 
         /**
