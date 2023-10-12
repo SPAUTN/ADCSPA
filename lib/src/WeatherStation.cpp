@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <Arduino.h>
 #include <SFE_BMP180.h>
 #include <TimeLib.h>
 
@@ -93,6 +95,37 @@ void WeatherStation::resetPulseCounter() {
     this -> pluviometerCounter = 0;
 }
 
+void WeatherStation::plantIrrigation() {
+    float PesoSecoHoy = getLysimeterWeight();
+    float ETc = 10.0; // Reemplazar este valor con el valor real de la ETc diaria
+    float lluvia = 2.0; // Reemplazar este valor con el valor real de las precipitaciones diarias
+
+    float RiegoRequerido = calcularAguaNecesaria(ETc, lluvia);
+
+    Serial.println("\nOpening irrigation control...");
+    digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
+
+    // Realizar el riego hasta que se alcance el peso objetivo
+    do {
+        float pesoActual = getLysimeterWeight();
+        delay(100); // Esperar 0.1 segundo entre lecturas de peso
+    } while (pesoActual < PesoSecoHoy + RiegoRequerido);
+
+    Serial.println("\nClosing irrigation control...");
+    digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
+}
+
+float WeatherStation::calcularAguaNecesaria(float ETc, float lluvia) {
+    float densidadAgua = 1.0; // Densidad del agua en g/cm³
+
+    float aguaNecesaria = ETc - lluvia;
+    if (aguaNecesaria < 0) {
+        aguaNecesaria = 0; // No se necesita riego si la lluvia es suficiente.
+    }
+    float volumen = aguaNecesaria * 3141.6; // Convertir mm a cm³
+    float peso = volumen * densidadAgua; // peso en gramos
+    return peso;
+}
 
 long int WeatherStation::getWindSpeed() {
     return this -> windSpeed;
