@@ -122,7 +122,7 @@ float WeatherStation::calcularAguaNecesaria(float ETc, float lluvia) {
     if (aguaNecesaria < 0) {
         aguaNecesaria = 0; // No se necesita riego si la lluvia es suficiente.
     }
-    float volumen = aguaNecesaria * 3141.6; // Convertir mm a cm³
+    float volumen = (aguaNecesaria/10) * 1225; // Convertir mm a cm³ (1225 cm2 supuesta area lisimetro)
     float peso = volumen * densidadAgua; // peso en gramos
     return peso;
 }
