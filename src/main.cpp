@@ -69,11 +69,7 @@ void loop() {
         Serial.println(transmitionPacket);
         transmitionPacket += ",\"dryweight\":" + String(weatherStation.getLysimeterWeight()) + ",";
         Serial.println(transmitionPacket);
-        Serial.println("\nOpening irrigation control...");
-        digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
-        delay(2000);
-        Serial.println("\nClosing irrigation control...");
-        digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
+        weatherStation.plantIrrigation();    //prueba simulando 10 mm de ETc y 2 mm de lluvia fijados en funcion
         transmitionPacket += "\"wetweight\":" + String(weatherStation.getLysimeterWeight()) + "}";
         Serial.println(transmitionPacket);
       }
