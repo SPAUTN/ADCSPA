@@ -97,17 +97,26 @@ void WeatherStation::resetPulseCounter() {
 
 void WeatherStation::plantIrrigation() {
     float PesoSecoHoy = getLysimeterWeight();
-    float ETc = 10.0; // Reemplazar este valor con el valor real de la ETc diaria
-    float lluvia = 2.0; // Reemplazar este valor con el valor real de las precipitaciones diarias
-
-    float RiegoRequerido = calcularAguaNecesaria(ETc, lluvia);
+    float pesoActual = 0;      //declaracion de variable
+    float densidadAgua = 1.0; // Densidad del agua en g/cm³
+    float ETc = 10.0;         // Reemplazar este valor con el valor real de la ETc diaria de la DB
+    float lluvia = 2.0;       // Reemplazar este valor con el valor real de las precipitaciones diarias de la DB
+   
+    float aguaNecesaria = ETc - lluvia;
+    if (aguaNecesaria < 0) {
+        aguaNecesaria = 0; // No se necesita riego si la lluvia es suficiente.
+    }
+    float volumen = (aguaNecesaria/10) * 1225;        // Convertir mm a cm³ (1225 cm2 supuesta area lisimetro)
+    float RiegoRequerido = volumen * densidadAgua;    // peso en gramos
+    Serial.println("\nLa cantidad de agua a regar en gramos es: ");
+    Serial.println(RiegoRequerido);                   //verificación del peso que debe agregarse
 
     Serial.println("\nOpening irrigation control...");
     digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
 
     // Realizar el riego hasta que se alcance el peso objetivo
     do {
-        float pesoActual = getLysimeterWeight();
+        pesoActual = getLysimeterWeight();
         delay(100); // Esperar 0.1 segundo entre lecturas de peso
     } while (pesoActual < PesoSecoHoy + RiegoRequerido);
 
@@ -115,17 +124,6 @@ void WeatherStation::plantIrrigation() {
     digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
 }
 
-float WeatherStation::calcularAguaNecesaria(float ETc, float lluvia) {
-    float densidadAgua = 1.0; // Densidad del agua en g/cm³
-
-    float aguaNecesaria = ETc - lluvia;
-    if (aguaNecesaria < 0) {
-        aguaNecesaria = 0; // No se necesita riego si la lluvia es suficiente.
-    }
-    float volumen = (aguaNecesaria/10) * 1225; // Convertir mm a cm³ (1225 cm2 supuesta area lisimetro)
-    float peso = volumen * densidadAgua; // peso en gramos
-    return peso;
-}
 
 long int WeatherStation::getWindSpeed() {
     return this -> windSpeed;
