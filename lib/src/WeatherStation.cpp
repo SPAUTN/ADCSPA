@@ -95,14 +95,12 @@ void WeatherStation::resetPulseCounter() {
     this -> pluviometerCounter = 0;
 }
 
-void WeatherStation::plantIrrigation() {
+void WeatherStation::plantIrrigation(int ETc, int lluvia) {
     float PesoSecoHoy = getLysimeterWeight();
     float pesoActual = 0;      //declaracion de variable
     float densidadAgua = 1.0; // Densidad del agua en g/cm³
-    float ETc = 10.0;         // Reemplazar este valor con el valor real de la ETc diaria de la DB
-    float lluvia = 2.0;       // Reemplazar este valor con el valor real de las precipitaciones diarias de la DB
-   
-    float aguaNecesaria = ETc - lluvia;
+    
+    int aguaNecesaria = ETc - lluvia;
     if (aguaNecesaria < 0) {
         aguaNecesaria = 0; // No se necesita riego si la lluvia es suficiente.
     }
