@@ -52,22 +52,22 @@ void loop() {
     Serial.print("Instruction received: ");
     Serial.println(rxData);
 
-     // Divide la cadena en partes usando el punto y coma como delimitador
-    String parts[3]; // Serán tres partes: comando, ETc, lluvia
-    int index = 0;
-    while (rxData.length() > 0) {
-        int semicolonIndex = rxData.indexOf(';');
-        if (semicolonIndex != -1) {
-            parts[index++] = rxData.substring(0, semicolonIndex);
-            rxData = rxData.substring(semicolonIndex + 1);
+     // Divide the string into parts using the semicolon as a delimiter
+     String parts[3]; 
+     int semicolonIndex = -1;
+     for (int i = 0; i < 3; i++) {
+     semicolonIndex = rxData.indexOf(';');
+     if (semicolonIndex != -1) {
+        parts[i] = rxData.substring(0, semicolonIndex);
+        rxData = rxData.substring(semicolonIndex + 1);
         } else {
-            parts[index] = rxData;
-            break;
+        parts[i] = rxData;
+        break;
         }
-    }
-    String command = parts[0];           //Comando POLL o IRR
-    int ETc = parts[1].toInt();       //convierte a int usa libreria #include <string>
-    int lluvia = parts[2].toInt();    //convierte a int
+      }
+String command = parts[0];       // Comamnd POLL or IRR
+int ETc = parts[1].toInt();       
+int lluvia = parts[2].toInt();       
 
     if (command.equals("POLL") || command.equals("IRR")) {
       weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       
