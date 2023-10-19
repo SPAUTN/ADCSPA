@@ -112,7 +112,7 @@ class WeatherStation {
          * @param 
          * @return 
          */
-        void plantIrrigation();
+        void plantIrrigation(int, int);
         // -------------------------------------- Getters --------------------------------------
 
         /**
