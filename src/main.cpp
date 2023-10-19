@@ -3,7 +3,6 @@
 #include <TimeLib.h>
 #include <Utils.h>
 #include <HardwareSerial.h>
-#include <string>
 #include "WeatherStation.h"
 
 #define TEST true     // true para modo test, sin espera de 1 minuto 
@@ -67,8 +66,8 @@ void loop() {
         }
     }
     String command = parts[0];           //Comando POLL o IRR
-    int ETc = std::stoi(parts[1]);       //convierte a int usa libreria #include <string>
-    int lluvia = std::stoi(parts[2]);    //convierte a int
+    int ETc = parts[1].toInt();       //convierte a int usa libreria #include <string>
+    int lluvia = parts[2].toInt();    //convierte a int
 
     if (command.equals("POLL") || command.equals("IRR")) {
       weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       
