@@ -95,32 +95,32 @@ void WeatherStation::resetPulseCounter() {
     this -> pluviometerCounter = 0;
 }
 
-void WeatherStation::plantIrrigation(int ETc, int lluvia) {
-    float PesoSecoHoy = getLysimeterWeight();
-    float pesoActual = 0;      //declaracion de variable
-    float densidadAgua = 1.0; // Densidad del agua en g/cm³
+void WeatherStation::plantIrrigation(int ETc, int rainfall) {
+    float DryWeightToday = getLysimeterWeight();
+    float waterDensity = 1.0; // Water density in g/cm³
     
-    int aguaNecesaria = ETc - lluvia;
-    if (aguaNecesaria < 0) {
-        aguaNecesaria = 0; // No se necesita riego si la lluvia es suficiente.
+    int waterNeeded = ETc - rainfall;
+    if (waterNeeded <= 0) {
+        Serial.println("\nNo need to irrigate, rainfall is sufficient.");
+    } else {
+        float volume = (waterNeeded/10) * 1225;        // Convert mm to cm³ (Assuming 1225 cm2 lysimeter area)
+        float RequiredIrrigation = volume * waterDensity;    // weight in grams
+        Serial.println("\nThe amount of water to irrigate in grams is: ");
+        Serial.println(RequiredIrrigation);                   // Verification of the weight to be added
+
+        Serial.println("\nOpening irrigation control...");
+        digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
+
+        // Irrigate until the target weight is reached
+        do {
+            delay(100); // Wait 0.1 second between weight readings
+        } while (getLysimeterWeight() < DryWeightToday + RequiredIrrigation);
+
+        Serial.println("\nClosing irrigation control...");
+        digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
     }
-    float volumen = (aguaNecesaria/10) * 1225;        // Convertir mm a cm³ (1225 cm2 supuesta area lisimetro)
-    float RiegoRequerido = volumen * densidadAgua;    // peso en gramos
-    Serial.println("\nLa cantidad de agua a regar en gramos es: ");
-    Serial.println(RiegoRequerido);                   //verificación del peso que debe agregarse
-
-    Serial.println("\nOpening irrigation control...");
-    digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
-
-    // Realizar el riego hasta que se alcance el peso objetivo
-    do {
-        pesoActual = getLysimeterWeight();
-        delay(100); // Esperar 0.1 segundo entre lecturas de peso
-    } while (pesoActual < PesoSecoHoy + RiegoRequerido);
-
-    Serial.println("\nClosing irrigation control...");
-    digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
 }
+
 
 
 long int WeatherStation::getWindSpeed() {
