@@ -48,7 +48,7 @@ void loop() {
   if(Serial1.available()>0) {
     String rxData = readSerial(Serial1);
     rxData.trim();
-    rxData = hexToASCII(rxData);
+    rxData = hexToASCII(rxData.substring(rxData.lastIndexOf(':')+1));
     Serial.print("Instruction received: ");
     Serial.println(rxData);
 
