@@ -51,25 +51,8 @@ void loop() {
     rxData = hexToASCII(rxData.substring(rxData.lastIndexOf(':')+1));
     Serial.print("Instruction received: ");
     Serial.println(rxData);
-
-     // Divide the string into parts using the semicolon as a delimiter
-     String parts[3]; 
-     int semicolonIndex = -1;
-     for (int i = 0; i < 3; i++) {
-     semicolonIndex = rxData.indexOf(';');
-     if (semicolonIndex != -1) {
-        parts[i] = rxData.substring(0, semicolonIndex);
-        rxData = rxData.substring(semicolonIndex + 1);
-        } else {
-        parts[i] = rxData;
-        break;
-        }
-      }
-String command = parts[0];       // Comamnd POLL or IRR
-int ETc = parts[1].toInt();       
-int lluvia = parts[2].toInt();       
-
-    if (command.equals("POLL") || command.equals("IRR")) {
+      
+    if (rxData.startsWith("POLL") || rxData.startsWith("IRR")) {
       weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       
       weatherStation.setwindDirection(analogRead(WIND_DIRECTION_SENSOR_PORT));
       weatherStation.setHumidity(HUMIDITY_SENSOR_PORT);
@@ -81,15 +64,31 @@ int lluvia = parts[2].toInt();
 
       String transmitionPacket = weatherStation.getPayload();
 
-      if (command.equals("IRR")) {
-        Serial.println(transmitionPacket);
-        transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
-        Serial.println(transmitionPacket);
-        transmitionPacket += ",\"dryweight\":" + String(weatherStation.getLysimeterWeight()) + ",";
-        Serial.println(transmitionPacket);
-        weatherStation.plantIrrigation(ETc, lluvia);    //controla el riego con la ETc y la lluvia consultada
-        transmitionPacket += "\"wetweight\":" + String(weatherStation.getLysimeterWeight()) + "}";
-        Serial.println(transmitionPacket);
+    if (rxData.startsWith("IRR")) {
+      // Divide the string into parts using the semicolon as a delimiter
+      String parts[3]; 
+      int semicolonIndex = -1;
+      for (int i = 0; i < 3; i++) {
+      semicolonIndex = rxData.indexOf(';');
+      if (semicolonIndex != -1) {
+      parts[i] = rxData.substring(0, semicolonIndex);
+      rxData = rxData.substring(semicolonIndex + 1);
+      } else {
+      parts[i] = rxData;
+      break;
+      }
+      }
+      int ETc = parts[1].toInt();       
+      int rain = parts[2].toInt(); 
+
+      Serial.println(transmitionPacket);
+      transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
+      Serial.println(transmitionPacket);
+      transmitionPacket += ",\"dryweight\":" + String(weatherStation.getLysimeterWeight()) + ",";
+      Serial.println(transmitionPacket);
+      weatherStation.plantIrrigation(ETc, rain);    //controla el riego con la ETc y la lluvia consultada
+      transmitionPacket += "\"wetweight\":" + String(weatherStation.getLysimeterWeight()) + "}";
+      Serial.println(transmitionPacket);
       }
 
       Serial.print("Sending packet:");
@@ -99,8 +98,6 @@ int lluvia = parts[2].toInt();
       Serial.print("Response: ");
       response.replace('\n', ' ');
       Serial.println(response);
-
-      
 
       sendATCommand(Serial1, AT_CONTINUOUS_PRECV_CONFIG_SET);
 
