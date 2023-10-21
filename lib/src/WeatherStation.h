@@ -2,6 +2,8 @@
 #include <TimeLib.h>
 #include "HX711.h"
 #include "DHT.h"
+#include <SFE_BMP180.h>
+#include "DHT.h"
 
 #ifndef ESTACION_H
 #define ESTACION_H

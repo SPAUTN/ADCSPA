@@ -1,9 +1,3 @@
-#include <stdio.h>
-#include <Arduino.h>
-#include <SFE_BMP180.h>
-#include <TimeLib.h>
-
-#include "DHT.h"
 #include "WeatherStation.h"
 
 #define TIME_THRESHOLD 150
