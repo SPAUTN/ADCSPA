@@ -89,11 +89,11 @@ void WeatherStation::resetPulseCounter() {
     this -> pluviometerCounter = 0;
 }
 
-void WeatherStation::plantIrrigation(int ETc, int rainfall) {
+void WeatherStation::plantIrrigation(float ETc, float rainfall) {
     float DryWeightToday = getLysimeterWeight();
     float waterDensity = 1.0; // Water density in g/cm³
     
-    int waterNeeded = ETc - rainfall;
+    float waterNeeded = ETc - rainfall;
     if (waterNeeded <= 0) {
         Serial.println("\nNo need to irrigate, rainfall is sufficient.");
     } else {
