@@ -90,9 +90,16 @@ void WeatherStation::resetPulseCounter() {
 }
 
 void WeatherStation::plantIrrigation(float ETc, float rainfall) {
+    int timeout = 5000; // Timeout set to 5 seconds
     float DryWeightToday = getLysimeterWeight();
     float waterDensity = 1.0; // Water density in g/cm³
-    
+
+    // Check if the weight sensor is ready
+    if (!lysimeter.is_ready()) {
+        Serial.println("\nError: Unable to read the weight sensor. Irrigation will not proceed.");
+        return; // Stop the function if the weight sensor is not ready
+    }
+
     float waterNeeded = ETc - rainfall;
     if (waterNeeded <= 0) {
         Serial.println("\nNo need to irrigate, rainfall is sufficient.");
@@ -105,16 +112,21 @@ void WeatherStation::plantIrrigation(float ETc, float rainfall) {
         Serial.println("\nOpening irrigation control...");
         digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
 
-        // Irrigate until the target weight is reached
+        // Irrigate until the target weight is reached or timeout
+        unsigned long startTime = millis();
         do {
-            delay(100); // Wait 0.1 second between weight readings
+            delay(50); // Wait 0.05 second between weight readings
+            // Check if weight is increasing (indicating successful irrigation)
+            if (getLysimeterWeight() <= DryWeightToday && (millis() - startTime) > timeout) {
+                Serial.println("\nError: Weight is not increasing. Valve may be faulty or not working.");
+                break;
+            }
         } while (getLysimeterWeight() < DryWeightToday + RequiredIrrigation);
 
         Serial.println("\nClosing irrigation control...");
         digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
     }
 }
-
 
 
 long int WeatherStation::getWindSpeed() {
