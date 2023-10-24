@@ -78,8 +78,8 @@ void loop() {
       break;
       }
       }
-      int ETc = parts[1].toInt();       
-      int rain = parts[2].toInt(); 
+      float ETc = parts[1].toFloat();       
+      float rain = parts[2].toFloat(); 
 
       Serial.println(transmitionPacket);
       transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
