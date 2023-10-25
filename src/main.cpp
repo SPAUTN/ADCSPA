@@ -81,9 +81,9 @@ void loop() {
       float ETc = parts[1].toFloat();       
       float rain = parts[2].toFloat(); 
 
-      Serial.println(transmitionPacket);
+     // Serial.println(transmitionPacket);
       transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
-      Serial.println(transmitionPacket);
+     // Serial.println(transmitionPacket);
       transmitionPacket += ",\"dryweight\":" + String(weatherStation.getLysimeterWeight()) + ",";
       Serial.println(transmitionPacket);
       weatherStation.plantIrrigation(ETc, rain);    //controla el riego con la ETc y la lluvia consultada
