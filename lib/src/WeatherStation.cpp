@@ -95,10 +95,12 @@ void WeatherStation::plantIrrigation(float ETc, float rainfall) {
     float waterDensity = 1.0; // Water density in g/cm³
 
     // Check if the weight sensor is ready
-    if (!lysimeter.is_ready()) {
-        Serial.println("\nError: Unable to read the weight sensor. Irrigation will not proceed.");
-        return; // Stop the function if the weight sensor is not ready
-    }
+    Serial.print("Lysimeter ready: ");
+    Serial.println(lysimeter.is_ready() ? "Yes" : "No");   //debug
+   // if (!lysimeter.is_ready()) {
+   //     Serial.println("\nError: Unable to read the weight sensor. Irrigation will not proceed.");
+   //     return; // Stop the function if the weight sensor is not ready
+   // }
 
     float waterNeeded = ETc - rainfall;
     if (waterNeeded <= 0) {
