@@ -64,29 +64,29 @@ void loop() {
 
       String transmitionPacket = weatherStation.getPayload();
 
-    if (rxData.startsWith("IRR")) {
-      // Divide the string into parts using the semicolon as a delimiter
-      String parts[3]; 
-      int semicolonIndex = -1;
-      for (int i = 0; i < 3; i++) {
-      semicolonIndex = rxData.indexOf(';');
-      if (semicolonIndex != -1) {
-      parts[i] = rxData.substring(0, semicolonIndex);
-      rxData = rxData.substring(semicolonIndex + 1);
-      } else {
-      parts[i] = rxData;
-      break;
-      }
-      }
-      float ETc = parts[1].toFloat();       
-      float rain = parts[2].toFloat(); 
+      if (rxData.startsWith("IRR")) {
+        // Divide the string into parts using the semicolon as a delimiter
+        String parts[3]; 
+        int semicolonIndex = -1;
+        for (int i = 0; i < 3; i++) {
+          semicolonIndex = rxData.indexOf(';');
+          if (semicolonIndex != -1) {
+            parts[i] = rxData.substring(0, semicolonIndex);
+            rxData = rxData.substring(semicolonIndex + 1);
+          } else {
+            parts[i] = rxData;
+            break;
+          }
+        }
+        float ETc = parts[1].toFloat();       
+        float rain = parts[2].toFloat(); 
 
-      transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
-      transmitionPacket += ",\"dryweight\":" + String(weatherStation.getLysimeterWeight()) + ",";
-      Serial.println(transmitionPacket);
-      weatherStation.plantIrrigation(ETc, rain);    //controla el riego con la ETc y la lluvia consultada
-      transmitionPacket += "\"wetweight\":" + String(weatherStation.getLysimeterWeight()) + "}";
-      Serial.println(transmitionPacket);
+        transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
+        transmitionPacket += ",\"dryweight\":" + String(weatherStation.getLysimeterWeight()) + ",";
+        Serial.println(transmitionPacket);
+        weatherStation.plantIrrigation(ETc, rain);    //controla el riego con la ETc y la lluvia consultada
+        transmitionPacket += "\"wetweight\":" + String(weatherStation.getLysimeterWeight()) + "}";
+        Serial.println(transmitionPacket);
       }
 
       Serial.print("Sending packet:");
