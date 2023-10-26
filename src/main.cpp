@@ -51,7 +51,8 @@ void loop() {
     rxData = hexToASCII(rxData.substring(rxData.lastIndexOf(':')+1));
     Serial.print("Instruction received: ");
     Serial.println(rxData);
-    if (rxData.equals("POLL") || rxData.equals("IRR")) {
+      
+    if (rxData.startsWith("POLL") || rxData.startsWith("IRR")) {
       weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       
       weatherStation.setwindDirection(analogRead(WIND_DIRECTION_SENSOR_PORT));
       weatherStation.setHumidity(HUMIDITY_SENSOR_PORT);
@@ -63,17 +64,27 @@ void loop() {
 
       String transmitionPacket = weatherStation.getPayload();
 
-      if (rxData.equals("IRR")) {
-        Serial.println(transmitionPacket);
+      if (rxData.startsWith("IRR")) {
+        // Divide the string into parts using the semicolon as a delimiter
+        String parts[3]; 
+        int semicolonIndex = -1;
+        for (int i = 0; i < 3; i++) {
+          semicolonIndex = rxData.indexOf(';');
+          if (semicolonIndex != -1) {
+            parts[i] = rxData.substring(0, semicolonIndex);
+            rxData = rxData.substring(semicolonIndex + 1);
+          } else {
+            parts[i] = rxData;
+            break;
+          }
+        }
+        float ETc = parts[1].toFloat();       
+        float rain = parts[2].toFloat(); 
+
         transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
-        Serial.println(transmitionPacket);
         transmitionPacket += ",\"dryweight\":" + String(weatherStation.getLysimeterWeight()) + ",";
         Serial.println(transmitionPacket);
-        Serial.println("\nOpening irrigation control...");
-        digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
-        delay(2000);
-        Serial.println("\nClosing irrigation control...");
-        digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
+        weatherStation.plantIrrigation(ETc, rain);    //controla el riego con la ETc y la lluvia consultada
         transmitionPacket += "\"wetweight\":" + String(weatherStation.getLysimeterWeight()) + "}";
         Serial.println(transmitionPacket);
       }
@@ -85,8 +96,6 @@ void loop() {
       Serial.print("Response: ");
       response.replace('\n', ' ');
       Serial.println(response);
-
-      
 
       sendATCommand(Serial1, AT_CONTINUOUS_PRECV_CONFIG_SET);
 

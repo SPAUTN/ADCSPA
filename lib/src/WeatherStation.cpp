@@ -1,7 +1,3 @@
-#include <SFE_BMP180.h>
-#include <TimeLib.h>
-
-#include "DHT.h"
 #include "WeatherStation.h"
 
 #define TIME_THRESHOLD 150
@@ -91,6 +87,46 @@ void WeatherStation::setPulseCounter(long int currentCount) {
 
 void WeatherStation::resetPulseCounter() {
     this -> pluviometerCounter = 0;
+}
+
+void WeatherStation::plantIrrigation(float ETc, float rainfall) {
+    // Check if the weight sensor is ready
+    Serial.print("Lysimeter ready: ");
+    Serial.println(!lysimeter.is_ready() ? "Yes" : "No");   //debug
+    if (lysimeter.is_ready()) {
+        Serial.println("\nError: Unable to read the weight sensor. Irrigation will not proceed.");
+    } else {
+        int timeout = 10000; // Timeout set to 10 seconds
+        float currentDryWeight = getLysimeterWeight();
+        float waterDensity = 1.0; // Water density in g/cm³
+        float waterNeeded = ETc - rainfall;
+
+        if (waterNeeded <= 0) {
+            Serial.println("\nNo need to irrigate, rainfall is sufficient.");
+        } else {
+            float volume = (waterNeeded/10) * 1225;        // Convert mm to cm³ (Assuming 1225 cm2 lysimeter area)
+            float RequiredIrrigation = volume * waterDensity;    // weight in grams
+            Serial.println("\nThe amount of water to irrigate in grams is: ");
+            Serial.println(RequiredIrrigation);                   // Verification of the weight to be added
+
+            Serial.println("\nOpening irrigation control...");
+            digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
+
+            // Irrigate until the target weight is reached or timeout
+            unsigned long startTime = millis();
+            do {
+                delay(50); // Wait 0.05 second between weight readings
+                // Check if weight is increasing (indicating successful irrigation)
+                if (getLysimeterWeight() <= currentDryWeight && (millis() - startTime) > timeout) {
+                    Serial.println("\nError: Weight is not increasing. Valve may be faulty or not working.");
+                    break;
+                }
+            } while (getLysimeterWeight() < currentDryWeight + RequiredIrrigation);
+
+            Serial.println("\nClosing irrigation control...");
+            digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
+        }
+    }
 }
 
 
