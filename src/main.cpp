@@ -78,13 +78,13 @@ void loop() {
             break;
           }
         }
-        float Wetweight = parts[1].toFloat();       
+        float wetweight = parts[1].toFloat();       
         float rain = parts[2].toFloat(); 
 
         transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
         transmitionPacket += ",\"dryweight\":" + String(weatherStation.getLysimeterWeight()) + ",";
         Serial.println(transmitionPacket);
-        weatherStation.plantIrrigation(Wetweight, rain);    //controla el riego con wetweight y la lluvia consultada
+        weatherStation.plantIrrigation(wetweight, rain);    //controla el riego con wetweight y la lluvia consultada
         transmitionPacket += "\"wetweight\":" + String(weatherStation.getLysimeterWeight()) + "}";
         Serial.println(transmitionPacket);
       }
