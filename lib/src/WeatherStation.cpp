@@ -97,16 +97,18 @@ void WeatherStation::plantIrrigation(float wetweight, float rainfall) {
         Serial.println("\nError: Unable to read the weight sensor. Irrigation will not proceed.");
     } else {
         int timeout = 10000; // Timeout set to 10 seconds
-        int LysimeterArea = 1225;  //cm2
+        int lysimeterArea = 1225;  //cm2
         float currentDryWeight = getLysimeterWeight();
         float waterDensity = 1.0; // Water density in g/cm³
-        float ETc = (wetweight - currentDryWeight)/LysimeterArea;
+        float ETc = (wetweight - currentDryWeight)/lysimeterArea;
         float waterNeeded = ETc - rainfall;
+
+        Serial.println(String("Calculated ETc: ").concat(ETc));
 
         if (waterNeeded <= 0) {
             Serial.println("\nNo need to irrigate, rainfall is sufficient.");
         } else {
-            float volume = (waterNeeded/10) * LysimeterArea;    // Convert mm to cm³ 
+            float volume = (waterNeeded/10) * lysimeterArea;    // Convert mm to cm³ 
             float RequiredIrrigation = volume * waterDensity;    // weight in grams
             Serial.println("\nThe amount of water to irrigate in grams is: ");
             Serial.println(RequiredIrrigation);                   // Verification of the weight to be added
