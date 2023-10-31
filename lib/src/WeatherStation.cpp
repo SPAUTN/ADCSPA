@@ -89,12 +89,13 @@ void WeatherStation::resetPulseCounter() {
     this -> pluviometerCounter = 0;
 }
 
-void WeatherStation::plantIrrigation(float wetweight, float rainfall) {
+float WeatherStation::irrigateAndGetETc(float wetweight, float rainfall) {
     // Check if the weight sensor is ready
     Serial.print("Lysimeter ready: ");
     Serial.println(!lysimeter.is_ready() ? "Yes" : "No");   //debug
     if (lysimeter.is_ready()) {
         Serial.println("\nError: Unable to read the weight sensor. Irrigation will not proceed.");
+        return NULL;
     } else {
         int timeout = 10000; // Timeout set to 10 seconds
         int lysimeterArea = 1225;  //cm2
@@ -130,6 +131,7 @@ void WeatherStation::plantIrrigation(float wetweight, float rainfall) {
             Serial.println("\nClosing irrigation control...");
             digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
         }
+        return ETc;
     }
 }
 
