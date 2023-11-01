@@ -101,7 +101,7 @@ float WeatherStation::irrigateAndGetETc(float wetweight, float rainfall) {
         int lysimeterArea = 1225;  //cm2
         float currentDryWeight = getLysimeterWeight();
         float waterDensity = 1.0; // Water density in g/cm³
-        float ETc = (wetweight - currentDryWeight)/lysimeterArea;
+        float ETc = ((wetweight - currentDryWeight)/lysimeterArea)*10;
         float waterNeeded = ETc - rainfall;
 
         Serial.println(String("Calculated ETc: ").concat(ETc));
