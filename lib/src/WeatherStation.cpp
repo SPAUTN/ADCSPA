@@ -46,7 +46,7 @@ void WeatherStation::setHumidity(int humiditySensorPort) {
 void WeatherStation::setRadiation(long int radiationSensor) {
     unsigned long int rad = 0;
     if (radiationSensor >= 10) {
-        rad = ((radiationSensor - 10) * 1400) / 2596;
+        rad = ((radiationSensor - 10) * 1400) / 3911;
     }
     this -> radiation = rad > 1400 ? 1400 : rad;
 }
@@ -101,7 +101,7 @@ float WeatherStation::irrigateAndGetETc(float wetweight, float rainfall) {
         int lysimeterArea = 1225;  //cm2
         float currentDryWeight = getLysimeterWeight();
         float waterDensity = 1.0; // Water density in g/cm³
-        float ETc = (wetweight - currentDryWeight)/lysimeterArea;
+        float ETc = ((wetweight - currentDryWeight)/lysimeterArea)*10;
         float waterNeeded = ETc - rainfall;
 
         Serial.println(String("Calculated ETc: ").concat(ETc));
