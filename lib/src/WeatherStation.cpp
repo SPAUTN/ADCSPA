@@ -1,7 +1,4 @@
-#include "WeatherStation.h"
-
-#define TIME_THRESHOLD 150
-#define CALIBRATION 468.6
+#include "WeatherStation.hpp"
 
 WeatherStation::WeatherStation(long initialCounter) {
     this -> initTime = 0;
@@ -17,10 +14,8 @@ void WeatherStation::init() {
     this -> lysimeter.set_scale(CALIBRATION);
     this -> lysimeter.tare();
     this -> bmp180Sensor.begin();
-
-    delay(2000);
-    this -> dht = DHT (HUMIDITY_SENSOR_PORT, DHT22);
-    this -> dht.begin();
+    this -> dht = new DHT(HUMIDITY_SENSOR_PORT, DHT22);
+    this -> dht -> begin();
 }
 
 void WeatherStation::setWindSpeed(long int windSpeedSensor) {
@@ -41,10 +36,10 @@ float WeatherStation::fmap(float x, float in_min, float in_max, float out_min, f
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-void WeatherStation::setHumidity(int humiditySensorPort) {
-    //delay(2000); //Para respetar la frecuencia del sensor
-    //DHT dht (humiditySensorPort, DHT22);
-    this -> humidity = isnan(dht.readHumidity()) ? 0 : dht.readHumidity();
+void WeatherStation::setHumidity() {
+    //set humidity from DHT22 pointer using readHumidity method
+    this -> humidity = this->dht->readHumidity();
+    //this -> humidity = isnan(this->dht->readHumidity()) ? 0 : this->dht->readHumidity();
 }
 
 void WeatherStation::setRadiation(long int radiationSensor) {
