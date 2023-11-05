@@ -38,6 +38,7 @@ float WeatherStation::fmap(float x, float in_min, float in_max, float out_min, f
 
 void WeatherStation::setHumidity() {
     //set humidity from DHT22 pointer using readHumidity method
+    delay(2000);
     this -> humidity = this->dht->readHumidity();
     //this -> humidity = isnan(this->dht->readHumidity()) ? 0 : this->dht->readHumidity();
 }
