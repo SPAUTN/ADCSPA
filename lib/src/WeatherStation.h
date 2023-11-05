@@ -20,6 +20,7 @@ class WeatherStation {
         long pluviometerCounter;
         HX711 lysimeter;
         SFE_BMP180 bmp180Sensor;
+        DHT dht;
 
         /**
          * @brief cambio de escala entre floats
