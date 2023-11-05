@@ -38,9 +38,9 @@ float WeatherStation::fmap(float x, float in_min, float in_max, float out_min, f
 }
 
 void WeatherStation::setHumidity(int humiditySensorPort) {
-    delay(2000); // Para respetar la frecuencia del sensor
     DHT sensorTH (humiditySensorPort, DHT22);
-
+    sensorTH.begin();
+    delay(2000); // Para respetar la frecuencia del sensor
     // Intentar leer la humedad por primera vez
     float humidityValue = sensorTH.readHumidity();
 
@@ -121,8 +121,6 @@ float WeatherStation::irrigateAndGetETc(float wetweight, float rainfall) {
         float waterDensity = 1.0; // Water density in g/cm³
         float ETc = ((wetweight - currentDryWeight)/lysimeterArea)*10;
         float waterNeeded = ETc - rainfall;
-
-        Serial.println(String("Calculated ETc: ").concat(ETc));
 
         if (waterNeeded <= 0) {
             Serial.println("\nNo need to irrigate, rainfall is sufficient.");

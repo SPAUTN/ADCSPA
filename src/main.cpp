@@ -84,9 +84,7 @@ void loop() {
 
         transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
         transmitionPacket += ",\"etc\":" + String(ETc, 2) + ",";
-        Serial.println(transmitionPacket);
         transmitionPacket += "\"wetweight\":" + String(weatherStation.getLysimeterWeight()) + "}";
-        Serial.println(transmitionPacket);
       }
 
       Serial.print("Sending packet:");
