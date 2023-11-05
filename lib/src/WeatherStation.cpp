@@ -38,9 +38,27 @@ float WeatherStation::fmap(float x, float in_min, float in_max, float out_min, f
 }
 
 void WeatherStation::setHumidity(int humiditySensorPort) {
-    delay(2000); //Para respetar la frecuencia del sensor
+    delay(2000); // Para respetar la frecuencia del sensor
     DHT sensorTH (humiditySensorPort, DHT22);
-    this -> humidity = isnan(sensorTH.readHumidity()) ? 0 : sensorTH.readHumidity();
+
+    // Intentar leer la humedad por primera vez
+    float humidityValue = sensorTH.readHumidity();
+
+    int attempts = 1; // Contador de intentos
+
+    while (isnan(humidityValue) && attempts <= 5) {
+        Serial.println("Error: Invalid humidity reading. Trying again...");
+        delay(2000); // Esperar un poco antes de intentar de nuevo
+        humidityValue = sensorTH.readHumidity();
+        attempts++;
+    }
+
+    if (!isnan(humidityValue)) {
+        this->humidity = humidityValue;
+        Serial.println("Successful humidity reading.");
+    } else {
+        Serial.println("Error: Unable to obtain a valid humidity reading after several attempts.");
+    }
 }
 
 void WeatherStation::setRadiation(long int radiationSensor) {
