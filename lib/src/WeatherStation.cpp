@@ -1,7 +1,4 @@
-#include "WeatherStation.h"
-
-#define TIME_THRESHOLD 150
-#define CALIBRATION 468.6
+#include "WeatherStation.hpp"
 
 WeatherStation::WeatherStation(long initialCounter) {
     this -> initTime = 0;
@@ -17,6 +14,8 @@ void WeatherStation::init() {
     this -> lysimeter.set_scale(CALIBRATION);
     this -> lysimeter.tare();
     this -> bmp180Sensor.begin();
+    this -> dht = new DHT(HUMIDITY_SENSOR_PORT, DHT22);
+    this -> dht -> begin();
 }
 
 void WeatherStation::setWindSpeed(long int windSpeedSensor) {
@@ -37,16 +36,24 @@ float WeatherStation::fmap(float x, float in_min, float in_max, float out_min, f
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-void WeatherStation::setHumidity(int humiditySensorPort) {
-    delay(2000); //Para respetar la frecuencia del sensor
-    DHT sensorTH (humiditySensorPort, DHT22);
-    this -> humidity = isnan(sensorTH.readHumidity()) ? 0 : sensorTH.readHumidity();
+void WeatherStation::setHumidity() {
+    int attempts = 0;
+    delay(2000);
+    do {
+        this -> humidity = this->dht->readHumidity();
+        attempts++;
+        delay(2000);
+    } while (isnan(this -> humidity) && attempts <= ATTEMPTS);
+
+    if (isnan(this -> humidity)) {
+        Serial.println("Error: Unable to obtain a valid humidity reading after several attempts.");
+    }
 }
 
 void WeatherStation::setRadiation(long int radiationSensor) {
     unsigned long int rad = 0;
-    if (radiationSensor >= 10) {
-        rad = ((radiationSensor - 10) * 1400) / 3911;
+    if (radiationSensor >= 270) {
+        rad = ((radiationSensor - 270) * 1400) / 3651;
     }
     this -> radiation = rad > 1400 ? 1400 : rad;
 }
@@ -95,7 +102,7 @@ float WeatherStation::irrigateAndGetETc(float wetweight, float rainfall) {
     Serial.println(!lysimeter.is_ready() ? "Yes" : "No");   //debug
     if (lysimeter.is_ready()) {
         Serial.println("\nError: Unable to read the weight sensor. Irrigation will not proceed.");
-        return NULL;
+        return -1;
     } else {
         int timeout = 10000; // Timeout set to 10 seconds
         int lysimeterArea = 1225;  //cm2
@@ -103,9 +110,6 @@ float WeatherStation::irrigateAndGetETc(float wetweight, float rainfall) {
         float waterDensity = 1.0; // Water density in g/cm³
         float ETc = ((wetweight - currentDryWeight)/lysimeterArea)*10;
         float waterNeeded = ETc - rainfall;
-
-        Serial.println(String("Calculated ETc: ").concat(ETc));
-
         if (waterNeeded <= 0) {
             Serial.println("\nNo need to irrigate, rainfall is sufficient.");
         } else {

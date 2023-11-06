@@ -3,7 +3,7 @@
 #include <TimeLib.h>
 #include <Utils.h>
 #include <HardwareSerial.h>
-#include "WeatherStation.h"
+#include "WeatherStation.hpp"
 
 #define TEST true     // true para modo test, sin espera de 1 minuto 
 #define TIME_THRESHOLD 150
@@ -55,7 +55,7 @@ void loop() {
     if (rxData.startsWith("POLL") || rxData.startsWith("IRR")) {
       weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       
       weatherStation.setwindDirection(analogRead(WIND_DIRECTION_SENSOR_PORT));
-      weatherStation.setHumidity(HUMIDITY_SENSOR_PORT);
+      weatherStation.setHumidity();
       weatherStation.setRadiation(analogRead(RADIATION_SENSOR_PORT));
       weatherStation.setTemperature();
       weatherStation.setPresion();

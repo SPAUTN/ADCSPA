@@ -2,9 +2,10 @@
 #include <TimeLib.h>
 #include "HX711.h"
 #include "DHT.h"
-#include <SFE_BMP180.h>
-#include "DHT.h"
 
+
+#define TIME_THRESHOLD 150
+#define CALIBRATION 468.6
 #define ATTEMPTS 5
 
 #ifndef ESTACION_H
@@ -22,8 +23,8 @@ class WeatherStation {
         long pluviometerCounter;
         HX711 lysimeter;
         SFE_BMP180 bmp180Sensor;
-        DHT dht;
-
+        DHT *dht;
+        
         /**
          * @brief cambio de escala entre floats
          */
@@ -75,7 +76,7 @@ class WeatherStation {
          * @param sensorHum valor del sensor de SENSOR_HUMEDAD
          * @return uint humedad porcentaje de SENSOR_HUMEDAD
          */
-        void setHumidity(int);
+        void setHumidity();
 
         /**
          * @brief Setea la radiación solar entre 0 y 1400 W/m2
