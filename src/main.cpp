@@ -105,7 +105,9 @@ void loop() {
       }  
     } catch (std::runtime_error& e) {
       Serial.println(e.what());
+      sendATCommand(Serial1, AT_P2P_CONFIG_TX_SET);
       sendP2PPacket(Serial1, e.what());
+      sendATCommand(Serial1, AT_CONTINUOUS_PRECV_CONFIG_SET);
     }
   }
 }
