@@ -68,24 +68,9 @@ void loop() {
 
         if (rxData.startsWith(IRR_COMMAND)) {
           // Divide the string into parts using the semicolon as a delimiter
-          // String parts[3]; 
-          // int semicolonIndex = -1;
-          // for (int i = 0; i < 3; i++) {
-          //   semicolonIndex = rxData.indexOf(';');
-          //   if (semicolonIndex != -1) {
-          //     parts[i] = rxData.substring(0, semicolonIndex);
-          //     rxData = rxData.substring(semicolonIndex + 1);
-          //   } else {
-          //     parts[i] = rxData;
-          //     break;
-          //   }
-          // }
           String commmandData = rxData.substring(rxData.indexOf(';')+1);
           float wetweight = commmandData.substring(0, commmandData.indexOf(';')+1).toFloat();
           float rain = commmandData.substring(commmandData.indexOf(';')+1).toFloat();
-
-          //float wetweight = parts[1].toFloat();       
-          //float rain = parts[2].toFloat(); 
           float ETc = weatherStation.irrigateAndGetETc(wetweight, rain);    //controla el riego con wetweight y la lluvia consultada
 
           transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
