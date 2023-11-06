@@ -42,7 +42,6 @@ void WeatherStation::setHumidity() {
     do {
         this -> humidity = this->dht->readHumidity();
         attempts++;
-        Serial.println("Error: Invalid humidity reading. Trying again...");
         delay(2000);
     } while (isnan(this -> humidity) && attempts <= ATTEMPTS);
 
