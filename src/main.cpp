@@ -51,63 +51,66 @@ void loop() {
     rxData = hexToASCII(rxData.substring(rxData.lastIndexOf(':')+1));
     Serial.print("Instruction received: ");
     Serial.println(rxData);
-      
+  try {
     if (rxData.startsWith("POLL") || rxData.startsWith("IRR")) {
-      weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       
-      weatherStation.setwindDirection(analogRead(WIND_DIRECTION_SENSOR_PORT));
-      weatherStation.setHumidity();
-      weatherStation.setRadiation(analogRead(RADIATION_SENSOR_PORT));
-      weatherStation.setTemperature();
-      weatherStation.setPresion();
-      weatherStation.setLeafMoisture(analogRead(LEAF_MOISTURE_SENSOR_PORT));
-      weatherStation.setPulseCounter(contadorPluv);
+        weatherStation.setWindSpeed(analogRead(WIND_SPEED_SENSOR_PORT));       
+        weatherStation.setwindDirection(analogRead(WIND_DIRECTION_SENSOR_PORT));
+        weatherStation.setHumidity();
+        weatherStation.setRadiation(analogRead(RADIATION_SENSOR_PORT));
+        weatherStation.setTemperature();
+        weatherStation.setPresion();
+        weatherStation.setLeafMoisture(analogRead(LEAF_MOISTURE_SENSOR_PORT));
+        weatherStation.setPulseCounter(contadorPluv);
 
-      String transmitionPacket = weatherStation.getPayload();
+        String transmitionPacket = weatherStation.getPayload();
 
-      if (rxData.startsWith("IRR")) {
-        // Divide the string into parts using the semicolon as a delimiter
-        String parts[3]; 
-        int semicolonIndex = -1;
-        for (int i = 0; i < 3; i++) {
-          semicolonIndex = rxData.indexOf(';');
-          if (semicolonIndex != -1) {
-            parts[i] = rxData.substring(0, semicolonIndex);
-            rxData = rxData.substring(semicolonIndex + 1);
-          } else {
-            parts[i] = rxData;
-            break;
+        if (rxData.startsWith("IRR")) {
+          // Divide the string into parts using the semicolon as a delimiter
+          String parts[3]; 
+          int semicolonIndex = -1;
+          for (int i = 0; i < 3; i++) {
+            semicolonIndex = rxData.indexOf(';');
+            if (semicolonIndex != -1) {
+              parts[i] = rxData.substring(0, semicolonIndex);
+              rxData = rxData.substring(semicolonIndex + 1);
+            } else {
+              parts[i] = rxData;
+              break;
+            }
           }
+          float wetweight = parts[1].toFloat();       
+          float rain = parts[2].toFloat(); 
+          float ETc = weatherStation.irrigateAndGetETc(wetweight, rain);    //controla el riego con wetweight y la lluvia consultada
+
+          transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
+          transmitionPacket += ",\"etc\":" + String(ETc, 2) + ",";
+          Serial.println(transmitionPacket);
+          transmitionPacket += "\"wetweight\":" + String(weatherStation.getLysimeterWeight()) + "}";
+          Serial.println(transmitionPacket);
         }
-        float wetweight = parts[1].toFloat();       
-        float rain = parts[2].toFloat(); 
-        float ETc = weatherStation.irrigateAndGetETc(wetweight, rain);    //controla el riego con wetweight y la lluvia consultada
 
-        transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
-        transmitionPacket += ",\"etc\":" + String(ETc, 2) + ",";
+        Serial.print("Sending packet:");
         Serial.println(transmitionPacket);
-        transmitionPacket += "\"wetweight\":" + String(weatherStation.getLysimeterWeight()) + "}";
-        Serial.println(transmitionPacket);
-      }
+        sendATCommand(Serial1, AT_P2P_CONFIG_TX_SET);
+        String response = sendP2PPacket(Serial1, transmitionPacket); 
+        Serial.print("Response: ");
+        response.replace('\n', ' ');
+        Serial.println(response);
 
-      Serial.print("Sending packet:");
-      Serial.println(transmitionPacket);
-      sendATCommand(Serial1, AT_P2P_CONFIG_TX_SET);
-      String response = sendP2PPacket(Serial1, transmitionPacket); 
-      Serial.print("Response: ");
-      response.replace('\n', ' ');
-      Serial.println(response);
+        sendATCommand(Serial1, AT_CONTINUOUS_PRECV_CONFIG_SET);
 
-      sendATCommand(Serial1, AT_CONTINUOUS_PRECV_CONFIG_SET);
-
-      contadorPluv = 0;
-      startTime = millis();
-      delay(300);
+        contadorPluv = 0;
+        startTime = millis();
+        delay(300);
+      }  
+    } catch (std::runtime_error& e) {
+      Serial.println(e.what());
+      sendP2PPacket(Serial1, e.what());
     }
   }
 }
 
-void pulseDetector(){
-  
+void pulseDetector() {
     if(millis() - initialTime > TIME_THRESHOLD){
         contadorPluv++;
         initialTime = millis();
