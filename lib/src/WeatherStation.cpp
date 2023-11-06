@@ -110,9 +110,6 @@ float WeatherStation::irrigateAndGetETc(float wetweight, float rainfall) {
         float waterDensity = 1.0; // Water density in g/cm³
         float ETc = ((wetweight - currentDryWeight)/lysimeterArea)*10;
         float waterNeeded = ETc - rainfall;
-
-        Serial.println(String("Calculated ETc: ").concat(ETc));
-
         if (waterNeeded <= 0) {
             Serial.println("\nNo need to irrigate, rainfall is sufficient.");
         } else {
