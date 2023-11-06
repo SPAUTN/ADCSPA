@@ -37,10 +37,18 @@ float WeatherStation::fmap(float x, float in_min, float in_max, float out_min, f
 }
 
 void WeatherStation::setHumidity() {
-    //set humidity from DHT22 pointer using readHumidity method
+    int attempts = 0;
     delay(2000);
-    this -> humidity = this->dht->readHumidity();
-    //this -> humidity = isnan(this->dht->readHumidity()) ? 0 : this->dht->readHumidity();
+    do {
+        this -> humidity = this->dht->readHumidity();
+        attempts++;
+        Serial.println("Error: Invalid humidity reading. Trying again...");
+        delay(2000);
+    } while (isnan(this -> humidity) && attempts <= 5);
+
+    if (isnan(this -> humidity)) {
+        Serial.println("Error: Unable to obtain a valid humidity reading after several attempts.");
+    }
 }
 
 void WeatherStation::setRadiation(long int radiationSensor) {
@@ -95,7 +103,7 @@ float WeatherStation::irrigateAndGetETc(float wetweight, float rainfall) {
     Serial.println(!lysimeter.is_ready() ? "Yes" : "No");   //debug
     if (lysimeter.is_ready()) {
         Serial.println("\nError: Unable to read the weight sensor. Irrigation will not proceed.");
-        return NULL;
+        return -1;
     } else {
         int timeout = 10000; // Timeout set to 10 seconds
         int lysimeterArea = 1225;  //cm2
