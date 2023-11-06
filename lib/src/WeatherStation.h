@@ -5,6 +5,8 @@
 #include <SFE_BMP180.h>
 #include "DHT.h"
 
+#define ATTEMPTS 5
+
 #ifndef ESTACION_H
 #define ESTACION_H
 class WeatherStation {
