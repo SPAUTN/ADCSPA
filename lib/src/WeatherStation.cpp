@@ -61,7 +61,12 @@ void WeatherStation::setRadiation(long int radiationSensor) {
 void WeatherStation::setTemperature() {
     char status;
     double temperature;
-    status = this -> bmp180Sensor.startTemperature();
+    int attempts = 0;
+    do {
+        status = this -> bmp180Sensor.startTemperature();
+        attempts++;
+    } while(status != 0 && attempts <= ATTEMPTS);
+
     if (status != 0) {
         delay(status); 
         status = this -> bmp180Sensor.getTemperature(temperature); 
@@ -73,11 +78,16 @@ void WeatherStation::setTemperature() {
 
 
 void WeatherStation::setPresion() {
+    char status;
     double pressure;
     setTemperature();
     double temperature = this -> getTemperature(); 
-    char status;
-    status = bmp180Sensor.startPressure(3); 
+    int attempts = 0;
+    do {
+        status = bmp180Sensor.startPressure(3); 
+        attempts++;
+    } while(status != 0 && attempts <= ATTEMPTS);
+    
     if (status != 0){        
         delay(status);
         status = bmp180Sensor.getPressure(pressure,temperature); 
