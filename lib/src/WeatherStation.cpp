@@ -46,7 +46,7 @@ void WeatherStation::setHumidity() {
     } while (isnan(this -> humidity) && attempts <= ATTEMPTS);
 
     if (isnan(this -> humidity)) {
-        Serial.println("Error: Unable to obtain a valid humidity reading after several attempts.");
+        throw std::runtime_error("ERROR: Unable to obtain a valid humidity reading after several attempts.");
     }
 }
 
@@ -65,6 +65,8 @@ void WeatherStation::setTemperature() {
     if (status != 0) {
         delay(status); 
         status = this -> bmp180Sensor.getTemperature(temperature); 
+    } else {
+        throw std::runtime_error("ERROR: Unable to obtain a valid temperature reading.");
     }
     this -> temperature = static_cast<long int>(temperature);
 }
@@ -79,7 +81,9 @@ void WeatherStation::setPresion() {
     if (status != 0){        
         delay(status);
         status = bmp180Sensor.getPressure(pressure,temperature); 
-    }      
+    } else {
+        throw std::runtime_error("ERROR: Unable to obtain a valid pressure reading.");
+    }
     this -> pressure = static_cast<long int>(pressure); 
 }
 
@@ -101,8 +105,7 @@ float WeatherStation::irrigateAndGetETc(float wetweight, float rainfall) {
     Serial.print("Lysimeter ready: ");
     Serial.println(!lysimeter.is_ready() ? "Yes" : "No");   //debug
     if (lysimeter.is_ready()) {
-        Serial.println("\nError: Unable to read the weight sensor. Irrigation will not proceed.");
-        return -1;
+        throw std::runtime_error("ERROR:Unable to read the weight sensor. Irrigation will not proceed.");
     } else {
         int timeout = 10000; // Timeout set to 10 seconds
         int lysimeterArea = 1225;  //cm2
