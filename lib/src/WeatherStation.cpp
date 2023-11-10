@@ -191,7 +191,7 @@ float WeatherStation::getLysimeterWeight() {
 
 
 String WeatherStation::getPayload() {
-    String payload = "pl:" + String(this ->  getPluviometerCounter());       // pluviometer
+    String payload = ";pl:" + String(this ->  getPluviometerCounter());       // pluviometer
     payload += ";ws:" + String(this ->  getWindSpeed());                    // wind speed   
     payload += ";wd:" + String(this ->  getWindDirection());                // wind direction
     payload += ";l:" + String(this ->  getLeafMoisture());                  // leaf moisture
