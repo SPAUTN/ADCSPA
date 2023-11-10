@@ -191,19 +191,17 @@ float WeatherStation::getLysimeterWeight() {
 
 
 String WeatherStation::getPayload() {
-    String jsonPayload = "{";
-    jsonPayload += "\"pluviometer\":" + String(this ->  getPluviometerCounter());
-    jsonPayload += ",\"windspeed\":" + String(this ->  getWindSpeed());
-    jsonPayload += ",\"winddirection\":" + String(this ->  getWindDirection());
-    jsonPayload += ",\"leafmoisture\":" + String(this ->  getLeafMoisture());
-    jsonPayload += ",\"humidity\":" + String(this ->  getHumidity());
-    jsonPayload += ",\"radiation\":" + String(this ->  getRadiation());
-    jsonPayload += ",\"temperature\":" + String(this ->  getTemperature());
-    jsonPayload += ",\"pressure\":" + String(this ->  getPressure());
-    jsonPayload += ",\"weight\":" + String(this ->  getLysimeterWeight(), 4);
-    jsonPayload += "}";
+    String payload = "pl:" + String(this ->  getPluviometerCounter());       // pluviometer
+    payload += ";ws:" + String(this ->  getWindSpeed());                    // wind speed   
+    payload += ";wd:" + String(this ->  getWindDirection());                // wind direction
+    payload += ";l:" + String(this ->  getLeafMoisture());                  // leaf moisture
+    payload += ";h:" + String(this ->  getHumidity());                      // humidity
+    payload += ";r:" + String(this ->  getRadiation());                     // radiation
+    payload += ";t:" + String(this ->  getTemperature());                   // temperature
+    payload += ";pr:" + String(this ->  getPressure());                      // pressure
+    payload += ";wh:" + String(this ->  getLysimeterWeight(), 4);            // weight    
 
     this -> resetPulseCounter();
 
-    return jsonPayload;
+    return payload;
 }
