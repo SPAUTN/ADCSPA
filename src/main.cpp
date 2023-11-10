@@ -77,8 +77,9 @@ void loop() {
           transmitionPacket += ";etc:" + String(ETc, 2);
           transmitionPacket += ";wwh:" + String(weatherStation.getLysimeterWeight()) + ";";
           Serial.println(transmitionPacket);
+        } else {
+          transmitionPacket = ">" + String(POLL_COMMAND) + transmitionPacket + "<";
         }
-        transmitionPacket = ">" + String(POLL_COMMAND) + transmitionPacket + "<";
         Serial.print("Sending packet:");
         Serial.println(transmitionPacket);
         atFunctions.sendATCommand(Serial1, AT_P2P_CONFIG_TX_SET);
