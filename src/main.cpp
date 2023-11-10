@@ -67,19 +67,18 @@ void loop() {
         String transmitionPacket = weatherStation.getPayload();
 
         if (rxData.startsWith(IRR_COMMAND)) {
-          // Divide the string into parts using the semicolon as a delimiter
+          
           String commmandData = rxData.substring(rxData.indexOf(';')+1);
           float wetweight = commmandData.substring(0, commmandData.indexOf(';')+1).toFloat();
           float rain = commmandData.substring(commmandData.indexOf(';')+1).toFloat();
           float ETc = weatherStation.irrigateAndGetETc(wetweight, rain);    //controla el riego con wetweight y la lluvia consultada
-
+          transmitionPacket = String(IRR_COMMAND) + ";" + transmitionPacket;
           transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
-          transmitionPacket += ",\"etc\":" + String(ETc, 2) + ",";
-          Serial.println(transmitionPacket);
-          transmitionPacket += "\"wetweight\":" + String(weatherStation.getLysimeterWeight()) + "}";
+          transmitionPacket += "etc:" + String(ETc, 2) + ";";
+          transmitionPacket += "wwh:" + String(weatherStation.getLysimeterWeight()) + ";";
           Serial.println(transmitionPacket);
         }
-
+        transmitionPacket = String(POLL_COMMAND) + ";" + transmitionPacket;
         Serial.print("Sending packet:");
         Serial.println(transmitionPacket);
         atFunctions.sendATCommand(Serial1, AT_P2P_CONFIG_TX_SET);
