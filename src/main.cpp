@@ -74,7 +74,7 @@ void loop() {
           float ETc = weatherStation.irrigateAndGetETc(wetweight, rain);    //controla el riego con wetweight y la lluvia consultada
           transmitionPacket = ">" + String(IRR_COMMAND) + transmitionPacket + "<";
           transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
-          transmitionPacket += ";etc:" + String(ETc, 2);
+          transmitionPacket += "+etc:" + String(ETc, 2);
           transmitionPacket += ";wwh:" + String(weatherStation.getLysimeterWeight()) + ";";
           Serial.println(transmitionPacket);
         } else {
