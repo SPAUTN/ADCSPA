@@ -75,7 +75,7 @@ void loop() {
           transmitionPacket = ">" + String(IRR_COMMAND) + transmitionPacket + "<";
           transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
           transmitionPacket += ";etc:" + String(ETc, 2);
-          transmitionPacket += ";wwh<" + String(weatherStation.getLysimeterWeight()) + ";";
+          transmitionPacket += ";wwh:" + String(weatherStation.getLysimeterWeight()) + "<";
           Serial.println(transmitionPacket);
         } else {
           transmitionPacket = ">" + String(POLL_COMMAND) + transmitionPacket + "<";
