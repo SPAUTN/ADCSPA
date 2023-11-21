@@ -6,7 +6,7 @@
 #include "WeatherStation.hpp"
 
 #define TEST true     // true para modo test, sin espera de 1 minuto 
-#define TIME_THRESHOLD 150
+#define TIME_THRESHOLD 500
 #define AT_CONTINUOUS_PRECV_CONFIG_SET "AT+PRECV=65534" 
 
 volatile static long int contadorPluv = 0;
