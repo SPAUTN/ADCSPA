@@ -118,7 +118,7 @@ class WeatherStation {
          * @param 
          * @return 
          */
-        float irrigateAndGetETc(float, float);
+        float irrigateAndGetETc(float);
         // -------------------------------------- Getters --------------------------------------
 
         /**
