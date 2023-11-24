@@ -110,7 +110,7 @@ void WeatherStation::resetPulseCounter() {
     this -> pluviometerCounter = 0;
 }
 
-float WeatherStation::irrigateAndGetETc(float wetweight, float rainfall) {
+float WeatherStation::irrigateAndGetETc(float wetweight) {
     // Check if the weight sensor is ready
     Serial.print("Lysimeter ready: ");
     Serial.println(!lysimeter.is_ready() ? "Yes" : "No");   //debug
@@ -119,17 +119,16 @@ float WeatherStation::irrigateAndGetETc(float wetweight, float rainfall) {
     } else {
         int timeout = 10000; // Timeout set to 10 seconds
         int lysimeterArea = 1225;  //cm2
-        float currentDryWeight = getLysimeterWeight();
+        float currentDryWeight = this -> getLysimeterWeight();
         float waterDensity = 1.0; // Water density in g/cm³
-        float ETc = ((wetweight - currentDryWeight)/lysimeterArea)*10;
-        float waterNeeded = ETc - rainfall;
-        if (waterNeeded <= 0) {
+        float currentETc = ((wetweight - currentDryWeight)/lysimeterArea) * 10;
+        if (currentETc <= 0) {
             Serial.println("\nNo need to irrigate, rainfall is sufficient.");
         } else {
-            float volume = (waterNeeded/10) * lysimeterArea;    // Convert mm to cm³ 
-            float RequiredIrrigation = volume * waterDensity;    // weight in grams
+            float volume = (currentETc / 10) * lysimeterArea;                   // Convert mm to cm³ 
+            float RequiredIrrigation = volume * waterDensity;                   // weight in grams
             Serial.println("\nThe amount of water to irrigate in grams is: ");
-            Serial.println(RequiredIrrigation);                   // Verification of the weight to be added
+            Serial.println(RequiredIrrigation);                                 // Verification of the weight to be added
 
             Serial.println("\nOpening irrigation control...");
             digitalWrite(IRRIGATION_CONTROL_PORT, HIGH);
@@ -148,7 +147,7 @@ float WeatherStation::irrigateAndGetETc(float wetweight, float rainfall) {
             Serial.println("\nClosing irrigation control...");
             digitalWrite(IRRIGATION_CONTROL_PORT, LOW);
         }
-        return ETc;
+        return currentETc;
     }
 }
 

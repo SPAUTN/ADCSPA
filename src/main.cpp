@@ -5,11 +5,10 @@
 #include <HardwareSerial.h>
 #include "WeatherStation.hpp"
 
-#define TEST true     // true para modo test, sin espera de 1 minuto 
-#define TIME_THRESHOLD 150
-#define AT_CONTINUOUS_PRECV_CONFIG_SET "AT+PRECV=65534" 
+#define FRAME_START ">"
+#define FRAME_END "<"
 
-volatile static long int contadorPluv = 0;
+volatile static long int pluvCounter = 0;
 long startTime = 0;  
 long int initialTime = 0;
 
@@ -62,7 +61,7 @@ void loop() {
         weatherStation.setTemperature();
         weatherStation.setPresion();
         weatherStation.setLeafMoisture(analogRead(LEAF_MOISTURE_SENSOR_PORT));
-        weatherStation.setPulseCounter(contadorPluv);
+        weatherStation.setPulseCounter(pluvCounter);
 
         String transmitionPacket = weatherStation.getPayload();
 
@@ -70,15 +69,14 @@ void loop() {
           
           String commmandData = rxData.substring(rxData.indexOf(';')+1);
           float wetweight = commmandData.substring(0, commmandData.indexOf(';')+1).toFloat();
-          float rain = commmandData.substring(commmandData.indexOf(';')+1).toFloat();
-          float ETc = weatherStation.irrigateAndGetETc(wetweight, rain);    //controla el riego con wetweight y la lluvia consultada
-          transmitionPacket = ">" + String(IRR_COMMAND) + transmitionPacket + "<";
+          float ETc = weatherStation.irrigateAndGetETc(wetweight);    //controla el riego con wetweight y la lluvia consultada
+          transmitionPacket = FRAME_START + String(IRR_COMMAND) + transmitionPacket + FRAME_END;
           transmitionPacket = transmitionPacket.substring(0, transmitionPacket.length()-1);
-          transmitionPacket += "+etc:" + String(ETc, 2);
-          transmitionPacket += ";wwh:" + String(weatherStation.getLysimeterWeight()) + ";";
+          transmitionPacket += ";etc:" + String(ETc, 2);
+          transmitionPacket += ";wwh:" + String(weatherStation.getLysimeterWeight()) + FRAME_END;
           Serial.println(transmitionPacket);
         } else {
-          transmitionPacket = ">" + String(POLL_COMMAND) + transmitionPacket + "<";
+          transmitionPacket = FRAME_START + String(POLL_COMMAND) + transmitionPacket + FRAME_END;
         }
         Serial.print("Sending packet:");
         Serial.println(transmitionPacket);
@@ -90,7 +88,7 @@ void loop() {
 
         atFunctions.sendATCommand(Serial1, AT_CONTINUOUS_PRECV_CONFIG_SET);
 
-        contadorPluv = 0;
+        pluvCounter = 0;
         startTime = millis();
         delay(300);
       }  
@@ -105,7 +103,7 @@ void loop() {
 
 void pulseDetector() {
     if(millis() - initialTime > TIME_THRESHOLD){
-        contadorPluv++;
+        pluvCounter++;
         initialTime = millis();
     }
 }

@@ -3,7 +3,7 @@
 #include "HX711.h"
 #include "DHT.h"
 
-#define TIME_THRESHOLD 150
+#define TIME_THRESHOLD 500
 #define CALIBRATION 468.6
 #define ATTEMPTS 5
 
@@ -118,7 +118,7 @@ class WeatherStation {
          * @param 
          * @return 
          */
-        float irrigateAndGetETc(float, float);
+        float irrigateAndGetETc(float);
         // -------------------------------------- Getters --------------------------------------
 
         /**
