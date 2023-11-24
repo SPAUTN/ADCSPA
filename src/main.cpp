@@ -5,9 +5,6 @@
 #include <HardwareSerial.h>
 #include "WeatherStation.hpp"
 
-#define TEST true     // true para modo test, sin espera de 1 minuto 
-#define TIME_THRESHOLD 500
-
 #define FRAME_START ">"
 #define FRAME_END "<"
 
