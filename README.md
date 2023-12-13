@@ -6,7 +6,7 @@ Código para realizar las lecturas analógicas de los sensores de todo el sistem
 * 1 - Tomar las señales analogicas de la Estación meteorológica y convertirlas a digitales con la mayor resolución posible
 * 2 - Tomar las señales analogicas del Lisímetro de pesada y convertirlas a digitales con la mayor resolución posible
 
-> [!INFO]
+> [!IMPORTANT]
 > Los pines utilizados son:
 > **Lisimetro**:
 >   - D4 - Clock
